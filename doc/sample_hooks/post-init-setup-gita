@@ -1,0 +1,76 @@
+#!/bin/sh
+
+# This registers your new vcsh repository with gita
+# <https://github.com/nosarthur/gita>. It is the moral equivalent of the
+# post-init-setup-mr hook for people who use gita instead of the (now
+# unmaintained) myrepos.
+#
+# Why the indirection below is needed:
+#
+# gita will not track a vcsh "fake-bare" repository if you point it straight
+# at $XDG_CONFIG_HOME/vcsh/repo.d/<name>.git. To decide whether a path is a
+# repo, gita runs `git rev-parse --is-bare-repository`; vcsh sets
+# `core.bare false` (and `core.worktree`), so that check answers "false" and
+# `gita add` just prints "No new repos found!".
+#
+# The workaround is to hand gita a tiny stub directory whose only content is a
+# git link file pointing at the real vcsh repository. gita sees the ".git" and
+# adds it happily, and every git command it later runs in that directory is
+# routed into the vcsh repo, whose `core.worktree` already points at $HOME.
+# Removing the repo again is just `gita rm <name>` plus deleting the stub.
+#
+# This file is a sample. To use it:
+#
+#   mkdir -p $XDG_CONFIG_HOME/vcsh/hooks-available
+#   mkdir -p $XDG_CONFIG_HOME/vcsh/hooks-enabled
+#   cp post-init-setup-gita $XDG_CONFIG_HOME/vcsh/hooks-available/
+#   chmod +x $XDG_CONFIG_HOME/vcsh/hooks-available/post-init-setup-gita
+#   ln -s ../hooks-available/post-init-setup-gita \
+#         $XDG_CONFIG_HOME/vcsh/hooks-enabled/post-init-setup-gita
+#
+# If you also want repositories brought in with `vcsh clone` to be registered,
+# enable the same script for the post-clone hook as well:
+#
+#   ln -s ../hooks-available/post-init-setup-gita \
+#         $XDG_CONFIG_HOME/vcsh/hooks-enabled/post-clone-setup-gita
+#
+# Set GITA_GROUP to collect all vcsh repos under one gita group (default
+# "vcsh", so `gita ll vcsh` shows just these); set it empty to not group.
+#
+# The hook also sets `status.showUntrackedFiles no` on the repo, so that
+# `gita <name> status` and `gita super` are not drowned in the unrelated
+# contents of $HOME. Note this does NOT stop `gita ll` from showing the "?"
+# (untracked) flag: that column comes from `git ls-files --others`, which only
+# honours .gitignore / core.excludesfile. For a tidy `gita ll` either keep a
+# strict $HOME/.gitignore.d/<name> or just disregard the "?" for vcsh repos.
+# Set GITA_HIDE_UNTRACKED empty to skip touching the repo config.
+
+set -e
+
+command -v gita >/dev/null 2>&1 || {
+	echo "post-init-setup-gita: gita is not installed; skipping" >&2
+	exit 0
+}
+
+: "${XDG_CONFIG_HOME:=$HOME/.config}"
+: "${VCSH_REPO_D:=$XDG_CONFIG_HOME/vcsh/repo.d}"
+: "${GITA_GROUP=vcsh}"
+: "${GITA_HIDE_UNTRACKED=yes}"
+
+git_dir=${GIT_DIR:-$VCSH_REPO_D/$VCSH_REPO_NAME.git}
+stub_dir=$XDG_CONFIG_HOME/vcsh/gita.d/$VCSH_REPO_NAME
+
+mkdir -p "$stub_dir"
+printf 'gitdir: %s\n' "$git_dir" > "$stub_dir/.git"
+
+if [ -n "${GITA_HIDE_UNTRACKED}" ]; then
+	git --git-dir="$git_dir" config status.showUntrackedFiles no
+fi
+
+# `gita add` is idempotent: on a re-run it deduplicates by path and simply
+# reports "No new repos found!".
+if [ -n "${GITA_GROUP}" ]; then
+	gita add -g "$GITA_GROUP" "$stub_dir"
+else
+	gita add "$stub_dir"
+fi
