@@ -385,7 +385,7 @@ repos_has() {
 	# True if $NOOK_REPOS has a non-comment line for repo name $1.
 	local _n _rest
 	[ -r "$NOOK_REPOS" ] || return 1
-	while read -r _n _rest; do
+	while read -r _n _rest || [ -n "$_n" ]; do
 		case "$_n" in ''|\#*) continue;; esac
 		[ "x$_n" = "x$1" ] && return 0
 	done < "$NOOK_REPOS"
@@ -484,7 +484,7 @@ bootstrap() {
 	done
 	[ -r "$source_file" ] || fatal "$NOOK_COMMAND: repos file not readable: '$source_file'" 1
 	# Fields are whitespace-separated; none of name/url/branch can contain a space.
-	while read -r name url branch tags; do
+	while read -r name url branch tags || [ -n "$name" ]; do
 		tags=${tags#@}
 		case "$name" in ''|\#*) continue;; esac
 		if [ -z "$url" ]; then
