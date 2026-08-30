@@ -98,6 +98,8 @@ an interactive user.
 
   `--all` (or `-a`): ignore <url>/<repo> and instead clone everything listed
   in <$STACHE_REPOS> that is not already present. Same as `stache bootstrap`.
+  It must be the first word after `clone` (`stache clone --all [<file>]`); it
+  is not a normal option and cannot be combined with `-b` or a <url>.
 
 * commit:
   Commit in all repositories

@@ -115,7 +115,8 @@ your `$HOME`, you will end up with a lot of repositories very quickly.
 for every repo with an `origin` remote -- current **automatically** (after
 init/clone/delete/rename/upgrade). Track that file in one of your repos; on a
 new machine, clone that repo and run `stache bootstrap`, and every other repo in
-the list is cloned for you.
+the list is cloned for you. `stache clone --all` (or `-a`) does the same thing --
+with `clone`, the `--all` / `-a` must be the first word, before any URL or `-b`.
 
     stache dotfiles add -f ~/.config/stache/stache.repos
     stache dotfiles commit -m 'track repo list' && stache dotfiles push

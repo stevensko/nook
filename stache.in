@@ -140,8 +140,9 @@ help() {
    pull                 Pull from all stache remotes
    push                 Push to stache remotes
    bootstrap [<file>]   Clone every repo listed in \$STACHE_REPOS that is not
-   clone --all [<file>] already present. \$STACHE_REPOS is kept current
-   clone -a [<file>]    automatically. The three forms are equivalent.
+   clone --all [<file>] already present (\$STACHE_REPOS is kept current
+   clone -a [<file>]    automatically). Equivalent forms; with 'clone',
+                        --all/-a must come first, before any <url> or -b.
    rename <repo> \\
           <newname>     Rename repository
    run <repo> \\
