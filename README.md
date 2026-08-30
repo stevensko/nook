@@ -28,7 +28,7 @@ Let's say you want to version control your `vim` configuration:
     room vim commit -m 'Initial commit of my Vim configuration'
     # optionally push your files to a remote
     room vim remote add origin <remote>
-    room vim push -u origin master
+    room vim push -u origin main
     # from now on you can push additional commits like this
     room vim push
 

@@ -27,7 +27,7 @@ Let's say you want to version control your `vim` configuration:
     room vim commit -m 'Initial commit of my Vim configuration'
     # optionally push your files to a remote
     room vim remote add origin <remote>
-    room vim push -u origin master
+    room vim push -u origin main
     # from now on you can push additional commits like this
     room vim push
 
@@ -75,8 +75,8 @@ are covered in room(1).
 | _Add files to repository "vim"_                       |   `room vim add ~/.vimrc ~/.vim`                  |
 |                                                       |   `room vim commit -m 'Update Vim configuration'` |
 | _Add a remote for repository "vim"_                   |   `room vim remote add origin <remote>`           |
-|                                                       |   `room vim push origin master:master`            |
-|                                                       |   `room vim branch --track master origin/master`  |
+|                                                       |   `room vim push origin main:main`            |
+|                                                       |   `room vim branch --track main origin/main`  |
 | _Push to remote of repository "vim"_                  |   `room vim push`                                 |
 | _Pull from remote of repository "vim"_                |   `room vim pull`                                 |
 | _Show status of changed files in all repositories_    |   `room status`                                   |
