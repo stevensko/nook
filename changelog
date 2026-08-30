@@ -33,9 +33,11 @@
 	* .repos rows take an optional tag field after the branch, always stored
 	  with a leading "@" and a trailing "," (`nook add <repo> a,b` writes
 	  "@a,b,"; a leading "@" or trailing "," you pass is absorbed).
-	  `nook bootstrap --include=a,b` / `--exclude=x,y` filter on it
-	  (untagged rows always match; --exclude wins). A missing trailing
-	  newline on the last row is tolerated.
+	  An untagged row is always cloned; a tagged row is opt-in and is cloned
+	  only when `nook bootstrap --include=` names one of its tags, so a bare
+	  `nook bootstrap` clones the untagged rows only. `--exclude=` always
+	  wins; matching is case-insensitive. A missing trailing newline on the
+	  last row is tolerated.
 	* New: `nook config <git config args>` edits a shared git config file
 	  ($NOOK_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos

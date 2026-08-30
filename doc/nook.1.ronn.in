@@ -73,9 +73,9 @@ To set up a new machine, `nook` has a built-in bootstrap. You populate
 <repo> [<tags>]` or `nook add --all`, and track that file in one of your
 repos. On the new machine `nook bootstrap` (also `nook clone --all`)
 clones everything listed there that is not already present. Give a repo an
-optional comma-separated tag list (4th column) and select per machine with
-`nook bootstrap --include=<tags>` / `--exclude=<tags>`; untagged repos are
-always cloned.
+optional comma-separated tag list (4th column). An untagged repo is always
+cloned; a tagged repo is opt-in and clones only when one of its tags is
+given via `nook bootstrap --include=<tags>` (`--exclude=<tags>` always wins).
 
 Please note that you can always use a path instead of a name for <repo>.
 This is needed to support external scripts properly and of no concern to
@@ -116,8 +116,9 @@ an interactive user.
   You can also use a single git repository with several branches. Use the `-b`
   option to specify a branch at clone time, the default is `master`.
 
-  `--all` (or `-a`): ignore <url>/<repo> and instead clone everything listed
-  in <$NOOK_REPOS> that is not already present. Same as `nook bootstrap`.
+  `--all` (or `-a`): ignore <url>/<repo> and instead bootstrap from
+  <$NOOK_REPOS> (untagged rows, plus any `--include` subset). Same as
+  `nook bootstrap`; see that command for the tag rules.
   It must be the first word after `clone` (`nook clone --all [<file>]`); it
   is not a normal option and cannot be combined with `-b` or a <url>.
 
@@ -189,8 +190,12 @@ an interactive user.
   is not already present locally. Existing repos are left untouched. The forms
   `nook bootstrap`, `nook clone --all` and `nook clone -a` are equivalent.
 
-  `--include=<tags>`: comma-separated. Only clone rows whose 4th-column tags
-  (also comma-separated) contain one of these. Rows with no tags always match.
+  A row with no 4th-column tags is always cloned. A row that has tags is
+  opt-in: it is cloned only when `--include` names one of its tags, so a
+  bare `nook bootstrap` clones the untagged rows only.
+
+  `--include=<tags>`: comma-separated. Also clone tagged rows that carry one
+  of these tags.
 
   `--exclude=<tags>`: comma-separated. Skip any row that has one of these tags.
   Exclude wins over include. Matching is case-insensitive.
