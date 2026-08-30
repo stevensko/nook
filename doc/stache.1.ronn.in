@@ -5,6 +5,10 @@ stache(1) - Version Control System for $HOME - multiple Git repositories in $HOM
 
 `stache` [<options>] <command>
 
+`stache` add <repo>
+
+`stache` add --all|-a
+
 `stache` clone [-b <branch>] <url> [<repo>]
 
 `stache` bootstrap [<file>]
@@ -64,11 +68,11 @@ in a different directory from <$GIT_WORK_TREE> which is pointed to <$HOME>.
 
 The use of symlinks is not needed in this setup, making for a cleaner setup.
 
-To set up a new machine, `stache` has a built-in bootstrap: it maintains
-<$STACHE_REPOS> (name, remote URL, branch for every repo with an <origin>
-remote) automatically, and `stache bootstrap` (also `stache clone --all`)
-clones everything listed there that is not already present. Track that file
-in one of your repos.
+To set up a new machine, `stache` has a built-in bootstrap. You populate
+<$STACHE_REPOS> ("<name> <url> <branch>" per repo) with `stache add <repo>`
+or `stache add --all`, and track that file in one of your repos. On the new
+machine `stache bootstrap` (also `stache clone --all`) clones everything
+listed there that is not already present.
 
 Please note that you can always use a path instead of a name for <repo>.
 This is needed to support external scripts properly and of no concern to
@@ -86,6 +90,16 @@ an interactive user.
   Enable verbose mode
 
 ## COMMANDS
+
+* add:
+  Append a repository to <$STACHE_REPOS> ("<name> <url> <branch>"). This is
+  the only thing that writes that file.
+
+  `<repo>`: add that repo. It must exist locally and have an <origin> remote.
+  Already-listed repos are left alone.
+
+  `--all` (or `-a`): add every local repo with an <origin> remote that is not
+  already listed.
 
 * clone:
   Clone an existing repository.
@@ -307,8 +321,9 @@ Less interesting knobs you could turn:
   Defaults to <$XDG_CONFIG_HOME/stache>.
 
 * <$STACHE_REPOS>:
-  The repo list `stache` maintains automatically and `bootstrap` reads
-  ("<name> <url> <branch>" per repo with an origin remote).
+  The repo list you build with `stache add` and `bootstrap` reads
+  ("<name> <url> <branch>" per repo). `stache` never writes it on its own --
+  `delete` and `rename` leave stale lines for you to edit out.
 
   Defaults to <$XDG_CONFIG_HOME/stache/stache.repos>.
 

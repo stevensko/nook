@@ -116,6 +116,9 @@ help() {
    -v                   Enable verbose mode
 
    commands:
+   add <repo>           Add <repo>'s line (name/url/branch) to \$STACHE_REPOS
+   add --all | -a       Append every local repo with a remote that is not
+                        already in \$STACHE_REPOS
    clone [-b <branch>] \\
          <remote> \\
          [<repo>]       Clone from an existing repository
@@ -139,10 +142,10 @@ help() {
         [<repo>]        List all files not tracked by all or one repositories
    pull                 Pull from all stache remotes
    push                 Push to stache remotes
-   bootstrap [<file>]   Clone every repo listed in \$STACHE_REPOS that is not
-   clone --all [<file>] already present (\$STACHE_REPOS is kept current
-   clone -a [<file>]    automatically). Equivalent forms; with 'clone',
-                        --all/-a must come first, before any <url> or -b.
+   bootstrap [<file>]   Clone every repo listed in \$STACHE_REPOS (populate it
+   clone --all [<file>] with 'add') that is not already present. Equivalent
+   clone -a [<file>]    forms; with 'clone', --all/-a must come first, before
+                        any <url> or -b.
    rename <repo> \\
           <newname>     Rename repository
    run <repo> \\
@@ -373,25 +376,65 @@ config() {
 	STACHE_COMMAND_RETURN_CODE=$?
 }
 
-write_repos_file() {
-	# Regenerate $STACHE_REPOS ("<name> <url> <branch>" per repo with an
-	# 'origin' remote). Called automatically after init/clone/delete/rename/
-	# upgrade/bootstrap. Only rewrites the file if its content changed.
-	local tmp
-	tmp=$(mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX") || return 0
-	echo "# stache repos -- managed automatically; fields: <name> <url> <branch>" > "$tmp"
-	for STACHE_REPO_NAME in $(list); do
-		GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR STACHE_REPO_NAME
-		url=$(@GIT@ config --get remote.origin.url 2> /dev/null) || continue
-		[ -n "$url" ] || continue
-		branch=$(@GIT@ symbolic-ref --quiet --short HEAD 2> /dev/null) || branch=
-		printf '%s %s %s\n' "$STACHE_REPO_NAME" "$url" "$branch" >> "$tmp"
-	done
-	if diff -N "$tmp" "$STACHE_REPOS" > /dev/null 2>&1; then
-		rm -f "$tmp"
-	else
-		mv -f "$tmp" "$STACHE_REPOS" 2> /dev/null || rm -f "$tmp"
-	fi
+repos_has() {
+	# True if $STACHE_REPOS has a non-comment line for repo name $1.
+	local _n _rest
+	[ -r "$STACHE_REPOS" ] || return 1
+	while read -r _n _rest; do
+		case "$_n" in ''|\#*) continue;; esac
+		[ "x$_n" = "x$1" ] && return 0
+	done < "$STACHE_REPOS"
+	return 1
+}
+
+repos_line() {
+	# Print "<name> <url> <branch>" for repo $1; return 1 if it has no origin URL.
+	local url branch
+	GIT_DIR=$STACHE_REPO_D/$1.stache/$1.git; export GIT_DIR
+	url=$(@GIT@ config --get remote.origin.url 2> /dev/null) || return 1
+	[ -n "$url" ] || return 1
+	branch=$(@GIT@ symbolic-ref --quiet --short HEAD 2> /dev/null) || branch=
+	printf '%s %s %s\n' "$1" "$url" "$branch"
+}
+
+repos_append() {
+	# Append "$1" (a repos_line string) to $STACHE_REPOS, creating it with a
+	# header if needed.
+	[ -e "$STACHE_REPOS" ] || echo "# stache repos -- fields: <name> <url> <branch>" > "$STACHE_REPOS" ||
+		fatal "add: could not create '$STACHE_REPOS'" 50
+	printf '%s\n' "$1" >> "$STACHE_REPOS" || fatal "add: could not write '$STACHE_REPOS'" 50
+}
+
+add() {
+	shift  # drop the "add" command word
+	case ${1:-} in
+		--all|-a)
+			local n line
+			n=0
+			for STACHE_REPO_NAME in $(list); do
+				repos_has "$STACHE_REPO_NAME" && continue
+				line=$(repos_line "$STACHE_REPO_NAME") || continue
+				repos_append "$line"
+				info "added '$STACHE_REPO_NAME'"
+				n=$((n + 1))
+			done
+			info "$n repo(s) appended to '$STACHE_REPOS'"
+			;;
+		'')
+			fatal "add: specify a repository name, or --all / -a" 1
+			;;
+		*)
+			local line
+			[ -d "$STACHE_REPO_D/$1.stache/$1.git" ] || fatal "add: no such repository: '$1'" 12
+			if repos_has "$1"; then
+				info "'$1' is already in '$STACHE_REPOS'"
+				return 0
+			fi
+			line=$(repos_line "$1") || fatal "add: '$1' has no 'origin' remote" 1
+			repos_append "$line"
+			info "added '$1' to '$STACHE_REPOS'"
+			;;
+	esac
 }
 
 bootstrap() {
@@ -800,7 +843,8 @@ elif [ x"$STACHE_COMMAND" = x'delete' ]           ||
 elif [ x"$STACHE_COMMAND" = x'foreach' ]; then
 	[ -z "$2" ] && fatal "$STACHE_COMMAND: please specify a command" 1
 	shift 1
-elif [ x"$STACHE_COMMAND" = x'commit' ] ||
+elif [ x"$STACHE_COMMAND" = x'add' ] ||
+	[ x"$STACHE_COMMAND" = x'commit' ] ||
 	[ x"$STACHE_COMMAND" = x'config' ] ||
 	[ x"$STACHE_COMMAND" = x'list'   ] ||
 	[ x"$STACHE_COMMAND" = x'list-tracked' ] ||
@@ -881,12 +925,6 @@ done
 hook pre-command
 $STACHE_COMMAND "$@"
 hook post-command
-
-# Keep $STACHE_REPOS current after any command that can change the repo set
-# or a repo's remote. Regenerated in place; only rewritten if it changed.
-case $STACHE_COMMAND in
-	init|clone|delete|rename|upgrade|bootstrap) write_repos_file ;;
-esac
 
 verbose "$STACHE_COMMAND end, exiting"
 exit $STACHE_COMMAND_RETURN_CODE

@@ -24,12 +24,12 @@
 	  (and per-repo <repo>.stache/config -> <repo>.stache/.stacherc); system
 	  file /etc/vcsh/config -> /etc/stache/stacherc
 	* Source script renamed vcsh.in -> stache.in; man page vcsh.1 -> stache.1
-	* $XDG_CONFIG_HOME/stache/stache.repos ("<name> <url> <branch>" per repo
-	  with an origin remote) is created and kept current AUTOMATICALLY after
-	  init/clone/delete/rename/upgrade/bootstrap. There is no `manifest`
-	  command. `stache bootstrap` -- equivalently `stache clone --all` or
-	  `stache clone -a` -- clones everything listed there that is not already
-	  present. Built-in, no myrepos/gita.
+	* $XDG_CONFIG_HOME/stache/stache.repos ("<name> <url> <branch>" per repo)
+	  is populated manually with `stache add <repo>` / `stache add --all`;
+	  stache never writes it on its own (delete/rename leave stale lines).
+	  There is no `manifest` command. `stache bootstrap` -- equivalently
+	  `stache clone --all` / `-a` -- clones everything listed there that is
+	  not already present. Built-in, no myrepos/gita.
 	* New: `stache config <git config args>` edits a shared git config file
 	  ($STACHE_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos

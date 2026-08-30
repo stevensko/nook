@@ -110,14 +110,18 @@ symbolic links in `$HOME`; it puts the actual files right into `$HOME`.
 As `stache` allows you to put an arbitrary number of distinct repositories into
 your `$HOME`, you will end up with a lot of repositories very quickly.
 
-`stache` has a built-in bootstrap. It keeps
-`~/.config/stache/stache.repos` -- one line per repo, `<name> <url> <branch>`,
-for every repo with an `origin` remote -- current **automatically** (after
-init/clone/delete/rename/upgrade). Track that file in one of your repos; on a
-new machine, clone that repo and run `stache bootstrap`, and every other repo in
-the list is cloned for you. `stache clone --all` (or `-a`) does the same thing --
-with `clone`, the `--all` / `-a` must be the first word, before any URL or `-b`.
+`stache` has a built-in bootstrap. You populate
+`~/.config/stache/stache.repos` -- one line per repo, `<name> <url> <branch>` --
+with **`stache add <repo>`** (or `stache add --all` to append every local repo
+that has a remote and isn't listed yet). Nothing else writes that file; `delete`
+and `rename` leave stale lines for you to edit out.
 
+Track it in one of your repos. On a new machine, clone that repo and run
+`stache bootstrap` (or `stache clone --all` / `-a` -- with `clone`, `--all`/`-a`
+must be the first word, before any URL or `-b`), and every other repo in the
+list is cloned for you.
+
+    stache add --all
     stache dotfiles add -f ~/.config/stache/stache.repos
     stache dotfiles commit -m 'track repo list' && stache dotfiles push
 

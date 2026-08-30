@@ -102,6 +102,7 @@ function _stache () {
 	: ${STACHE_REPO_D:="${XDG_CONFIG_HOME:-"$HOME/.config"}/stache"}
 
 	subcommands=(
+		"add:add a repo (or --all) to stache.repos"
 		"clone:clone an existing repository"
 		"commit:commit in all repositories"
 		"delete:delete an existing repository"
