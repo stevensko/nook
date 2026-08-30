@@ -1,11 +1,17 @@
 2026-08-29  stevensko <skovraneksteven@gmail.com>
 
-	* Fork of vcsh, rebranded as "Houseroom Dotfiles Manager"
+	* Fork of vcsh, rebranded as "Homerooms Dotfiles Manager"
 	* Command renamed vcsh -> room
-	* Environment variables renamed VCSH_* -> HOUSEROOM_*
+	* Environment variables renamed VCSH_* -> HOMEROOMS_*
 	* Config directory moved $XDG_CONFIG_HOME/vcsh -> $XDG_CONFIG_HOME/house
 	* Repository directory renamed repo.d -> rooms
-	* Source script renamed vcsh.in -> houseroom.in; man page vcsh.1 -> room.1
+	* Source script renamed vcsh.in -> homerooms.in; man page vcsh.1 -> room.1
+	* Per-repo config moved from house/config.d/<repo> to
+	  house/rooms/<repo>.room; delete/rename now keep the .room file in sync
+	* New: `room manifest [<file>]` writes name/url/branch for every repo
+	  with an origin remote (default $HOMEROOMS_MANIFEST, '-' for stdout)
+	* New: `room restore [<file>]` clones every repo listed in a manifest
+	  that is not already present -- built-in bootstrap, no myrepos/gita
 	* delete: use `git ls-files -z | xargs -0` so paths with whitespace,
 	  glob characters, or non-ASCII bytes are removed correctly
 	* Add doc/sample_hooks/post-init-setup-gita (gita integration)
@@ -74,7 +80,7 @@
 	* Post source builds as part of automated release process
 	* Switch to versioning scheme to semver
 	* Replace Travis test runner with GitHub Actions
-	* Make HOUSEROOM_* variables available to hooks
+	* Make HOMEROOMS_* variables available to hooks
 	* More carefully handle shell quoting
 	* Improve handling of non-default remote names and branches
 	* Fix per-repo pre/post hook handling
@@ -225,7 +231,7 @@
 2013-07-23  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130723
-	* Support $HOUSEROOM_GITIGNORE == none
+	* Support $HOMEROOMS_GITIGNORE == none
 	* Documentation improvements,
 	* Improved zsh completion
 	* Add support for `room pull`

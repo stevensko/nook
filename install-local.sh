@@ -38,7 +38,7 @@ if [ "$uninstall" = 1 ]; then
 fi
 
 cd "$src_dir"
-[ -f houseroom.in ] || { echo "error: houseroom.in not found in $src_dir" >&2; exit 1; }
+[ -f homerooms.in ] || { echo "error: homerooms.in not found in $src_dir" >&2; exit 1; }
 
 ver=$(./build-aux/git-version-gen .tarball-version 2>/dev/null || echo unknown)
 
@@ -52,7 +52,7 @@ sed -e 's|@SHELL@|/bin/sh|g' \
     -e 's|@TRANSFORMED_PACKAGE_NAME@|room|g' \
     -e "s|@VERSION@|$ver|g" \
     -e 's|@DEPLOYMENT@|-standalone|g' \
-    houseroom.in > "$target"
+    homerooms.in > "$target"
 chmod +x "$target"
 
 printf 'installed: %s\n' "$target"

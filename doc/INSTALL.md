@@ -2,8 +2,8 @@
 
 Many distributions have packages ready to go.
 If yours doesn’t, you can install [from source](#installing-from-source).
-Houseroom can also be deployed as a [standalone script](#standalone-script).
-If you package Houseroom for a distro please let us know.
+Homerooms can also be deployed as a [standalone script](#standalone-script).
+If you package Homerooms for a distro please let us know.
 
 ## Arch Linux
 
@@ -80,7 +80,7 @@ $ pkg install room
 # Installing from Source
 
 First you’ll want a copy of the source code.
-The easiest to use place to get this is the [latest release](https://github.com/stevensko/houseroom/releases/latest) posted on GitHub.
+The easiest to use place to get this is the [latest release](https://github.com/stevensko/homerooms/releases/latest) posted on GitHub.
 The souree distribution will have a name such as `room-2.0.0.tar.zst`.
 Note under each release GitHub also show two “Source code” links that will download a snapshot of the repository; this is **not** the file you want (unless you want to jump through extra hoops).
 The official source release packages with the release version in the file names are the ones you want.
@@ -125,25 +125,25 @@ This will install to `~/bin/room`; add `~/bin` to your path to use.
 
 # Standalone Script
 
-A special variant of Houseroom can be deployed as a single POSIX shell script with no configure/build step.
+A special variant of Homerooms can be deployed as a single POSIX shell script with no configure/build step.
 Deploying it this way leaves you without any man page or shell completion functions (or possibly with mismatched resources installed by your package manager for a different room version).
 This variant is also dependent or your `$PATH` to have proper versions of dependencies such as `git`.
 If your user space has different tools by default than your system beware!
 
-The standalone variant can be downloaded from any recent entry in [releases](https://github.com/stevensko/houseroom/releases).
+The standalone variant can be downloaded from any recent entry in [releases](https://github.com/stevensko/homerooms/releases).
 
 This method is suited for installation to a user space where you don’t have control over the system packages, e.g.:
 
 ```console
 $ mkdir -p ~/bin
-$ curl -fsLS https://github.com/stevensko/houseroom/releases/latest/download/room-standalone.sh -o ~/bin/room
+$ curl -fsLS https://github.com/stevensko/homerooms/releases/latest/download/room-standalone.sh -o ~/bin/room
 $ chmod u+x ~/bin/room
 ```
 
 It could also be used to directly bootstrap a dotfiles repository with something like this:
 
 ```console
-$ sh <(curl -fsLS https://github.com/stevensko/houseroom/releases/latest/download/room-standalone.sh) clone <path_to_your_dotfiles_repo> dotfiles
+$ sh <(curl -fsLS https://github.com/stevensko/homerooms/releases/latest/download/room-standalone.sh) clone <path_to_your_dotfiles_repo> dotfiles
 ```
 
 While we are enabling cURL-based workflows on purpose, we still encourage you to avoid them where reasonably possible. If you do use it, please consider using a tagged version that you’ve tested to work for you instead of the “latest” keyword. Note: the URL for tagged releases is in a different order than when using the “latest” keyword, substitute a tag name by changing `latest/download` to `download/v2.0.0`.

@@ -1,4 +1,4 @@
-Houseroom Dotfiles Manager - multiple Git repositories in $HOME
+Homerooms Dotfiles Manager - multiple Git repositories in $HOME
 
 A fork of vcsh (https://github.com/RichiH/vcsh). The command is `room`; data lives
 under `~/.config/house/` (repositories in `~/.config/house/rooms/`).

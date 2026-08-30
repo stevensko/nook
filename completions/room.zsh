@@ -98,8 +98,8 @@ function _room () {
 	local state roomcommand
 	local -a args subcommands
 
-	local HOUSEROOM_REPO_D
-	: ${HOUSEROOM_REPO_D:="${XDG_CONFIG_HOME:-"$HOME/.config"}/house/rooms"}
+	local HOMEROOMS_REPO_D
+	: ${HOMEROOMS_REPO_D:="${XDG_CONFIG_HOME:-"$HOME/.config"}/house/rooms"}
 
 	subcommands=(
 		"clone:clone an existing repository"
@@ -142,7 +142,7 @@ function _room () {
 				# There is no handler function, so this is probably the name
 				# of a repository. Act accordingly.
 				# FIXME: this may want to use '_dispatch room git'
-				GIT_DIR=$HOUSEROOM_REPO_D/$words[1].git _dispatch git git && ret=0
+				GIT_DIR=$HOMEROOMS_REPO_D/$words[1].git _dispatch git git && ret=0
 			else
 				curcontext="${curcontext%:*:*}:room-${roomcommand}:"
 				_call_function ret _room-${roomcommand} && (( ret ))

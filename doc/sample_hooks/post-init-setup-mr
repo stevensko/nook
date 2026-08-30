@@ -2,9 +2,9 @@
 
 # This sets up your new repos with mr.
 
-cat > $HOME/.config/mr/available.d/$HOUSEROOM_DIRECTORY.room << EOF
-[\$HOME/.config/house/rooms/$HOUSEROOM_DIRECTORY.git]
-checkout = room clone $GITURL/dotfiles/$HOUSEROOM_DIRECTORY.git
+cat > $HOME/.config/mr/available.d/$HOMEROOMS_DIRECTORY.room << EOF
+[\$HOME/.config/house/rooms/$HOMEROOMS_DIRECTORY.git]
+checkout = room clone $GITURL/dotfiles/$HOMEROOMS_DIRECTORY.git
 EOF
 
-ln -s $HOME/.config/mr/available.d/$HOUSEROOM_DIRECTORY.room $HOME/.config/mr/config.d/
+ln -s $HOME/.config/mr/available.d/$HOMEROOMS_DIRECTORY.room $HOME/.config/mr/config.d/

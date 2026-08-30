@@ -53,12 +53,12 @@ command -v gita >/dev/null 2>&1 || {
 }
 
 : "${XDG_CONFIG_HOME:=$HOME/.config}"
-: "${HOUSEROOM_REPO_D:=$XDG_CONFIG_HOME/house/rooms}"
+: "${HOMEROOMS_REPO_D:=$XDG_CONFIG_HOME/house/rooms}"
 : "${GITA_GROUP=room}"
 : "${GITA_HIDE_UNTRACKED=yes}"
 
-git_dir=${GIT_DIR:-$HOUSEROOM_REPO_D/$HOUSEROOM_REPO_NAME.git}
-stub_dir=$XDG_CONFIG_HOME/house/gita.d/$HOUSEROOM_REPO_NAME
+git_dir=${GIT_DIR:-$HOMEROOMS_REPO_D/$HOMEROOMS_REPO_NAME.git}
+stub_dir=$XDG_CONFIG_HOME/house/gita.d/$HOMEROOMS_REPO_NAME
 
 mkdir -p "$stub_dir"
 printf 'gitdir: %s\n' "$git_dir" > "$stub_dir/.git"

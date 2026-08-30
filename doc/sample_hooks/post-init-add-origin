@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# This adds a remote origin at $GITURL/dotfiles/$HOUSEROOM_DIRECTORY which
+# This adds a remote origin at $GITURL/dotfiles/$HOMEROOMS_DIRECTORY which
 # is helpful for creating new dotfile repositories that you plan to
 # store on (e.g.) Github.
 #
@@ -15,4 +15,4 @@ if [ -z $GITURL ]; then
     exit 1;
 fi
 
-room $HOUSEROOM_DIRECTORY remote add origin $GITURL/dotfiles/$HOUSEROOM_DIRECTORY
+room $HOMEROOMS_DIRECTORY remote add origin $GITURL/dotfiles/$HOMEROOMS_DIRECTORY

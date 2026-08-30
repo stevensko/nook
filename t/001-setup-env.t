@@ -9,7 +9,7 @@ use Test::Most;
 system ("mkdir -p t/etc");
 ok !$?;
 
-system ("mkdir -p t/etc/.houseroom_home");
+system ("mkdir -p t/etc/.homerooms_home");
 ok !$?;
 
 chdir 't/etc/' or die $!;
@@ -17,7 +17,7 @@ chdir 't/etc/' or die $!;
 system ("ln -s '../../room'");
 ok !$?;
 
-$ENV{'HOME'} = abs_path ('.houseroom_home');
+$ENV{'HOME'} = abs_path ('.homerooms_home');
 $ENV{'XDG_CONFIG_HOME'} = $ENV{'HOME'}.'/.config';
 
 system ("git config --global init.defaultBranch test");

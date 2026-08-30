@@ -1,6 +1,6 @@
-Houseroom Dotfiles Manager - multiple Git repositories in $HOME
+Homerooms Dotfiles Manager - multiple Git repositories in $HOME
 
-[![Build Status](https://github.com/stevensko/houseroom/actions/workflows/build.yml/badge.svg)](https://github.com/stevensko/houseroom/actions/workflows/build.yml)
+[![Build Status](https://github.com/stevensko/homerooms/actions/workflows/build.yml/badge.svg)](https://github.com/stevensko/homerooms/actions/workflows/build.yml)
 
 > A fork of [vcsh](https://github.com/RichiH/vcsh). The command is `room`; data lives under `~/.config/house/` (repositories in `~/.config/house/rooms/`).
 
@@ -77,10 +77,10 @@ community around the general idea of version controlling your (digital) life.
 
 * Mailing list: [http://lists.madduck.net/listinfo/vcs-home][vcs-home-list]
 
-* Pull requests or issues on [https://github.com/stevensko/houseroom][room]
+* Pull requests or issues on [https://github.com/stevensko/homerooms][room]
 
 
 [myrepos]: http://myrepos.branchable.com/
 [talks]: https://github.com/RichiH/talks
-[room]: https://github.com/stevensko/houseroom
+[room]: https://github.com/stevensko/homerooms
 [vcs-home-list]: http://lists.madduck.net/listinfo/vcs-home

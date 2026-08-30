@@ -9,7 +9,7 @@ use Test::Most;
 
 chdir 't/etc/' or die $!;
 
-$ENV{'HOME'} = abs_path ('.houseroom_home');
+$ENV{'HOME'} = abs_path ('.homerooms_home');
 $ENV{'XDG_CONFIG_HOME'} = $ENV{'HOME'}.'/.config';
 
 system ("echo 'Yes, do as I say' | ./room delete test1");
