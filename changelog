@@ -37,8 +37,11 @@
 	  only when `nook bootstrap --include=` names one of its tags, so a bare
 	  `nook bootstrap` clones the untagged rows only. `--exclude=` always
 	  wins; matching is case-insensitive, and a leading "@" on tags passed
-	  to --include/--exclude is optional (matching `nook add`). A missing
-	  trailing newline on the last row is tolerated.
+	  to --include/--exclude is optional (matching `nook add`). A bare
+	  "@tag" / "@a,b" positional is shorthand for --include; it works for
+	  `nook bootstrap` and `nook clone` alike (`nook clone @laptop`), and
+	  repeated include/exclude/@tag args accumulate. A missing trailing
+	  newline on the last row is tolerated.
 	* New: `nook config <git config args>` edits a shared git config file
 	  ($NOOK_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos

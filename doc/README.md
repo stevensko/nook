@@ -119,14 +119,16 @@ repo that has a remote and isn't listed yet). Nothing else writes that file;
 Tags are an optional comma-separated list written after the branch, always
 stored with a leading `@` and a trailing `,` (`nook add nvim laptop,work` ->
 `nvim <url> main @laptop,work,`). A tagged row is **opt-in**: it clones only
-when one of its tags is passed via `nook bootstrap --include=laptop`. A bare
-`nook bootstrap` clones the untagged rows only. `--exclude` always wins. The
-`@` is optional wherever you type a tag -- on `add` and on
-`--include`/`--exclude` -- it's just the column delimiter in the file.
+when one of its tags is passed via `nook bootstrap --include=laptop` -- or the
+shorthand `nook bootstrap @laptop` (a bare `@tag` / `@a,b` positional means
+`--include`). A bare `nook bootstrap` clones the untagged rows only;
+`--exclude` always wins. The `@` is optional wherever you type a tag -- on
+`add`, `--include`/`--exclude`, and the `@tag` positional it's just the
+column delimiter in the file.
 
 Track the file in one of your repos. On a new machine, clone that repo and run
-`nook bootstrap` (or `nook clone --all` / `-a` -- with `clone`, `--all`/`-a`
-must be the first word), and every other repo in the list is cloned for you.
+`nook bootstrap` (or `nook clone --all` / `-a` / `@<tags>` -- with `clone`,
+that word must come first), and every other repo in the list is cloned for you.
 
     nook add --all
     nook dotfiles add -f ~/.config/nook/.repos
@@ -196,7 +198,8 @@ Day to day:
     # install nook, then:
     nook clone <url-of-repo-holding-.repos> dotfiles
     nook bootstrap                                   # clone the untagged rows
-    nook bootstrap --include=laptop --exclude=work   # ...plus a tagged subset
+    nook bootstrap @laptop                           # ...plus the @laptop rows
+    nook bootstrap --include=laptop --exclude=work   # ...long form, with excludes
 
 You curate `.repos` yourself with `nook add`; nothing writes it automatically.
 

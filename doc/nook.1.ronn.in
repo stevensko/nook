@@ -11,9 +11,9 @@ nook(1) - Version Control System for $HOME - multiple Git repositories in $HOME
 
 `nook` clone [-b <branch>] <url> [<repo>]
 
-`nook` bootstrap [--include=<tags>] [--exclude=<tags>] [<file>]
+`nook` bootstrap [--include=<tags>] [--exclude=<tags>] [@<tags>] [<file>]
 
-`nook` clone --all|-a [--include=<tags>] [--exclude=<tags>] [<file>]
+`nook` clone --all|-a|@<tags> [--include=<tags>] [--exclude=<tags>] [<file>]
 
 `nook` config [<git config arguments>]
 
@@ -116,11 +116,12 @@ an interactive user.
   You can also use a single git repository with several branches. Use the `-b`
   option to specify a branch at clone time, the default is `master`.
 
-  `--all` (or `-a`): ignore <url>/<repo> and instead bootstrap from
-  <$NOOK_REPOS> (untagged rows, plus any `--include` subset). Same as
-  `nook bootstrap`; see that command for the tag rules.
-  It must be the first word after `clone` (`nook clone --all [<file>]`); it
-  is not a normal option and cannot be combined with `-b` or a <url>.
+  `--all` (or `-a`, or a bare `@<tags>`): ignore <url>/<repo> and instead
+  bootstrap from <$NOOK_REPOS> (untagged rows, plus any tagged subset --
+  `nook clone @laptop` == `nook bootstrap --include=laptop`). See `bootstrap`
+  for the tag rules. This word must come first after `clone`
+  (`nook clone --all [<file>]`, `nook clone @laptop`); it is not a normal
+  option and cannot be combined with `-b` or a <url>.
 
 * commit:
   Commit in all repositories
@@ -197,11 +198,16 @@ an interactive user.
   `--include=<tags>`: comma-separated. Also clone tagged rows that carry one
   of these tags.
 
+  `@<tags>`: a bare positional starting with `@` (e.g. `nook bootstrap @laptop`
+  or `@laptop,work`) is shorthand for `--include=<tags>`. Repeated
+  `--include` / `--exclude` / `@<tags>` arguments accumulate.
+
   `--exclude=<tags>`: comma-separated. Skip any row that has one of these tags.
   Exclude wins over include. Matching is case-insensitive, and a leading `@`
   on any tag you pass is optional (`--include=@laptop` == `--include=laptop`).
 
-  `<file>`: read from this path instead of <$NOOK_REPOS>.
+  `<file>`: read from this path instead of <$NOOK_REPOS>. A file argument is
+  told apart from `@<tags>` by the leading `@`.
 
 * rename:
   Rename a repository.

@@ -146,11 +146,14 @@ help() {
    bootstrap \\
      [--include=<tags>] \\
      [--exclude=<tags>] \\
+     [@<tags>] \\
      [<file>]           Clone every repo in \$NOOK_REPOS (populate it with
-                        'add') not already present. With --include, only rows
-                        whose 4th-column tags match (untagged rows always
-                        match); --exclude drops rows with a matching tag.
-                        Also: 'clone --all|-a [same opts]' (--all first).
+                        'add') not already present. With --include (or a bare
+                        '@tag' / '@a,b' positional), only rows whose 4th-column
+                        tags match (untagged rows always match); --exclude
+                        drops rows with a matching tag. A leading '@' on any
+                        tag is optional. Also: 'clone --all|-a [same opts]'
+                        and 'clone @<tags> [same opts]'.
    rename <repo> \\
           <newname>     Rename repository
    run <repo> \\
@@ -480,15 +483,18 @@ bootstrap() {
 	# Clone every repo listed in $NOOK_REPOS that is not already present.
 	# Reached as `nook bootstrap [opts] [<file>]` or
 	# `nook clone --all|-a [opts] [<file>]`.
-	# opts: --include=tag,tag  --exclude=tag,tag
+	# opts: --include=tag,tag  --exclude=tag,tag  @tag[,tag]
+	# A bare "@tag" (or "@a,b") positional is shorthand for --include=tag;
+	# repeated --include/--exclude/@tag args accumulate.
 	shift  # drop the command word
 	local inc exc source_file a
 	inc= exc= source_file=$NOOK_REPOS
 	for a in "$@"; do
 		case $a in
-			--include=*) inc=${a#--include=} ;;
-			--exclude=*) exc=${a#--exclude=} ;;
+			--include=*) inc="${inc:+$inc,}${a#--include=}" ;;
+			--exclude=*) exc="${exc:+$exc,}${a#--exclude=}" ;;
 			--include|--exclude) fatal "bootstrap: use $a=tag,tag" 1 ;;
+			@*) inc="${inc:+$inc,}$a" ;;
 			-*) fatal "bootstrap: unknown option '$a'" 1 ;;
 			*) source_file=$a ;;
 		esac
@@ -837,11 +843,20 @@ case $NOOK_COMMAND in
 	bootstra|bootstr|bootst|boots|boot) NOOK_COMMAND=bootstrap;;
 esac
 
-# `nook clone --all|-a [<file>]` is an alias for `nook bootstrap [<file>]`.
+# `nook clone --all|-a [opts]` and `nook clone @tag[,tag] [opts]` are aliases
+# for `nook bootstrap [opts]`.
 if [ x"$NOOK_COMMAND" = x'clone' ] && { [ x"$2" = 'x--all' ] || [ x"$2" = 'x-a' ]; }; then
 	NOOK_COMMAND=bootstrap
 	shift 2                 # drop "clone" and "--all"/"-a"
 	set -- bootstrap "$@"   # leaves $2 as the optional <file>
+elif [ x"$NOOK_COMMAND" = x'clone' ]; then
+	case ${2:-} in
+		@*)
+			NOOK_COMMAND=bootstrap
+			shift              # drop "clone"; keep "@tag" and any opts
+			set -- bootstrap "$@"
+			;;
+	esac
 fi
 
 if [ x"$NOOK_COMMAND" = x'clone' ]; then
