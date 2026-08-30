@@ -24,16 +24,18 @@
 	  (and per-repo <repo>.nook/config -> <repo>.nook/.nookrc); system
 	  file /etc/vcsh/config -> /etc/nook/nookrc
 	* Source script renamed vcsh.in -> nook.in; man page vcsh.1 -> nook.1
-	* $XDG_CONFIG_HOME/nook/.repos ("<name> <url> <branch> [@tags]" per repo)
+	* $XDG_CONFIG_HOME/nook/.repos ("<name> <url> <branch> @tags," per repo)
 	  is populated manually with `nook add <repo> [<tags>]` / `nook add --all`;
 	  nook never writes it on its own (delete/rename leave stale lines).
 	  There is no `manifest` command. `nook bootstrap` -- equivalently
 	  `nook clone --all` / `-a` -- clones everything listed there that is
 	  not already present. Built-in, no myrepos/gita.
-	* .repos rows take an optional tag field written as "@tag,tag" after the
-	  branch. `nook bootstrap --include=a,b` / `--exclude=x,y` filter on it
-	  (untagged rows always match; --exclude wins). `nook add <repo> a,b`
-	  writes it.
+	* .repos rows take an optional tag field after the branch, always stored
+	  with a leading "@" and a trailing "," (`nook add <repo> a,b` writes
+	  "@a,b,"; a leading "@" or trailing "," you pass is absorbed).
+	  `nook bootstrap --include=a,b` / `--exclude=x,y` filter on it
+	  (untagged rows always match; --exclude wins). A missing trailing
+	  newline on the last row is tolerated.
 	* New: `nook config <git config args>` edits a shared git config file
 	  ($NOOK_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos

@@ -69,7 +69,7 @@ in a different directory from <$GIT_WORK_TREE> which is pointed to <$HOME>.
 The use of symlinks is not needed in this setup, making for a cleaner setup.
 
 To set up a new machine, `nook` has a built-in bootstrap. You populate
-<$NOOK_REPOS> ("<name> <url> <branch> [tags]" per repo) with `nook add
+<$NOOK_REPOS> ("<name> <url> <branch> @tags," per repo) with `nook add
 <repo> [<tags>]` or `nook add --all`, and track that file in one of your
 repos. On the new machine `nook bootstrap` (also `nook clone --all`)
 clones everything listed there that is not already present. Give a repo an
@@ -95,12 +95,14 @@ an interactive user.
 ## COMMANDS
 
 * add:
-  Append a repository to <$NOOK_REPOS> ("<name> <url> <branch> [tags]"). This
+  Append a repository to <$NOOK_REPOS> ("<name> <url> <branch> @tags,"). This
   is the only thing that writes that file.
 
   `<repo> [<tags>]`: add that repo, with an optional comma-separated tag list
-  as a 4th column. The repo must exist locally and have an <origin> remote.
-  Already-listed repos are left alone.
+  as a 4th column. Tags are stored with a leading `@` and a trailing `,`
+  (`nook add nvim laptop,work` writes `nvim <url> main @laptop,work,`); a
+  leading `@` or trailing `,` you pass in is absorbed. The repo must exist
+  locally and have an <origin> remote. Already-listed repos are left alone.
 
   `--all` (or `-a`): add every local repo with an <origin> remote that is not
   already listed (no tags).
@@ -332,7 +334,7 @@ Less interesting knobs you could turn:
 
 * <$NOOK_REPOS>:
   The repo list you build with `nook add` and `bootstrap` reads
-  ("<name> <url> <branch>" per repo). `nook` never writes it on its own --
+  ("<name> <url> <branch> @tags," per repo). `nook` never writes it on its own --
   `delete` and `rename` leave stale lines for you to edit out.
 
   Defaults to <$XDG_CONFIG_HOME/nook/.repos>.

@@ -393,20 +393,23 @@ repos_has() {
 }
 
 repos_line() {
-	# Print "<name> <url> <branch> [@tags]" for repo $1 ($2 = optional tag list).
+	# Print "<name> <url> <branch> @tags," for repo $1 ($2 = optional tag list).
+	# Tags are always emitted with a leading '@' and a trailing ',' so the
+	# column is unambiguous; a leading '@' or trailing ',' in $2 is absorbed.
 	# Return 1 if the repo has no origin URL.
-	local url branch
+	local url branch tags
 	GIT_DIR=$NOOK_REPO_D/$1.nook/$1.git; export GIT_DIR
 	url=$(@GIT@ config --get remote.origin.url 2> /dev/null) || return 1
 	[ -n "$url" ] || return 1
 	branch=$(@GIT@ symbolic-ref --quiet --short HEAD 2> /dev/null) || branch=
-	printf '%s %s %s%s\n' "$1" "$url" "$branch" "${2:+ @$2}"
+	tags=${2#@}; tags=${tags%,}
+	printf '%s %s %s%s\n' "$1" "$url" "$branch" "${tags:+ @$tags,}"
 }
 
 repos_append() {
 	# Append "$1" (a repos_line string) to $NOOK_REPOS, creating it with a
 	# header if needed.
-	[ -e "$NOOK_REPOS" ] || echo "# nook repos -- <name> <url> <branch> [@tag,tag]   (tags optional)" > "$NOOK_REPOS" ||
+	[ -e "$NOOK_REPOS" ] || echo "# nook repos -- <name> <url> <branch> @tags,   (tags optional)" > "$NOOK_REPOS" ||
 		fatal "add: could not create '$NOOK_REPOS'" 50
 	printf '%s\n' "$1" >> "$NOOK_REPOS" || fatal "add: could not write '$NOOK_REPOS'" 50
 }
@@ -430,7 +433,7 @@ add() {
 			fatal "add: specify a repository name, or --all / -a" 1
 			;;
 		*)
-			local line
+			local line tags
 			[ -d "$NOOK_REPO_D/$1.nook/$1.git" ] || fatal "add: no such repository: '$1'" 12
 			if repos_has "$1"; then
 				info "'$1' is already in '$NOOK_REPOS'"
@@ -438,7 +441,8 @@ add() {
 			fi
 			line=$(repos_line "$1" "${2:-}") || fatal "add: '$1' has no 'origin' remote" 1
 			repos_append "$line"
-			info "added '$1' to '$NOOK_REPOS'${2:+ (tags: $2)}"
+			tags=${2#@}; tags=${tags%,}
+			info "added '$1' to '$NOOK_REPOS'${tags:+ (tags: @$tags,)}"
 			;;
 	esac
 }

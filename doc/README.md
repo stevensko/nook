@@ -111,15 +111,15 @@ As `nook` allows you to put an arbitrary number of distinct repositories into
 your `$HOME`, you will end up with a lot of repositories very quickly.
 
 `nook` has a built-in bootstrap. You populate
-`~/.config/nook/.repos` -- one line per repo, `<name> <url> <branch> [@tags]` --
+`~/.config/nook/.repos` -- one line per repo, `<name> <url> <branch> @tags,` --
 with **`nook add <repo> [<tags>]`** (or `nook add --all` to append every local
 repo that has a remote and isn't listed yet). Nothing else writes that file;
 `delete` and `rename` leave stale lines for you to edit out.
 
-Tags are an optional comma-separated list written after the branch with an `@`
-(`nook add nvim laptop,work` -> `nvim <url> main @laptop,work`). Pick a subset
-per machine with `nook bootstrap --include=laptop --exclude=work`; untagged
-rows always clone.
+Tags are an optional comma-separated list written after the branch, always
+stored with a leading `@` and a trailing `,` (`nook add nvim laptop,work` ->
+`nvim <url> main @laptop,work,`). Pick a subset per machine with
+`nook bootstrap --include=laptop --exclude=work`; untagged rows always clone.
 
 Track the file in one of your repos. On a new machine, clone that repo and run
 `nook bootstrap` (or `nook clone --all` / `-a` -- with `clone`, `--all`/`-a`
