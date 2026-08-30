@@ -80,7 +80,6 @@ community around the general idea of version controlling your (digital) life.
 * Pull requests or issues on [https://github.com/stevensko/homerooms][room]
 
 
-[myrepos]: http://myrepos.branchable.com/
 [talks]: https://github.com/RichiH/talks
 [room]: https://github.com/stevensko/homerooms
 [vcs-home-list]: http://lists.madduck.net/listinfo/vcs-home

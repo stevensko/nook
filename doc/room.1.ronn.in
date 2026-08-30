@@ -62,15 +62,13 @@ in a different directory from <$GIT_WORK_TREE> which is pointed to <$HOME>.
 
 The use of symlinks is not needed in this setup, making for a cleaner setup.
 
-`room` was designed with `mr`(1) in mind so you might want to install it alongside
-room. That being said, you can easily use `room` without `mr` if you prefer.
-
-A sample configuration for `room` and `mr` can be found at
-*https://github.com/RichiH/vcsh_mr_template* and used with `room clone
-https://github.com/RichiH/vcsh_mr_template mr`.
+To set up a new machine, `room` has a built-in bootstrap: `room manifest`
+records every repository (name, remote URL, branch) to a file you can track in
+one of your repos, and `room restore` clones them all on the other end. See the
+`manifest` and `restore` commands below.
 
 Please note that you can always use a path instead of a name for <repo>.
-This is needed to support mr and other scripts properly and of no concern to
+This is needed to support external scripts properly and of no concern to
 an interactive user.
 
 ## OPTIONS
@@ -174,7 +172,7 @@ an interactive user.
   it accepts <path>, as well. Anything that has a slash in it will be assumed to
   be a path. `room run` will then operate on this directory instead of the one
   normally generated from the repository's name.
-  This is needed to support mr and other scripts properly and of no concern to
+  This is needed to support external scripts properly and of no concern to
   an interactive user.
 
 * status:
@@ -387,4 +385,4 @@ https://github.com/RichiH/vcsh
 
 ## SEE ALSO
 
-`git`(1), `mr`(1)
+`git`(1)

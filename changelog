@@ -16,7 +16,8 @@
 	  that is not already present -- built-in bootstrap, no myrepos/gita
 	* delete: use `git ls-files -z | xargs -0` so paths with whitespace,
 	  glob characters, or non-ASCII bytes are removed correctly
-	* Add doc/sample_hooks/post-init-setup-gita (gita integration)
+	* Drop the myrepos (post-init-setup-mr) sample hook; bootstrap is
+	  now built in via manifest/restore
 	* Add install-local.sh for a no-autotools user-space install
 
 2024-04-08  Caleb Maclennan <caleb@alerque.com>
