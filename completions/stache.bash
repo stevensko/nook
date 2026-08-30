@@ -56,13 +56,13 @@ _room_git_command () {
 	fi
 }
 
-_room () {
+_stache () {
 	local cur prev words OPTS
 	_init_completion -n = || return
 
 	local r reponames
 	local -A repos
-	mapfile -t reponames < <(command room list)
+	mapfile -t reponames < <(command stache list)
 	for r in "${reponames[@]}"; do repos["$r"]="$r"; done
 	unset r reponames
 	local cmds
@@ -136,10 +136,10 @@ _room () {
 
 	# git command on repository
 	if [[ -n "${repos[$cmd]}" ]]; then
-		: "${HOMEROOMS_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/homerooms}"
-		GIT_DIR="${HOMEROOMS_REPO_D}/${cmd}.git" _room_git_command "$subcword"
+		: "${STACHE_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/stache}"
+		GIT_DIR="${STACHE_REPO_D}/${cmd}.git" _room_git_command "$subcword"
 	fi
 	return 0
 }
 
-complete -F _room room
+complete -F _stache stache

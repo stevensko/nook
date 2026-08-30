@@ -17,5 +17,5 @@ indent_size = 8
 [*.md]
 trim_trailing_whitespace = false
 
-[{homerooms.in,completions/room.*}]
+[{stache.in,completions/stache.*}]
 indent_style = tab

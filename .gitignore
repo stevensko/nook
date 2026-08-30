@@ -1,5 +1,5 @@
-room.1
-doc/room.1.ronn
+stache.1
+doc/stache.1.ronn
 *.patch
 *.swp
 .swp
@@ -12,11 +12,11 @@ aclocal.m4
 autom4te.cache/
 build-aux/install-sh
 build-aux/missing
-completions/_room
-completions/room
+completions/_stache
+completions/stache
 config.log
 config.status
 configure
 aminclude.am
-/room
-room-*
+/stache
+stache-*

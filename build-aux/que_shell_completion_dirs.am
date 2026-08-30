@@ -2,13 +2,13 @@ COMPLETIONS_OUT_DIR = completions
 
 if ENABLE_BASH_COMPLETION
 bashcompletiondir = $(BASH_COMPLETION_DIR)
-nodist_bashcompletion_DATA = $(COMPLETIONS_OUT_DIR)/room
+nodist_bashcompletion_DATA = $(COMPLETIONS_OUT_DIR)/stache
 CLEANFILES += $(nodist_bashcompletion_DATA)
 endif
 
 if ENABLE_ZSH_COMPLETION
 zshcompletiondir = $(ZSH_COMPLETION_DIR)
-nodist_zshcompletion_DATA = $(COMPLETIONS_OUT_DIR)/_room
+nodist_zshcompletion_DATA = $(COMPLETIONS_OUT_DIR)/_stache
 CLEANFILES += $(nodist_zshcompletion_DATA)
 endif
 

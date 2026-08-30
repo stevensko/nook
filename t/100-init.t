@@ -13,19 +13,19 @@ chdir 't/etc/' or die $!;
 $ENV{'HOME'} = abs_path ('.homerooms_home');
 $ENV{'XDG_CONFIG_HOME'} = $ENV{'HOME'}.'/.config';
 
-my $output = `./room status`;
+my $output = `./stache status`;
 
 ok $output eq "", 'No repos set up yet.';
 
-$output = `./room init test1`;
+$output = `./stache init test1`;
 
-ok $output eq "Initialized empty Git repository in " . $ENV{'HOME'} . "/.config/homerooms/test1.git/\n";
+ok $output eq "Initialized empty Git repository in " . $ENV{'HOME'} . "/.config/stache/test1.git/\n";
 
-$output = `./room status`;
+$output = `./stache status`;
 
 ok $output eq "test1:\n\n", 'Our new repo is there';
 
-chdir $ENV{"HOME"} . '/.config/homerooms/test1.git/' or die $!;
+chdir $ENV{"HOME"} . '/.config/stache/test1.git/' or die $!;
 
 ok -f 'HEAD';
 ok -f 'config';

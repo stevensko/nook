@@ -1,24 +1,35 @@
 2026-08-29  stevensko <skovraneksteven@gmail.com>
 
-	* Fork of vcsh, rebranded as "Homerooms Dotfiles Manager"
-	* Command renamed vcsh -> room
-	* Environment variables renamed VCSH_* -> HOMEROOMS_*
-	* Config flattened to $XDG_CONFIG_HOME/homerooms/ -- repositories,
-	  <repo>.room configs, hooks-enabled/, overlays-enabled/, config and
-	  the manifest all live directly in it; no repo.d/ or wrapper dir
-	* System config: /etc/vcsh/config -> /etc/homerooms/config
-	* Source script renamed vcsh.in -> homerooms.in; man page vcsh.1 -> room.1
-	* Per-repo config is $XDG_CONFIG_HOME/homerooms/<repo>.room (was
-	  config.d/<repo>); delete/rename now keep the .room file in sync
-	* New: `room manifest [<file>]` writes name/url/branch for every repo
-	  with an origin remote (default $HOMEROOMS_MANIFEST, '-' for stdout)
-	* New: `room restore [<file>]` clones every repo listed in a manifest
+	* Fork of vcsh, rebranded as "Stache Dotfiles Manager"
+	* Command renamed vcsh -> stache
+	* Environment variables renamed VCSH_* -> STACHE_*
+	* Nothing is created under $HOME any more. Everything lives in
+	  $XDG_CONFIG_HOME/stache/:
+	    - one <repo>.stache/ directory per repo, containing:
+	        <repo>.git/     the git directory
+	        config          per-repo shell config (sourced), was config.d/<repo>
+	        gitignore       per-repo ignore file  (was ~/.gitignore.d/<repo>)
+	        gitattributes   per-repo attributes   (was ~/.gitattributes.d/<repo>)
+	    - shared fallbacks gitignore / gitattributes / gitconfig / stache.list
+	      and hooks-enabled/ overlays-enabled/ config sit alongside them
+	  upgrade() points core.excludesfile / core.attributesfile at the
+	  per-repo file if present, else the shared one. These files are no
+	  longer tracked by the repo (they are outside $HOME).
+	* The shared gitignore is seeded with `*` on first run, so `git add .`
+	  in a stache repo is safe by default; `stache <repo> add -f <path>`
+	  tracks a new file. Trade-off: `stache list-untracked` returns nothing
+	  unless you make a curated per-repo gitignore (stache write-gitignore).
+	* System config: /etc/vcsh/config -> /etc/stache/config
+	* Source script renamed vcsh.in -> stache.in; man page vcsh.1 -> stache.1
+	* New: `stache manifest [<file>]` writes name/url/branch for every repo
+	  with an origin remote (default $STACHE_MANIFEST, '-' for stdout)
+	* New: `stache restore [<file>]` clones every repo listed in a manifest
 	  that is not already present -- built-in bootstrap, no myrepos/gita
-	* New: `room config <git config args>` edits a shared git config file
-	  ($HOMEROOMS_GITCONFIG) that every repo includes via include.path;
+	* New: `stache config <git config args>` edits a shared git config file
+	  ($STACHE_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos
 	* upgrade now sets status.showUntrackedFiles (default no, override with
-	  $HOMEROOMS_SHOW_UNTRACKED) so `git status` in a repo ignores $HOME
+	  $STACHE_SHOW_UNTRACKED) so `git status` in a repo ignores $HOME
 	* delete: use `git ls-files -z | xargs -0` so paths with whitespace,
 	  glob characters, or non-ASCII bytes are removed correctly
 	* Drop the myrepos (post-init-setup-mr) sample hook; bootstrap is
@@ -88,12 +99,12 @@
 	* Post source builds as part of automated release process
 	* Switch to versioning scheme to semver
 	* Replace Travis test runner with GitHub Actions
-	* Make HOMEROOMS_* variables available to hooks
+	* Make STACHE_* variables available to hooks
 	* More carefully handle shell quoting
 	* Improve handling of non-default remote names and branches
 	* Fix per-repo pre/post hook handling
-	* Output path relative to $HOME in ‘room status’
-	* Add flag to prefix output of ‘room foreach -p’ with repo name
+	* Output path relative to $HOME in ‘stache status’
+	* Add flag to prefix output of ‘stache foreach -p’ with repo name
 	* Fix debugging on Windows 10 / Cygwin
 	* Improve option flag handling to allow multiple flags, squash bugs
 	* Don't require Ruby or Perl tooling to build and install
@@ -109,7 +120,7 @@
 2021-04-05  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20190621
-	* Make version reflected in `room version` correct...
+	* Make version reflected in `stache version` correct...
 
 2021-03-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -126,16 +137,16 @@
 
 2015-12-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Fix tests to always use C locale, this makes room reproducible
-	* Implement `room foreach`
-	* Implement `room list-untracked -a`
+	* Fix tests to always use C locale, this makes stache reproducible
+	* Implement `stache foreach`
+	* Implement `stache list-untracked -a`
 	* Handle Git older than 2.x gracefully
 	* Fix broken list-tracked-by
-	* Fix regression in `room which`
+	* Fix regression in `stache which`
 	* Skip ignored files in the output of list-untracked
 	* Improve cloning
 	* Clean up docs
-	* Implement `room status --terse`
+	* Implement `stache status --terse`
 	* Improve tests
 
 2015-05-02  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -143,8 +154,8 @@
 	* Release 1.20150502
 	* Add tests
 	* Integrate tests with Travis CI
-	* Make `room --list_untracked` GNU-independent
-	* Improve room's code quality
+	* Make `stache --list_untracked` GNU-independent
+	* Improve stache's code quality
 	* Improve Makefile, documentation, etc
 
 2014-10-26  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -156,11 +167,11 @@
 2014-10-25  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20141025
-	* `room which dontexist` exits 1
-	* `room status` shows commits ahead/behind remote tracking branch
+	* `stache which dontexist` exits 1
+	* `stache status` shows commits ahead/behind remote tracking branch
 	* Support overlay functions
-	* Support `room list-untracked`, optionally recursively
-	* Support `room list-untracked $repo`
+	* Support `stache list-untracked`, optionally recursively
+	* Support `stache list-untracked $repo`
 	* Improve error handling of clone()
 	* Rename `list-tracked-by` to `list-tracked <repo>`
 	* Support repo-specific config files
@@ -222,8 +233,8 @@
 2013-08-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130829
-	* Add support for `room commit`
-	* Add support for `room status <repo>`
+	* Add support for `stache commit`
+	* Add support for `stache status <repo>`
 	* Add pre-/post-init hooks
 	* Documentation improvements
 	* Minor cleanups
@@ -231,23 +242,23 @@
 2013-07-24  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130724
-	* Add support for `room status`
-	* Improve output of `room pull`
-	* Improve output of `room push`
+	* Add support for `stache status`
+	* Improve output of `stache pull`
+	* Improve output of `stache push`
 	* Minor documentation improvements
 
 2013-07-23  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130723
-	* Support $HOMEROOMS_GITIGNORE == none
+	* Support $STACHE_GITIGNORE == none
 	* Documentation improvements,
 	* Improved zsh completion
-	* Add support for `room pull`
-	* Add support for `room push`
-	* Add retire() to tear down room ENV
-	* Add clone hooks, including one witout room ENV to
+	* Add support for `stache pull`
+	* Add support for `stache push`
+	* Add retire() to tear down stache ENV
+	* Add clone hooks, including one witout stache ENV to
 	  allow subsequent cloning of other repos
-	* Fix `room rename`
+	* Fix `stache rename`
 	* Improve general code robustness
 
 2013-06-14  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -262,13 +273,13 @@
 	* Ancher ignore file to root of Git repo
 	* Implemented basename() to save one process spawn
 	* Improve packaged Zsh completion
-	* Renamed `room setup` to `room upgrade`
+	* Renamed `stache setup` to `stache upgrade`
 	* Various documentation and spelling improvements
 
 2013-04-21  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.2
-	* Introduce `room version`
+	* Introduce `stache version`
 
 2013-03-31  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -286,7 +297,7 @@
 2012-06-30  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.0
-	* Make `room list` more resilient
+	* Make `stache list` more resilient
 	* Lots of doc improvements
 
 2012-02-27  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -296,7 +307,7 @@
 
 2012-02-15  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Introduce `room which`
+	* Introduce `stache which`
 	* hooks will tell you when they are being executed
 	* Formatting & resilience improvements
 	* We have a changelog, now! (yay)
@@ -317,11 +328,11 @@
 
 2011-12-26  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Introduce and use .config/homerooms/config
+	* Introduce and use .config/stache/config
 	* More verbose error handling
-	* Introduce `room {list-tracked,list-tracked-by}`
-	* Introduce repo shortcuts (`room zsh commit`)
-	* Rename `room seed-gitignore` to `room write-gitignore`
+	* Introduce `stache {list-tracked,list-tracked-by}`
+	* Introduce repo shortcuts (`stache zsh commit`)
+	* Rename `stache seed-gitignore` to `stache write-gitignore`
 	* Add license information
 
 2011-11-29  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -329,8 +340,8 @@
 	* Bugfixes
 	* Refactor error handling
 	* Make code more resilient
-	* Make room play nice with mr
-	* Introduce room mv and setup
+	* Make stache play nice with mr
+	* Introduce stache mv and setup
 
 2011-11-23  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -356,7 +367,7 @@
 
 	* Yet more documentation improvements
 	* Makefile
-	* Heed already-defined ENV variables within room
+	* Heed already-defined ENV variables within stache
 	* Handle .gitignore.d/$repo automagically
 
 2011-11-11  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -372,7 +383,7 @@
 
 2011-10-18  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Fixed bug in room clone & init
+	* Fixed bug in stache clone & init
 
 2011-10-17  Richard Hartmann <richih.mailinglist@gmail.com>
 

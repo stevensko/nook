@@ -12,9 +12,9 @@ chdir 't/etc/' or die $!;
 $ENV{'HOME'} = abs_path ('.homerooms_home');
 $ENV{'XDG_CONFIG_HOME'} = $ENV{'HOME'}.'/.config';
 
-system ("echo 'Yes, do as I say' | ./room delete test1");
+system ("echo 'Yes, do as I say' | ./stache delete test1");
 
-my $output = `./room status`;
+my $output = `./stache status`;
 
 ok $output eq "", 'No repos set up anymore.';
 
@@ -23,10 +23,10 @@ ok $output eq "", 'No repos set up anymore.';
 # word-splits such names and silently leaves the files on disk.
 my $tricky = $ENV{'HOME'} . '/delete me';
 touch $tricky;
-system ("./room init deletews");
-system ("./room deletews add '$tricky'");
+system ("./stache init deletews");
+system ("./stache deletews add '$tricky'");
 ok -e $tricky, 'file with space in name staged for deletion';
-system ("echo 'Yes, do as I say' | ./room delete deletews");
+system ("echo 'Yes, do as I say' | ./stache delete deletews");
 ok ! -e $tricky, 'delete removes tracked file whose name contains a space';
 
 done_testing;

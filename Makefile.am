@@ -9,16 +9,16 @@ AM_DISTCHECK_CONFIGURE_FLAGS = --enable-developer-mode
 docdir = $(datarootdir)/doc/$(TRANSFORMED_PACKAGE_NAME)
 licensedir = $(datarootdir)/licenses/$(TRANSFORMED_PACKAGE_NAME)
 
-bin_SCRIPTS = room
+bin_SCRIPTS = stache
 dist_doc_DATA = changelog doc/INSTALL.md doc/README.md doc/error_codes.md
 samplehooksdir = $(docdir)/sample_hooks
 dist_samplehooks_DATA = doc/sample_hooks/post-init-add-origin doc/sample_hooks/post-merge-unclobber doc/sample_hooks/pre-merge-unclobber
 dist_license_DATA = LICENSE.md CONTRIBUTORS
 if ENABLE_MAN_PAGE
-dist_man_MANS = doc/room.1
+dist_man_MANS = doc/stache.1
 endif
 
-EXTRA_DIST  = completions/room.bash completions/room.zsh build-aux/ax_prog_perl_modules.m4
+EXTRA_DIST  = completions/stache.bash completions/stache.zsh build-aux/ax_prog_perl_modules.m4
 EXTRA_DIST += t/000-tear-env.t t/001-setup-env.t t/100-init.t t/300-add.t t/950-delete.t t/999-tear-env.t
 
 BUILT_SOURCES =
@@ -37,16 +37,16 @@ include $(top_srcdir)/aminclude.am
 
 if !SOURCE_IS_DIST
 
-doc/room.1: doc/room.1.ronn
+doc/stache.1: doc/stache.1.ronn
 	$(RONN) < $< > $@
 
 endif
 
-$(COMPLETIONS_OUT_DIR)/room: completions/room.bash
+$(COMPLETIONS_OUT_DIR)/stache: completions/stache.bash
 	mkdir -p $(dir $@)
 	install $< $@
 
-$(COMPLETIONS_OUT_DIR)/_room: completions/room.zsh
+$(COMPLETIONS_OUT_DIR)/_stache: completions/stache.zsh
 	mkdir -p $(dir $@)
 	install $< $@
 

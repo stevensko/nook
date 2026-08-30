@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([homerooms], [m4_esyscmd(build-aux/git-version-gen .tarball-version)])
+AC_INIT([stache], [m4_esyscmd(build-aux/git-version-gen .tarball-version)])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux])
 AM_INIT_AUTOMAKE([foreign tar-pax dist-zstd dist-zip no-dist-gzip color-tests])
@@ -81,7 +81,7 @@ AM_COND_IF([ENABLE_TESTS], [
 ])
 
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([room], [chmod +x room])
-AC_CONFIG_FILES([doc/room.1.ronn])
+AC_CONFIG_FILES([stache], [chmod +x stache])
+AC_CONFIG_FILES([doc/stache.1.ronn])
 
 AC_OUTPUT

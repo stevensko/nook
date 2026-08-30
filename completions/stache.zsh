@@ -1,8 +1,8 @@
-#compdef room
+#compdef stache
 
 function __room_repositories () {
 	local -a repos
-	repos=( ${(f)"$(_call_program repositories room list)"} )
+	repos=( ${(f)"$(_call_program repositories stache list)"} )
 	_describe -t repositories 'repository' repos
 }
 
@@ -10,51 +10,51 @@ function __room_not_implemented_yet () {
 	_message "Subcommand completion '${1#*-}': not implemented yet"
 }
 
-function _room-clone () {
+function _stache-clone () {
 	__room_not_implemented_yet "$0" #TODO
 }
 
-function _room-delete () {
+function _stache-delete () {
 	(( CURRENT == 2 )) && __room_repositories
 }
 
-function _room-enter () {
+function _stache-enter () {
 	(( CURRENT == 2 )) && __room_repositories
 }
 
-function _room-foreach () {
-	_dispatch room-foreach git
+function _stache-foreach () {
+	_dispatch stache-foreach git
 }
 
-function _room-help () {
+function _stache-help () {
 	_nothing
 }
 
-function _room-init () {
+function _stache-init () {
 	_nothing
 }
 
-function _room-list () {
+function _stache-list () {
 	_nothing
 }
 
-function _room-list-tracked () {
+function _stache-list-tracked () {
 	(( CURRENT == 2 )) && __room_repositories
 }
 
-function _room-list-untracked () {
+function _stache-list-untracked () {
 	_nothing
 }
 
-function _room-pull () {
+function _stache-pull () {
 	_nothing
 }
 
-function _room-push () {
+function _stache-push () {
 	_nothing
 }
 
-function _room-rename () {
+function _stache-rename () {
 	case $CURRENT in
 		2) __room_repositories ;;
 		3) _message "new repository name" ;;
@@ -62,7 +62,7 @@ function _room-rename () {
 	esac
 }
 
-function _room-run () {
+function _stache-run () {
 	(( CURRENT == 2 )) && __room_repositories
 	(( CURRENT == 3 )) && _command_names -e
 	if (( CURRENT >= 4 )); then
@@ -73,33 +73,33 @@ function _room-run () {
 	fi
 }
 
-function _room-status () {
+function _stache-status () {
 	(( CURRENT == 2 )) && __room_repositories
 }
 
-function _room-upgrade () {
+function _stache-upgrade () {
 	(( CURRENT == 2 )) && __room_repositories
 }
 
-function _room-version () {
+function _stache-version () {
 	_nothing
 }
 
-function _room-which () {
+function _stache-which () {
 	_files
 }
 
-function _room-write-gitignore () {
+function _stache-write-gitignore () {
 	(( CURRENT == 2 )) && __room_repositories
 }
 
-function _room () {
+function _stache () {
 	local curcontext="${curcontext}" ret=1
-	local state roomcommand
+	local state stachecommand
 	local -a args subcommands
 
-	local HOMEROOMS_REPO_D
-	: ${HOMEROOMS_REPO_D:="${XDG_CONFIG_HOME:-"$HOME/.config"}/homerooms"}
+	local STACHE_REPO_D
+	: ${STACHE_REPO_D:="${XDG_CONFIG_HOME:-"$HOME/.config"}/stache"}
 
 	subcommands=(
 		"clone:clone an existing repository"
@@ -109,14 +109,14 @@ function _room () {
 		"foreach:execute for all repos"
 		"help:display help"
 		"init:initialize an empty repository"
-		"list:list all local room repositories"
-		"list-tracked:list all files tracked by room"
-		"list-untracked:list all files not tracked by room"
-		"pull:pull from all room remotes"
-		"push:push to room remotes"
+		"list:list all local stache repositories"
+		"list-tracked:list all files tracked by stache"
+		"list-untracked:list all files not tracked by stache"
+		"pull:pull from all stache remotes"
+		"push:push to stache remotes"
 		"rename:rename a repository"
 		"run:run command with <\$GIT_DIR> and <\$GIT_WORK_TREE> set"
-		"status:show statuses of all/one room repositories"
+		"status:show statuses of all/one stache repositories"
 		"upgrade:upgrade repository to currently recommended settings"
 		"version:print version information"
 		"which:find <substring> in name of any tracked file"
@@ -134,22 +134,22 @@ function _room () {
 
 	if [[ ${state} == "subcommand_or_options_or_repo" ]]; then
 		if (( CURRENT == 1 )); then
-			_describe -t subcommands 'room sub-commands' subcommands && ret=0
+			_describe -t subcommands 'stache sub-commands' subcommands && ret=0
 			__room_repositories && ret=0
 		else
-			roomcommand="${words[1]}"
-			if ! (( ${+functions[_room-$roomcommand]} )); then
+			stachecommand="${words[1]}"
+			if ! (( ${+functions[_stache-$stachecommand]} )); then
 				# There is no handler function, so this is probably the name
 				# of a repository. Act accordingly.
-				# FIXME: this may want to use '_dispatch room git'
-				GIT_DIR=$HOMEROOMS_REPO_D/$words[1].git _dispatch git git && ret=0
+				# FIXME: this may want to use '_dispatch stache git'
+				GIT_DIR=$STACHE_REPO_D/$words[1].git _dispatch git git && ret=0
 			else
-				curcontext="${curcontext%:*:*}:room-${roomcommand}:"
-				_call_function ret _room-${roomcommand} && (( ret ))
+				curcontext="${curcontext%:*:*}:stache-${stachecommand}:"
+				_call_function ret _stache-${stachecommand} && (( ret ))
 			fi
 		fi
 	fi
 	return ret
 }
 
-_room "$@"
+_stache "$@"

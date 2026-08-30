@@ -24,6 +24,6 @@ jobs:
       - name: Run shellcheck
         uses: reviewdog/action-shellcheck@v1
         with:
-          pattern: room
+          pattern: stache
           reporter: github-pr-review
           github_token: ${{ github.token }}

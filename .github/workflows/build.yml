@@ -37,8 +37,8 @@ jobs:
       - name: Post build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: room-${{ env.VERSION }}
-          path: room-${{ env.VERSION }}.zip
+          name: stache-${{ env.VERSION }}
+          path: stache-${{ env.VERSION }}.zip
 
   standalone:
     runs-on: ubuntu-latest
@@ -56,9 +56,9 @@ jobs:
           ./configure --with-standalone --bindir=/
           make DESTDIR=. install-exec
           echo VERSION=$(cat .version) >> $GITHUB_ENV
-          sha256sum room-standalone.sh
+          sha256sum stache-standalone.sh
       - name: Post standalone script artifact
         uses: actions/upload-artifact@v4
         with:
           name: standalone-deployment-${{ env.VERSION }}
-          path: room-standalone.sh
+          path: stache-standalone.sh

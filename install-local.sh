@@ -1,9 +1,9 @@
 #!/bin/sh
-# Build the standalone room from this source tree and install it under a
+# Build the standalone stache from this source tree and install it under a
 # user-writable prefix (default: ~/.local). No root, no autotools, no configure.
 #
-#   ./install-local.sh            # install to ~/.local/bin/room
-#   ./install-local.sh ~/opt      # install to ~/opt/bin/room
+#   ./install-local.sh            # install to ~/.local/bin/stache
+#   ./install-local.sh ~/opt      # install to ~/opt/bin/stache
 #   PREFIX=~/.local ./install-local.sh --uninstall
 #
 set -eu
@@ -27,18 +27,18 @@ case ${1:-} in
 	*) prefix=$1; uninstall=0 ;;
 esac
 bindir=$prefix/bin
-target=$bindir/room
+target=$bindir/stache
 
 if [ "$uninstall" = 1 ]; then
 	rm -f "$target"
 	echo "removed: $target"
-	echo "(your repos and config in ~/.config/homerooms/ are untouched)"
-	command -v room >/dev/null 2>&1 && echo "room now resolves to: $(command -v room)"
+	echo "(your repos and config in ~/.config/stache/ are untouched)"
+	command -v stache >/dev/null 2>&1 && echo "stache now resolves to: $(command -v stache)"
 	exit 0
 fi
 
 cd "$src_dir"
-[ -f homerooms.in ] || { echo "error: homerooms.in not found in $src_dir" >&2; exit 1; }
+[ -f stache.in ] || { echo "error: stache.in not found in $src_dir" >&2; exit 1; }
 
 ver=$(./build-aux/git-version-gen .tarball-version 2>/dev/null || echo unknown)
 
@@ -49,10 +49,10 @@ sed -e 's|@SHELL@|/bin/sh|g' \
     -e 's|@SED@|sed|g' \
     -e 's|@WC@|wc|g' \
     -e 's|@COMM@|comm|g' \
-    -e 's|@TRANSFORMED_PACKAGE_NAME@|room|g' \
+    -e 's|@TRANSFORMED_PACKAGE_NAME@|stache|g' \
     -e "s|@VERSION@|$ver|g" \
     -e 's|@DEPLOYMENT@|-standalone|g' \
-    homerooms.in > "$target"
+    stache.in > "$target"
 chmod +x "$target"
 
 printf 'installed: %s\n' "$target"
@@ -67,7 +67,7 @@ case :${PATH:-}: in
 	*:"$bindir":*) ;;
 	*) echo "note: $bindir is not on your PATH" >&2 ;;
 esac
-if command -v room >/dev/null 2>&1 && [ "$(command -v room)" != "$target" ]; then
-	echo "note: 'room' still resolves to $(command -v room)"
+if command -v stache >/dev/null 2>&1 && [ "$(command -v stache)" != "$target" ]; then
+	echo "note: 'stache' still resolves to $(command -v stache)"
 	echo "      run 'hash -r' or open a new shell to pick up $target"
 fi
