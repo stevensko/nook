@@ -102,7 +102,7 @@ function _nook () {
 	: ${NOOK_REPO_D:="${XDG_CONFIG_HOME:-"$HOME/.config"}/nook"}
 
 	subcommands=(
-		"add:add a repo (or --all) to nook.repos"
+		"add:add a repo (or --all) to .repos"
 		"clone:clone an existing repository"
 		"commit:commit in all repositories"
 		"delete:delete an existing repository"
@@ -122,7 +122,7 @@ function _nook () {
 		"version:print version information"
 		"which:find <substring> in name of any tracked file"
 		"config:edit shared git config included by every repo"
-		"bootstrap:clone every repo in nook.repos not already present"
+		"bootstrap:clone every repo in .repos not already present"
 		"write-gitignore:write <repo>.nook/.gitignore via git ls-files"
 	)
 

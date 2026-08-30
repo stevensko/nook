@@ -11,7 +11,7 @@
 	        .gitignore      per-repo ignore file  (was ~/.gitignore.d/<repo>)
 	        .gitattributes  per-repo attributes   (was ~/.gitattributes.d/<repo>)
 	    - shared: .nookrc (shell rc), .gitignore / .gitattributes /
-	      .gitconfig, the nook.repos list, and the hooks/ overlays/ dirs
+	      .gitconfig, the .repos list, and the hooks/ overlays/ dirs
 	  upgrade() points core.excludesfile / core.attributesfile at the
 	  per-repo file if present, else the shared one. These files are no
 	  longer tracked by the repo (they are outside $HOME).
@@ -24,16 +24,16 @@
 	  (and per-repo <repo>.nook/config -> <repo>.nook/.nookrc); system
 	  file /etc/vcsh/config -> /etc/nook/nookrc
 	* Source script renamed vcsh.in -> nook.in; man page vcsh.1 -> nook.1
-	* $XDG_CONFIG_HOME/nook/nook.repos ("<name> <url> <branch>" per repo)
-	  is populated manually with `nook add <repo>` / `nook add --all`;
+	* $XDG_CONFIG_HOME/nook/.repos ("<name> <url> <branch> [@tags]" per repo)
+	  is populated manually with `nook add <repo> [<tags>]` / `nook add --all`;
 	  nook never writes it on its own (delete/rename leave stale lines).
 	  There is no `manifest` command. `nook bootstrap` -- equivalently
 	  `nook clone --all` / `-a` -- clones everything listed there that is
 	  not already present. Built-in, no myrepos/gita.
-	* nook.repos rows take an optional 4th column: a comma-separated tag
-	  list. `nook bootstrap --include=a,b` / `--exclude=x,y` filter on it
+	* .repos rows take an optional tag field written as "@tag,tag" after the
+	  branch. `nook bootstrap --include=a,b` / `--exclude=x,y` filter on it
 	  (untagged rows always match; --exclude wins). `nook add <repo> a,b`
-	  writes tags.
+	  writes it.
 	* New: `nook config <git config args>` edits a shared git config file
 	  ($NOOK_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos
@@ -42,7 +42,7 @@
 	* delete: use `git ls-files -z | xargs -0` so paths with whitespace,
 	  glob characters, or non-ASCII bytes are removed correctly
 	* Drop the myrepos (post-init-setup-mr) sample hook; bootstrapping is
-	  now built in (see the nook.repos / bootstrap notes above)
+	  now built in (see the .repos / bootstrap notes above)
 	* Add install-local.sh for a no-autotools user-space install
 
 2024-04-08  Caleb Maclennan <caleb@alerque.com>

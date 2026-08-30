@@ -111,26 +111,26 @@ As `nook` allows you to put an arbitrary number of distinct repositories into
 your `$HOME`, you will end up with a lot of repositories very quickly.
 
 `nook` has a built-in bootstrap. You populate
-`~/.config/nook/nook.repos` -- one line per repo, `<name> <url> <branch>` --
-with **`nook add <repo>`** (or `nook add --all` to append every local repo
-that has a remote and isn't listed yet). Nothing else writes that file; `delete`
-and `rename` leave stale lines for you to edit out.
+`~/.config/nook/.repos` -- one line per repo, `<name> <url> <branch> [@tags]` --
+with **`nook add <repo> [<tags>]`** (or `nook add --all` to append every local
+repo that has a remote and isn't listed yet). Nothing else writes that file;
+`delete` and `rename` leave stale lines for you to edit out.
 
-Give a repo an optional comma-separated tag list as a 4th column
-(`nook add <repo> laptop,work`) and pick a subset per machine with
-`nook bootstrap --include=laptop --exclude=work`; untagged repos are always
-cloned.
+Tags are an optional comma-separated list written after the branch with an `@`
+(`nook add nvim laptop,work` -> `nvim <url> main @laptop,work`). Pick a subset
+per machine with `nook bootstrap --include=laptop --exclude=work`; untagged
+rows always clone.
 
 Track the file in one of your repos. On a new machine, clone that repo and run
 `nook bootstrap` (or `nook clone --all` / `-a` -- with `clone`, `--all`/`-a`
 must be the first word), and every other repo in the list is cloned for you.
 
     nook add --all
-    nook dotfiles add -f ~/.config/nook/nook.repos
+    nook dotfiles add -f ~/.config/nook/.repos
     nook dotfiles commit -m 'track repo list' && nook dotfiles push
 
     # on a new machine, after installing nook:
-    nook clone <url-of-the-repo-holding-nook.repos> dotfiles
+    nook clone <url-of-the-repo-holding-.repos> dotfiles
     nook bootstrap
 
 `nook pull` / `nook push` / `nook status` then operate on the whole set.
@@ -148,7 +148,7 @@ tracked files themselves.
         .gitconfig              # git config included by every repo (edit: nook config ...)
         .gitignore              # shared fallback ignore file (seeded with '*')
         .gitattributes          # shared fallback attributes file
-        nook.repos            # the repo list for `bootstrap` (you curate it with `nook add`)
+        .repos                  # repo list for `bootstrap` (curate with `nook add`) for `bootstrap` (you curate it with `nook add`)
         hooks/                  # optional: hook scripts
         overlays/               # optional: function overrides
         <name>.nook/          # one directory per repo, containing:
@@ -191,10 +191,11 @@ Day to day:
 ## New machine
 
     # install nook, then:
-    nook clone <url-of-repo-holding-nook.repos> dotfiles
-    nook bootstrap   # clones every repo listed in ~/.config/nook/nook.repos
+    nook clone <url-of-repo-holding-.repos> dotfiles
+    nook bootstrap                                   # clone everything in .repos
+    nook bootstrap --include=laptop --exclude=work   # ...or a tagged subset
 
-`nook.repos` is kept current automatically -- no command to run.
+You curate `.repos` yourself with `nook add`; nothing writes it automatically.
 
 
 # Contact

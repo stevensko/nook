@@ -87,7 +87,7 @@ fi
 : "${NOOK_REPO_D:="$XDG_CONFIG_HOME/nook"}"; export NOOK_REPO_D
 : "${NOOK_HOOK_D:="$XDG_CONFIG_HOME/nook/hooks"}"; export NOOK_HOOK_D
 : "${NOOK_OVERLAY_D:="$XDG_CONFIG_HOME/nook/overlays"}"; export NOOK_OVERLAY_D
-: "${NOOK_REPOS:="$XDG_CONFIG_HOME/nook/nook.repos"}"; export NOOK_REPOS
+: "${NOOK_REPOS:="$XDG_CONFIG_HOME/nook/.repos"}"; export NOOK_REPOS
 : "${NOOK_BASE:="$HOME"}"; export NOOK_BASE
 : "${NOOK_GITIGNORE:=exact}"; export NOOK_GITIGNORE
 : "${NOOK_GITATTRIBUTES:=none}"; export NOOK_GITATTRIBUTES
@@ -393,20 +393,20 @@ repos_has() {
 }
 
 repos_line() {
-	# Print "<name> <url> <branch> [tags]" for repo $1 ($2 = optional tag list).
+	# Print "<name> <url> <branch> [@tags]" for repo $1 ($2 = optional tag list).
 	# Return 1 if the repo has no origin URL.
 	local url branch
 	GIT_DIR=$NOOK_REPO_D/$1.nook/$1.git; export GIT_DIR
 	url=$(@GIT@ config --get remote.origin.url 2> /dev/null) || return 1
 	[ -n "$url" ] || return 1
 	branch=$(@GIT@ symbolic-ref --quiet --short HEAD 2> /dev/null) || branch=
-	printf '%s %s %s%s\n' "$1" "$url" "$branch" "${2:+ $2}"
+	printf '%s %s %s%s\n' "$1" "$url" "$branch" "${2:+ @$2}"
 }
 
 repos_append() {
 	# Append "$1" (a repos_line string) to $NOOK_REPOS, creating it with a
 	# header if needed.
-	[ -e "$NOOK_REPOS" ] || echo "# nook repos -- fields: <name> <url> <branch> [tags]" > "$NOOK_REPOS" ||
+	[ -e "$NOOK_REPOS" ] || echo "# nook repos -- <name> <url> <branch> [@tag,tag]   (tags optional)" > "$NOOK_REPOS" ||
 		fatal "add: could not create '$NOOK_REPOS'" 50
 	printf '%s\n' "$1" >> "$NOOK_REPOS" || fatal "add: could not write '$NOOK_REPOS'" 50
 }
@@ -485,6 +485,7 @@ bootstrap() {
 	[ -r "$source_file" ] || fatal "$NOOK_COMMAND: repos file not readable: '$source_file'" 1
 	# Fields are whitespace-separated; none of name/url/branch can contain a space.
 	while read -r name url branch tags; do
+		tags=${tags#@}
 		case "$name" in ''|\#*) continue;; esac
 		if [ -z "$url" ]; then
 			info "skipping '$name': no URL in repos file"

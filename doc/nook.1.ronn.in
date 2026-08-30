@@ -335,7 +335,7 @@ Less interesting knobs you could turn:
   ("<name> <url> <branch>" per repo). `nook` never writes it on its own --
   `delete` and `rename` leave stale lines for you to edit out.
 
-  Defaults to <$XDG_CONFIG_HOME/nook/nook.repos>.
+  Defaults to <$XDG_CONFIG_HOME/nook/.repos>.
 
 * <$NOOK_HOOK_D>:
   The directory where hooks are read from.
