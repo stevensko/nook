@@ -121,7 +121,7 @@ function _stache () {
 		"version:print version information"
 		"which:find <substring> in name of any tracked file"
 		"config:edit shared git config included by every repo"
-		"restore:clone every repo listed in stache.repos"
+		"bootstrap:clone every repo in stache.repos not already present"
 		"write-gitignore:write <repo>.stache/.gitignore via git ls-files"
 	)
 

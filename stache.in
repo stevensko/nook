@@ -139,9 +139,9 @@ help() {
         [<repo>]        List all files not tracked by all or one repositories
    pull                 Pull from all stache remotes
    push                 Push to stache remotes
-   restore [<file>]     Clone every repo listed in \$STACHE_REPOS
-                        (\$XDG_CONFIG_HOME/stache/stache.repos), which stache
-                        maintains automatically
+   bootstrap [<file>]   Clone every repo listed in \$STACHE_REPOS that is not
+   clone --all [<file>] already present. \$STACHE_REPOS is kept current
+   clone -a [<file>]    automatically. The three forms are equivalent.
    rename <repo> \\
           <newname>     Rename repository
    run <repo> \\
@@ -375,7 +375,7 @@ config() {
 write_repos_file() {
 	# Regenerate $STACHE_REPOS ("<name> <url> <branch>" per repo with an
 	# 'origin' remote). Called automatically after init/clone/delete/rename/
-	# upgrade/restore. Only rewrites the file if its content changed.
+	# upgrade/bootstrap. Only rewrites the file if its content changed.
 	local tmp
 	tmp=$(mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX") || return 0
 	echo "# stache repos -- managed automatically; fields: <name> <url> <branch>" > "$tmp"
@@ -393,8 +393,9 @@ write_repos_file() {
 	fi
 }
 
-restore() {
+bootstrap() {
 	# Clone every repo listed in $STACHE_REPOS that is not already present.
+	# Reached as `stache bootstrap [<file>]` or `stache clone --all|-a [<file>]`.
 	source_file=${2:-$STACHE_REPOS}
 	[ -r "$source_file" ] || fatal "$STACHE_COMMAND: repos file not readable: '$source_file'" 1
 	# Fields are whitespace-separated; none of name/url/branch can contain a space.
@@ -732,7 +733,15 @@ case $STACHE_COMMAND in
 	versio|versi|vers|ver|ve) STACHE_COMMAND=version;;
 	which|whi|wh) STACHE_COMMAND=which;;
 	write|writ|wri|wr) STACHE_COMMAND=write-gitignore;;
+	bootstra|bootstr|bootst|boots|boot) STACHE_COMMAND=bootstrap;;
 esac
+
+# `stache clone --all|-a [<file>]` is an alias for `stache bootstrap [<file>]`.
+if [ x"$STACHE_COMMAND" = x'clone' ] && { [ x"$2" = 'x--all' ] || [ x"$2" = 'x-a' ]; }; then
+	STACHE_COMMAND=bootstrap
+	shift 2                 # drop "clone" and "--all"/"-a"
+	set -- bootstrap "$@"   # leaves $2 as the optional <file>
+fi
 
 if [ x"$STACHE_COMMAND" = x'clone' ]; then
 	STACHE_BRANCH=
@@ -795,7 +804,7 @@ elif [ x"$STACHE_COMMAND" = x'commit' ] ||
 	[ x"$STACHE_COMMAND" = x'list'   ] ||
 	[ x"$STACHE_COMMAND" = x'list-tracked' ] ||
 	[ x"$STACHE_COMMAND" = x'list-untracked' ] ||
-	[ x"$STACHE_COMMAND" = x'restore' ] ||
+	[ x"$STACHE_COMMAND" = x'bootstrap' ] ||
 	[ x"$STACHE_COMMAND" = x'pull'   ] ||
 	[ x"$STACHE_COMMAND" = x'push'   ]; then
 	:
@@ -875,7 +884,7 @@ hook post-command
 # Keep $STACHE_REPOS current after any command that can change the repo set
 # or a repo's remote. Regenerated in place; only rewritten if it changed.
 case $STACHE_COMMAND in
-	init|clone|delete|rename|upgrade|restore) write_repos_file ;;
+	init|clone|delete|rename|upgrade|bootstrap) write_repos_file ;;
 esac
 
 verbose "$STACHE_COMMAND end, exiting"

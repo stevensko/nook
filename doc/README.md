@@ -114,7 +114,7 @@ your `$HOME`, you will end up with a lot of repositories very quickly.
 `~/.config/stache/stache.repos` -- one line per repo, `<name> <url> <branch>`,
 for every repo with an `origin` remote -- current **automatically** (after
 init/clone/delete/rename/upgrade). Track that file in one of your repos; on a
-new machine, clone that repo and run `stache restore`, and every other repo in
+new machine, clone that repo and run `stache bootstrap`, and every other repo in
 the list is cloned for you.
 
     stache dotfiles add -f ~/.config/stache/stache.repos
@@ -122,7 +122,7 @@ the list is cloned for you.
 
     # on a new machine, after installing stache:
     stache clone <url-of-the-repo-holding-stache.repos> dotfiles
-    stache restore
+    stache bootstrap
 
 `stache pull` / `stache push` / `stache status` then operate on the whole set.
 Repositories that are not `stache` repos (a plain `~/src/project`, work
@@ -183,7 +183,7 @@ Day to day:
 
     # install stache, then:
     stache clone <url-of-repo-holding-stache.repos> dotfiles
-    stache restore    # clones every repo listed in ~/.config/stache/stache.repos
+    stache bootstrap   # clones every repo listed in ~/.config/stache/stache.repos
 
 `stache.repos` is kept current automatically -- no command to run.
 

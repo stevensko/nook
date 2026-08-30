@@ -7,6 +7,10 @@ stache(1) - Version Control System for $HOME - multiple Git repositories in $HOM
 
 `stache` clone [-b <branch>] <url> [<repo>]
 
+`stache` bootstrap [<file>]
+
+`stache` clone --all|-a [<file>]
+
 `stache` config [<git config arguments>]
 
 `stache` delete <repo>
@@ -28,8 +32,6 @@ stache(1) - Version Control System for $HOME - multiple Git repositories in $HOM
 `stache` pull
 
 `stache` push
-
-`stache` restore [<file>]
 
 `stache` rename <repo> <newname>
 
@@ -64,8 +66,9 @@ The use of symlinks is not needed in this setup, making for a cleaner setup.
 
 To set up a new machine, `stache` has a built-in bootstrap: it maintains
 <$STACHE_REPOS> (name, remote URL, branch for every repo with an <origin>
-remote) automatically, and `stache restore` clones everything listed there
-that is not already present. Track that file in one of your repos.
+remote) automatically, and `stache bootstrap` (also `stache clone --all`)
+clones everything listed there that is not already present. Track that file
+in one of your repos.
 
 Please note that you can always use a path instead of a name for <repo>.
 This is needed to support external scripts properly and of no concern to
@@ -92,6 +95,9 @@ an interactive user.
 
   You can also use a single git repository with several branches. Use the `-b`
   option to specify a branch at clone time, the default is `master`.
+
+  `--all` (or `-a`): ignore <url>/<repo> and instead clone everything listed
+  in <$STACHE_REPOS> that is not already present. Same as `stache bootstrap`.
 
 * commit:
   Commit in all repositories
@@ -156,9 +162,10 @@ an interactive user.
 * push:
   Push to all stache remotes.
 
-* restore:
+* bootstrap:
   Read <$STACHE_REPOS> and run `stache clone` for every listed repository that
-  is not already present locally. Existing repos are left untouched.
+  is not already present locally. Existing repos are left untouched. The forms
+  `stache bootstrap`, `stache clone --all` and `stache clone -a` are equivalent.
 
   `$file`: Read from this path instead of <$STACHE_REPOS>.
 
@@ -298,7 +305,7 @@ Less interesting knobs you could turn:
   Defaults to <$XDG_CONFIG_HOME/stache>.
 
 * <$STACHE_REPOS>:
-  The repo list `stache` maintains automatically and `restore` reads
+  The repo list `stache` maintains automatically and `bootstrap` reads
   ("<name> <url> <branch>" per repo with an origin remote).
 
   Defaults to <$XDG_CONFIG_HOME/stache/stache.repos>.
