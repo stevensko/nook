@@ -1,80 +1,80 @@
-stache(1) - Version Control System for $HOME - multiple Git repositories in $HOME
+nook(1) - Version Control System for $HOME - multiple Git repositories in $HOME
 ===============================================================================
 
 ## SYNOPSIS
 
-`stache` [<options>] <command>
+`nook` [<options>] <command>
 
-`stache` add <repo>
+`nook` add <repo>
 
-`stache` add --all|-a
+`nook` add --all|-a
 
-`stache` clone [-b <branch>] <url> [<repo>]
+`nook` clone [-b <branch>] <url> [<repo>]
 
-`stache` bootstrap [--include=<tags>] [--exclude=<tags>] [<file>]
+`nook` bootstrap [--include=<tags>] [--exclude=<tags>] [<file>]
 
-`stache` clone --all|-a [--include=<tags>] [--exclude=<tags>] [<file>]
+`nook` clone --all|-a [--include=<tags>] [--exclude=<tags>] [<file>]
 
-`stache` config [<git config arguments>]
+`nook` config [<git config arguments>]
 
-`stache` delete <repo>
+`nook` delete <repo>
 
-`stache` enter <repo>
+`nook` enter <repo>
 
-`stache` foreach [-g] <git command>
+`nook` foreach [-g] <git command>
 
-`stache` help
+`nook` help
 
-`stache` init <repo>
+`nook` init <repo>
 
-`stache` list
+`nook` list
 
-`stache` list-tracked [<repo>]
+`nook` list-tracked [<repo>]
 
-`stache` list-untracked [<-a>] [<-r>] [<repo>]
+`nook` list-untracked [<-a>] [<-r>] [<repo>]
 
-`stache` pull
+`nook` pull
 
-`stache` push
+`nook` push
 
-`stache` rename <repo> <newname>
+`nook` rename <repo> <newname>
 
-`stache` run <repo> <shell command>
+`nook` run <repo> <shell command>
 
-`stache` status [<repo>]
+`nook` status [<repo>]
 
-`stache` upgrade <repo>
+`nook` upgrade <repo>
 
-`stache` version
+`nook` version
 
-`stache` which <substring>
+`nook` which <substring>
 
-`stache` write-gitignore [<repo>]
+`nook` write-gitignore [<repo>]
 
-`stache` <repo> <gitcommand>
+`nook` <repo> <gitcommand>
 
-`stache` <repo>
+`nook` <repo>
 
 
 ## DESCRIPTION
 
-`stache` allows you to have several `git`(1) repositories, all maintaining their
+`nook` allows you to have several `git`(1) repositories, all maintaining their
 working trees in $HOME without clobbering each other. That, in turn, means you
 can have one repository per config set (zsh, vim, ssh, etc), picking and
 choosing which configs you want to use on which machine.
 
-`stache` is using a technique called fake bare Git repositories, keeping <$GIT_DIR>
+`nook` is using a technique called fake bare Git repositories, keeping <$GIT_DIR>
 in a different directory from <$GIT_WORK_TREE> which is pointed to <$HOME>.
 
 The use of symlinks is not needed in this setup, making for a cleaner setup.
 
-To set up a new machine, `stache` has a built-in bootstrap. You populate
-<$STACHE_REPOS> ("<name> <url> <branch> [tags]" per repo) with `stache add
-<repo> [<tags>]` or `stache add --all`, and track that file in one of your
-repos. On the new machine `stache bootstrap` (also `stache clone --all`)
+To set up a new machine, `nook` has a built-in bootstrap. You populate
+<$NOOK_REPOS> ("<name> <url> <branch> [tags]" per repo) with `nook add
+<repo> [<tags>]` or `nook add --all`, and track that file in one of your
+repos. On the new machine `nook bootstrap` (also `nook clone --all`)
 clones everything listed there that is not already present. Give a repo an
 optional comma-separated tag list (4th column) and select per machine with
-`stache bootstrap --include=<tags>` / `--exclude=<tags>`; untagged repos are
+`nook bootstrap --include=<tags>` / `--exclude=<tags>`; untagged repos are
 always cloned.
 
 Please note that you can always use a path instead of a name for <repo>.
@@ -95,14 +95,15 @@ an interactive user.
 ## COMMANDS
 
 * add:
-  Append a repository to <$STACHE_REPOS> ("<name> <url> <branch>"). This is
-  the only thing that writes that file.
+  Append a repository to <$NOOK_REPOS> ("<name> <url> <branch> [tags]"). This
+  is the only thing that writes that file.
 
-  `<repo>`: add that repo. It must exist locally and have an <origin> remote.
+  `<repo> [<tags>]`: add that repo, with an optional comma-separated tag list
+  as a 4th column. The repo must exist locally and have an <origin> remote.
   Already-listed repos are left alone.
 
   `--all` (or `-a`): add every local repo with an <origin> remote that is not
-  already listed.
+  already listed (no tags).
 
 * clone:
   Clone an existing repository.
@@ -114,23 +115,23 @@ an interactive user.
   option to specify a branch at clone time, the default is `master`.
 
   `--all` (or `-a`): ignore <url>/<repo> and instead clone everything listed
-  in <$STACHE_REPOS> that is not already present. Same as `stache bootstrap`.
-  It must be the first word after `clone` (`stache clone --all [<file>]`); it
+  in <$NOOK_REPOS> that is not already present. Same as `nook bootstrap`.
+  It must be the first word after `clone` (`nook clone --all [<file>]`); it
   is not a normal option and cannot be combined with `-b` or a <url>.
 
 * commit:
   Commit in all repositories
 
 * config:
-  Edit <$STACHE_GITCONFIG>, a git config file that every stache repository
+  Edit <$NOOK_GITCONFIG>, a git config file that every nook repository
   includes (wired up by `upgrade`). Arguments are passed straight to
   `git config`; with none, the file is listed. Use it for settings that
   should apply to every repo, e.g.
 
-      stache config credential.helper '!gh auth git-credential'
-      stache config user.email you@example.com
+      nook config credential.helper '!gh auth git-credential'
+      nook config user.email you@example.com
 
-  Per-repo settings still go through `stache <repo> config ...`.
+  Per-repo settings still go through `nook <repo> config ...`.
 
 * delete:
   Delete an existing repository.
@@ -139,7 +140,7 @@ an interactive user.
   Enter repository; spawn new <$SHELL> with <$GIT_DIR> set.
 
 * foreach:
-  Execute git command for every stache repository.
+  Execute git command for every nook repository.
 
   `-g`: Execute in general context.
 
@@ -150,10 +151,10 @@ an interactive user.
   Initialize an empty repository.
 
 * list:
-  List all local stache repositories.
+  List all local nook repositories.
 
 * list-tracked:
-  List all files tracked by stache.
+  List all files tracked by nook.
 
   If you want to list files tracked by a specific repository, simply
   append the repository's name last.
@@ -164,7 +165,7 @@ an interactive user.
   This is a legacy command; you should use `list-tracked <repo>` instead.
 
 * list-untracked:
-  List all files NOT tracked by stache.
+  List all files NOT tracked by nook.
 
   `-a`: Show all files.
   By default, the `git ls-files --exclude-standard` is called.
@@ -176,15 +177,15 @@ an interactive user.
   `$repo`: List files not tracked by this specific repository.
 
 * pull:
-  Pull from all stache remotes.
+  Pull from all nook remotes.
 
 * push:
-  Push to all stache remotes.
+  Push to all nook remotes.
 
 * bootstrap:
-  Read <$STACHE_REPOS> and run `stache clone` for every listed repository that
+  Read <$NOOK_REPOS> and run `nook clone` for every listed repository that
   is not already present locally. Existing repos are left untouched. The forms
-  `stache bootstrap`, `stache clone --all` and `stache clone -a` are equivalent.
+  `nook bootstrap`, `nook clone --all` and `nook clone -a` are equivalent.
 
   `--include=<tags>`: comma-separated. Only clone rows whose 4th-column tags
   (also comma-separated) contain one of these. Rows with no tags always match.
@@ -192,7 +193,7 @@ an interactive user.
   `--exclude=<tags>`: comma-separated. Skip any row that has one of these tags.
   Exclude wins over include. Matching is case-insensitive.
 
-  `<file>`: read from this path instead of <$STACHE_REPOS>.
+  `<file>`: read from this path instead of <$NOOK_REPOS>.
 
 * rename:
   Rename a repository.
@@ -203,13 +204,13 @@ an interactive user.
 
   Please note that there is a somewhat magic feature for run. Instead of <repo>
   it accepts <path>, as well. Anything that has a slash in it will be assumed to
-  be a path. `stache run` will then operate on this directory instead of the one
+  be a path. `nook run` will then operate on this directory instead of the one
   normally generated from the repository's name.
   This is needed to support external scripts properly and of no concern to
   an interactive user.
 
 * status:
-  Show statuses of all/one stache repositories.
+  Show statuses of all/one nook repositories.
 
 * upgrade:
   Upgrade repository to currently recommended settings.
@@ -221,68 +222,68 @@ an interactive user.
   Find <substring> in name of any tracked file.
 
 * write-gitignore:
-  Write <repo>.stache/.gitignore via `git ls-files`. If <repo> is not specified
-  but we're within a stache repository, use that.
+  Write <repo>.nook/.gitignore via `git ls-files`. If <repo> is not specified
+  but we're within a nook repository, use that.
 
 * <repo> <gitcommand>:
   Shortcut to run `git` commands on a repo. Will prepend `git` to <gitcommand>.
 
 * <repo>:
-  Shortcut to run `stache enter <repo>`.
+  Shortcut to run `nook enter <repo>`.
 
 ## ENVIRONMENT
 
-As noted earlier, `stache` will set <$GIT_DIR> and <$GIT_WORK_TREE> to the
+As noted earlier, `nook` will set <$GIT_DIR> and <$GIT_WORK_TREE> to the
 appropriate values for fake bare Git repositories.
 
 ## CONFIG
 
-There are several ways to turn the various knobs on `stache`. In order of
+There are several ways to turn the various knobs on `nook`. In order of
 ascending precedence, they are:
 
-* `VARIABLE=foo stache`
-* </etc/stache/stacherc>
-* <$XDG_CONFIG_HOME/stache/.stacherc>
-* <$STACHE_REPO_D/<repo>.stache/.stacherc> (only when acting on <repo>)
-* `stache -c <file>`
+* `VARIABLE=foo nook`
+* </etc/nook/nookrc>
+* <$XDG_CONFIG_HOME/nook/.nookrc>
+* <$NOOK_REPO_D/<repo>.nook/.nookrc> (only when acting on <repo>)
+* `nook -c <file>`
 
 Please note that those files are sourced. Any and all commands will be
 executed in the context of your shell.
 
-The per-repo file <$XDG_CONFIG_HOME/stache/<repo>.stache/.stacherc> is read only
-while operating on that repository. It lives inside the <repo>.stache/
+The per-repo file <$XDG_CONFIG_HOME/nook/<repo>.nook/.nookrc> is read only
+while operating on that repository. It lives inside the <repo>.nook/
 directory (next to <repo>.git/), which `rename` moves and `delete` removes as
 a whole.
 
 Separately from those shell files, `upgrade` points every repository's
-`include.path` at <$STACHE_GITCONFIG>
-(<$XDG_CONFIG_HOME/stache/.gitconfig>). Put git settings that should apply
+`include.path` at <$NOOK_GITCONFIG>
+(<$XDG_CONFIG_HOME/nook/.gitconfig>). Put git settings that should apply
 to all repositories there -- `credential.helper`, `user.name`, `user.email`,
 and so on -- via the `config` command. `upgrade` also sets
-`status.showUntrackedFiles` in each repo (see <$STACHE_SHOW_UNTRACKED>) and
-`core.excludesfile` / `core.attributesfile` (see <$STACHE_GITIGNORE_FILE>).
+`status.showUntrackedFiles` in each repo (see <$NOOK_SHOW_UNTRACKED>) and
+`core.excludesfile` / `core.attributesfile` (see <$NOOK_GITIGNORE_FILE>).
 
 Interesting knobs you can turn:
 
-* <$STACHE_GITCONFIG>:
+* <$NOOK_GITCONFIG>:
   Path of the shared git config file included by every repository.
 
-  Defaults to <$XDG_CONFIG_HOME/stache/.gitconfig>.
+  Defaults to <$XDG_CONFIG_HOME/nook/.gitconfig>.
 
-* <$STACHE_GITIGNORE_FILE>, <$STACHE_GITATTRIBUTES_FILE>:
+* <$NOOK_GITIGNORE_FILE>, <$NOOK_GITATTRIBUTES_FILE>:
   Shared fallback ignore / attributes files, used by a repo when it has no
-  <repo>.stache/.gitignore (resp. gitattributes) of its own.
+  <repo>.nook/.gitignore (resp. gitattributes) of its own.
 
-  Default to <$XDG_CONFIG_HOME/stache/.gitignore> and
-  <$XDG_CONFIG_HOME/stache/.gitattributes>.
+  Default to <$XDG_CONFIG_HOME/nook/.gitignore> and
+  <$XDG_CONFIG_HOME/nook/.gitattributes>.
 
-* <$STACHE_SHOW_UNTRACKED>:
+* <$NOOK_SHOW_UNTRACKED>:
   Value written to `status.showUntrackedFiles` in each repo by `upgrade`.
 
-  Defaults to <no>, so `git status` in a stache repo ignores the rest of
+  Defaults to <no>, so `git status` in a nook repo ignores the rest of
   `$HOME`. Set to <normal> (or override per repo) to see untracked files.
 
-* <$STACHE_GITATTRIBUTES>:
+* <$NOOK_GITATTRIBUTES>:
   Can be <none>, or any other value.
 
   <none> will not maintain Git attributes in a special location.
@@ -291,7 +292,7 @@ Interesting knobs you can turn:
 
   Defaults to <none>.
 
-* <$STACHE_GITIGNORE>:
+* <$NOOK_GITIGNORE>:
   Can be <exact>, <none>, or <recursive>.
 
   <exact> will seed the repo-specific ignore file with all file and directory
@@ -304,7 +305,7 @@ Interesting knobs you can turn:
 
   Defaults to <exact>.
 
-* <$STACHE_WORKTREE>:
+* <$NOOK_WORKTREE>:
   Can be <absolute>, or <relative>.
 
   <absolute> will set an absolute path; defaulting to <$HOME>.
@@ -315,7 +316,7 @@ Interesting knobs you can turn:
 
 Less interesting knobs you could turn:
 
-* <$STACHE_DEBUG>:
+* <$NOOK_DEBUG>:
   Enter debug mode.
 
 * <$XDG_CONFIG_HOME>:
@@ -324,24 +325,24 @@ Less interesting knobs you could turn:
 
   Defaults to <$HOME/.config>.
 
-* <$STACHE_REPO_D>:
+* <$NOOK_REPO_D>:
   The directory where repositories are read from and stored.
 
-  Defaults to <$XDG_CONFIG_HOME/stache>.
+  Defaults to <$XDG_CONFIG_HOME/nook>.
 
-* <$STACHE_REPOS>:
-  The repo list you build with `stache add` and `bootstrap` reads
-  ("<name> <url> <branch>" per repo). `stache` never writes it on its own --
+* <$NOOK_REPOS>:
+  The repo list you build with `nook add` and `bootstrap` reads
+  ("<name> <url> <branch>" per repo). `nook` never writes it on its own --
   `delete` and `rename` leave stale lines for you to edit out.
 
-  Defaults to <$XDG_CONFIG_HOME/stache/stache.repos>.
+  Defaults to <$XDG_CONFIG_HOME/nook/nook.repos>.
 
-* <$STACHE_HOOK_D>:
+* <$NOOK_HOOK_D>:
   The directory where hooks are read from.
 
-  Defaults to <$XDG_CONFIG_HOME/stache/hooks>.
+  Defaults to <$XDG_CONFIG_HOME/nook/hooks>.
 
-* <$STACHE_BASE>:
+* <$NOOK_BASE>:
   The directory where repositories are checked out to.
 
   Defaults to <$HOME>.
@@ -349,8 +350,8 @@ Less interesting knobs you could turn:
 
 ## HOOK SYSTEM
 
-`stache` provides a hook system. Hook scripts must be executable and placed in
-<$XDG_CONFIG_HOME/stache/hooks> (or wherever <$STACHE_HOOK_D> points); `stache`
+`nook` provides a hook system. Hook scripts must be executable and placed in
+<$XDG_CONFIG_HOME/nook/hooks> (or wherever <$NOOK_HOOK_D> points); `nook`
 runs every executable hook it finds there.
 
 Hooks follow a simple format. <pre-run> will be run before anything is run.
@@ -359,7 +360,7 @@ any kind of string to order them. A system of <pre-run>, <pre-run\.10>,
 <pre-run\.20> etc is suggested; other options would be <pre-run-10> or
 <pre-run\.sh>. A dot after the hook name is optional.
 
-If you want to create hooks for a specific <stache> repository, simply prepend
+If you want to create hooks for a specific <nook> repository, simply prepend
 the repository's name, followed by a dot, i.e. <zsh\.pre-run>. Otherwise, the
 same rules as above apply. The dot between the repository's name and the hook
 is mandatory, though.
@@ -368,21 +369,21 @@ Available hooks are <pre-clone>, <post-clone>, <post-clone-retired>,
 <pre-command>, <post-command>, <pre-enter>, <post-enter>, <pre-init>,
 <post-init>, <pre-pull>, <post-pull>, <pre-push>, <post-push>, <pre-run>,
 <post-run>, <pre-upgrade>, and <post-upgrade>.
-If you need more, stache is trivial to patch, but please let upstream know so
+If you need more, nook is trivial to patch, but please let upstream know so
 we can ship them by default.
 
 ## OVERLAY SYSTEM
 
-`stache` also provides an overlay system. Similar to hooks, overlay scripts go
-in <$XDG_CONFIG_HOME/stache/overlays> (or wherever <$STACHE_OVERLAY_D> points).
+`nook` also provides an overlay system. Similar to hooks, overlay scripts go
+in <$XDG_CONFIG_HOME/nook/overlays> (or wherever <$NOOK_OVERLAY_D> points).
 
 Overlays follow the same rules as hooks and you are free to overwrite any
 and all functions. Same as hooks, you can use global or repository-specific
-overlays by using either <$STACHE_OVERLAY_D/$STACHE_COMMAND> or
-<$STACHE_OVERLAY_D/$STACHE_REPO_NAME.$STACHE_COMMAND>.
+overlays by using either <$NOOK_OVERLAY_D/$NOOK_COMMAND> or
+<$NOOK_OVERLAY_D/$NOOK_REPO_NAME.$NOOK_COMMAND>.
 
 Please note that nothing stops you from, e.g. overwriting `status()` in
-<$STACHE_OVERLAY_D/commit>. As the overlays will be sourced and you are
+<$NOOK_OVERLAY_D/commit>. As the overlays will be sourced and you are
 replacing arbitrary functions, any and all features may stop working, or you
 may even lose data.
 
@@ -395,17 +396,17 @@ While the author tried to avoid this in this case, manpages can not cover
 detailed howtos.
 
 This software also comes with a file called <README\.md>. It contains various
-approaches to setting up and using stache. You can view the file it as
+approaches to setting up and using nook. You can view the file it as
 plain text or render it into various other formats via Markdown.
 
-On Debian-based systems, this file can be found in </usr/share/doc/stache>.
+On Debian-based systems, this file can be found in </usr/share/doc/nook>.
 
 ## SECURITY CONSIDERATIONS
 
-`stache` allows you to execute arbitrary commands via `stache run`. For example,
-adding a `sudo`(8) rule for `stache` would be pretty stupid.
+`nook` allows you to execute arbitrary commands via `nook run`. For example,
+adding a `sudo`(8) rule for `nook` would be pretty stupid.
 
-Additionally, stache will source, i.e. execute, all files listed in <CONFIG>.
+Additionally, nook will source, i.e. execute, all files listed in <CONFIG>.
 You can put any and all commands into these config files and they will be
 executed.
 
@@ -427,13 +428,13 @@ config files, all of which were soft-linked into <$HOME>.
 Martin F. Krafft aka madduck came up with the concept of fake bare Git
 repositories.
 
-stache was initially written by madduck. This version is a re-implementation from
+nook was initially written by madduck. This version is a re-implementation from
 scratch with a lot more features. madduck graciously agreed to let the author
 take over the name.
 
 ## AUTHOR
 
-This manpage and `stache` itself were written by Richard "RichiH" Hartmann.
+This manpage and `nook` itself were written by Richard "RichiH" Hartmann.
 
 ## COPYRIGHT
 

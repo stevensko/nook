@@ -9,20 +9,20 @@
 # point of being impossible, this software will most likely follow suit.
 
 # This should always be the first line of code to facilitate debugging
-[ -n "$STACHE_DEBUG" ] && set -vx
+[ -n "$NOOK_DEBUG" ] && set -vx
 
 # If '.r<N>-g<SHA>' is appended to the version, you are seeing an unreleased
 # version built from the main branch HEAD. If "-standalone" is appended you are
 # using a version built explicitly for portability as a standalone script
 # rather than being installed to a specific system.
-STACHE_VERSION='@VERSION@@DEPLOYMENT@'; export STACHE_VERSION
-STACHE_SELF='stache'; export STACHE_SELF
+NOOK_VERSION='@VERSION@@DEPLOYMENT@'; export NOOK_VERSION
+NOOK_SELF='nook'; export NOOK_SELF
 
 # Ensure all files created are accessible only to the current user.
 umask 0077
 
 fatal() {
-	echo "$STACHE_SELF: fatal: $1" >&2
+	echo "$NOOK_SELF: fatal: $1" >&2
 	[ -z "$2" ] && exit 1
 	exit "$2"
 }
@@ -35,20 +35,20 @@ while getopts c:dv flag; do
 	case "$flag" in
 		d)
 			set -vx
-			STACHE_DEBUG=1
-			export STACHE_DEBUG
+			NOOK_DEBUG=1
+			export NOOK_DEBUG
 			echo 'debug mode on'
-			echo "$STACHE_SELF $STACHE_VERSION"
+			echo "$NOOK_SELF $NOOK_VERSION"
 			;;
 		v)
-			STACHE_VERBOSE=1
-			export STACHE_VERBOSE
+			NOOK_VERBOSE=1
+			export NOOK_VERBOSE
 			echo 'verbose mode on'
-			echo "$STACHE_SELF $STACHE_VERSION"
+			echo "$NOOK_SELF $NOOK_VERSION"
 			;;
 		c)
-			STACHE_OPTION_CONFIG="$OPTARG"
-			export STACHE_OPTION_CONFIG
+			NOOK_OPTION_CONFIG="$OPTARG"
+			export NOOK_OPTION_CONFIG
 			;;
 	esac
 done
@@ -65,50 +65,50 @@ source_all() {
 
 
 # Read configuration and set defaults if anything's not set
-[ -n "$STACHE_DEBUG" ]                  && set -vx
+[ -n "$NOOK_DEBUG" ]                  && set -vx
 : "${XDG_CONFIG_HOME:="$HOME/.config"}"
 
 # Read configuration files if there are any
 # shellcheck source=/dev/null
-[ -r "/etc/stache/stacherc" ]            && . "/etc/stache/stacherc"
+[ -r "/etc/nook/nookrc" ]            && . "/etc/nook/nookrc"
 # shellcheck source=/dev/null
-[ -r "$XDG_CONFIG_HOME/stache/.stacherc" ] && . "$XDG_CONFIG_HOME/stache/.stacherc"
-if [ -n "$STACHE_OPTION_CONFIG" ]; then
-	# Source $STACHE_OPTION_CONFIG if it can be read and is in $PWD of $PATH
-	if [ -r "$STACHE_OPTION_CONFIG" ]; then
-		source_all "$STACHE_OPTION_CONFIG"
+[ -r "$XDG_CONFIG_HOME/nook/.nookrc" ] && . "$XDG_CONFIG_HOME/nook/.nookrc"
+if [ -n "$NOOK_OPTION_CONFIG" ]; then
+	# Source $NOOK_OPTION_CONFIG if it can be read and is in $PWD of $PATH
+	if [ -r "$NOOK_OPTION_CONFIG" ]; then
+		source_all "$NOOK_OPTION_CONFIG"
 	else
-		fatal "Can not read configuration file '$STACHE_OPTION_CONFIG'" 1
+		fatal "Can not read configuration file '$NOOK_OPTION_CONFIG'" 1
 	fi
 fi
-[ -n "$STACHE_DEBUG" ]                  && set -vx
+[ -n "$NOOK_DEBUG" ]                  && set -vx
 
 # Read defaults
-: "${STACHE_REPO_D:="$XDG_CONFIG_HOME/stache"}"; export STACHE_REPO_D
-: "${STACHE_HOOK_D:="$XDG_CONFIG_HOME/stache/hooks"}"; export STACHE_HOOK_D
-: "${STACHE_OVERLAY_D:="$XDG_CONFIG_HOME/stache/overlays"}"; export STACHE_OVERLAY_D
-: "${STACHE_REPOS:="$XDG_CONFIG_HOME/stache/stache.repos"}"; export STACHE_REPOS
-: "${STACHE_BASE:="$HOME"}"; export STACHE_BASE
-: "${STACHE_GITIGNORE:=exact}"; export STACHE_GITIGNORE
-: "${STACHE_GITATTRIBUTES:=none}"; export STACHE_GITATTRIBUTES
-: "${STACHE_WORKTREE:=absolute}"; export STACHE_WORKTREE
-: "${STACHE_SHOW_UNTRACKED:=no}"; export STACHE_SHOW_UNTRACKED
-: "${STACHE_GITCONFIG:="$XDG_CONFIG_HOME/stache/.gitconfig"}"; export STACHE_GITCONFIG
-: "${STACHE_GITIGNORE_FILE:="$XDG_CONFIG_HOME/stache/.gitignore"}"; export STACHE_GITIGNORE_FILE
-: "${STACHE_GITATTRIBUTES_FILE:="$XDG_CONFIG_HOME/stache/.gitattributes"}"; export STACHE_GITATTRIBUTES_FILE
+: "${NOOK_REPO_D:="$XDG_CONFIG_HOME/nook"}"; export NOOK_REPO_D
+: "${NOOK_HOOK_D:="$XDG_CONFIG_HOME/nook/hooks"}"; export NOOK_HOOK_D
+: "${NOOK_OVERLAY_D:="$XDG_CONFIG_HOME/nook/overlays"}"; export NOOK_OVERLAY_D
+: "${NOOK_REPOS:="$XDG_CONFIG_HOME/nook/nook.repos"}"; export NOOK_REPOS
+: "${NOOK_BASE:="$HOME"}"; export NOOK_BASE
+: "${NOOK_GITIGNORE:=exact}"; export NOOK_GITIGNORE
+: "${NOOK_GITATTRIBUTES:=none}"; export NOOK_GITATTRIBUTES
+: "${NOOK_WORKTREE:=absolute}"; export NOOK_WORKTREE
+: "${NOOK_SHOW_UNTRACKED:=no}"; export NOOK_SHOW_UNTRACKED
+: "${NOOK_GITCONFIG:="$XDG_CONFIG_HOME/nook/.gitconfig"}"; export NOOK_GITCONFIG
+: "${NOOK_GITIGNORE_FILE:="$XDG_CONFIG_HOME/nook/.gitignore"}"; export NOOK_GITIGNORE_FILE
+: "${NOOK_GITATTRIBUTES_FILE:="$XDG_CONFIG_HOME/nook/.gitattributes"}"; export NOOK_GITATTRIBUTES_FILE
 
-if [ ! "x$STACHE_GITIGNORE" = 'xexact' ] && [ ! "x$STACHE_GITIGNORE" = 'xnone' ] && [ ! "x$STACHE_GITIGNORE" = 'xrecursive' ]; then
-	fatal "'\$STACHE_GITIGNORE' must equal 'exact', 'none', or 'recursive'" 1
+if [ ! "x$NOOK_GITIGNORE" = 'xexact' ] && [ ! "x$NOOK_GITIGNORE" = 'xnone' ] && [ ! "x$NOOK_GITIGNORE" = 'xrecursive' ]; then
+	fatal "'\$NOOK_GITIGNORE' must equal 'exact', 'none', or 'recursive'" 1
 fi
 
-if [ ! "x$STACHE_WORKTREE" = 'xabsolute' ] && [ ! "x$STACHE_WORKTREE" = 'xrelative' ]; then
-	fatal "'\$STACHE_WORKTREE' must equal 'absolute', or 'relative'" 1
+if [ ! "x$NOOK_WORKTREE" = 'xabsolute' ] && [ ! "x$NOOK_WORKTREE" = 'xrelative' ]; then
+	fatal "'\$NOOK_WORKTREE' must equal 'absolute', or 'relative'" 1
 fi
 
 
 # editorconfig-checker-disable
 help() {
-	echo "usage: $STACHE_SELF <options> <command>
+	echo "usage: $NOOK_SELF <options> <command>
 
    options:
    -c <file>            Source file
@@ -116,16 +116,17 @@ help() {
    -v                   Enable verbose mode
 
    commands:
-   add <repo>           Add <repo>'s line (name/url/branch) to \$STACHE_REPOS
-   add --all | -a       Append every local repo with a remote that is not
-                        already in \$STACHE_REPOS
+   add <repo> [<tags>]  Add <repo>'s line to \$NOOK_REPOS; <tags> is an
+                        optional comma-separated list (4th column)
+   add --all | -a       Append every local repo with a remote not already
+                        in \$NOOK_REPOS (written without tags)
    clone [-b <branch>] \\
          <remote> \\
          [<repo>]       Clone from an existing repository
    commit               Commit in all repositories
    config \\
      [<git config args>] Edit shared git config included by every repo
-                        (\$STACHE_GITCONFIG); no args lists it
+                        (\$NOOK_GITCONFIG); no args lists it
    delete <repo>        Delete an existing repository
    enter <repo>         Enter repository; spawn new instance of \$SHELL
                         with \$GIT_DIR set.
@@ -140,12 +141,12 @@ help() {
    list-untracked \\
         [<-a>] [<-r>]
         [<repo>]        List all files not tracked by all or one repositories
-   pull                 Pull from all stache remotes
-   push                 Push to stache remotes
+   pull                 Pull from all nook remotes
+   push                 Push to nook remotes
    bootstrap \\
      [--include=<tags>] \\
      [--exclude=<tags>] \\
-     [<file>]           Clone every repo in \$STACHE_REPOS (populate it with
+     [<file>]           Clone every repo in \$NOOK_REPOS (populate it with
                         'add') not already present. With --include, only rows
                         whose 4th-column tags match (untagged rows always
                         match); --exclude drops rows with a matching tag.
@@ -155,12 +156,12 @@ help() {
    run <repo> \\
        <command>        Use this repository
    status \\
-     [--terse] [<repo>] Show statuses of all/one stache repositories
+     [--terse] [<repo>] Show statuses of all/one nook repositories
    upgrade <repo>       Upgrade repository to currently recommended settings
    version              Print version information
    which <substring>    Find substring in name of any tracked file
    write-gitignore \\
-   [<repo>]             Write <repo>.stache/.gitignore via git ls-files
+   [<repo>]             Write <repo>.nook/.gitignore via git ls-files
 
    <repo> <git command> Shortcut to run git commands directly
    <repo>               Shortcut to enter repository" >&2
@@ -168,21 +169,21 @@ help() {
 # editorconfig-checker-enable
 
 debug() {
-	if [ -n "$STACHE_DEBUG" ]; then echo "$STACHE_SELF: debug: $*"; fi
+	if [ -n "$NOOK_DEBUG" ]; then echo "$NOOK_SELF: debug: $*"; fi
 }
 
 verbose() {
-	if [ -n "$STACHE_DEBUG" ] || [ -n "$STACHE_VERBOSE" ]; then
-		echo "$STACHE_SELF: verbose: $*"
+	if [ -n "$NOOK_DEBUG" ] || [ -n "$NOOK_VERBOSE" ]; then
+		echo "$NOOK_SELF: verbose: $*"
 	fi
 }
 
 error() {
-	echo "$STACHE_SELF: error: $1" >&2
+	echo "$NOOK_SELF: error: $1" >&2
 }
 
 info() {
-	echo "$STACHE_SELF: info: $1"
+	echo "$NOOK_SELF: info: $1"
 }
 
 clone() {
@@ -195,39 +196,39 @@ clone() {
 	#   git ls-remote ORIGIN
 	#   get HEAD commit ID
 	#   see what refs/heads/* match that commit ID
-	#   set STACHE_BRANCH if only one match
+	#   set NOOK_BRANCH if only one match
 	#   offer a list of all matching refs for the user to choose
-	for STACHE_BRANCH_TEST in "$STACHE_BRANCH" master trunk development; do
-		if [ $(@GIT@ ls-remote "$GIT_REMOTE" "$STACHE_BRANCH_TEST" 2> /dev/null | @WC@ -l ) -lt 1 ]; then
-			info "remote branch '$STACHE_BRANCH_TEST' empty"
+	for NOOK_BRANCH_TEST in "$NOOK_BRANCH" master trunk development; do
+		if [ $(@GIT@ ls-remote "$GIT_REMOTE" "$NOOK_BRANCH_TEST" 2> /dev/null | @WC@ -l ) -lt 1 ]; then
+			info "remote branch '$NOOK_BRANCH_TEST' empty"
 		else
-			info "remote branch '$STACHE_BRANCH_TEST' found"
-			STACHE_BRANCH_REMOTE=$STACHE_BRANCH_TEST
+			info "remote branch '$NOOK_BRANCH_TEST' found"
+			NOOK_BRANCH_REMOTE=$NOOK_BRANCH_TEST
 			break
 		fi
 	done
-	if [ -z "$STACHE_BRANCH_REMOTE" ]; then
-		info "No non-empty remote branches found, aborting. Please run `$0 delete $STACHE_REPO_NAME`, determine the correct branch, and try again."
+	if [ -z "$NOOK_BRANCH_REMOTE" ]; then
+		info "No non-empty remote branches found, aborting. Please run `$0 delete $NOOK_REPO_NAME`, determine the correct branch, and try again."
 		exit
 	fi
-	STACHE_BRANCH=$STACHE_BRANCH_REMOTE
+	NOOK_BRANCH=$NOOK_BRANCH_REMOTE
 
 	# Set up remote
 	@GIT@ remote add origin "$GIT_REMOTE"
-	@GIT@ checkout -b "$STACHE_BRANCH" || return $?
-	@GIT@ config branch."$STACHE_BRANCH".remote origin
-	@GIT@ config branch."$STACHE_BRANCH".merge  refs/heads/"$STACHE_BRANCH"
+	@GIT@ checkout -b "$NOOK_BRANCH" || return $?
+	@GIT@ config branch."$NOOK_BRANCH".remote origin
+	@GIT@ config branch."$NOOK_BRANCH".merge  refs/heads/"$NOOK_BRANCH"
 	GIT_VERSION_MAJOR=$(@GIT@ --version | @SED@ -E -n 's/.* ([0-9]+)\..*/\1/p' )
 	if [ 1 -lt "$GIT_VERSION_MAJOR" ];then
-		@GIT@ fetch origin "$STACHE_BRANCH"
+		@GIT@ fetch origin "$NOOK_BRANCH"
 	else
 		@GIT@ fetch origin
 	fi
 	hook pre-merge
-	@GIT@ read-tree -n -mu origin/"$STACHE_BRANCH" \
+	@GIT@ read-tree -n -mu origin/"$NOOK_BRANCH" \
 		|| fatal "will stop after fetching and not try to merge!
-  Once this situation has been resolved, run 'stache $STACHE_REPO_NAME pull' to finish cloning." 17 # editorconfig-checker-disable-line
-	@GIT@ -c merge.ff=true merge origin/"$STACHE_BRANCH"
+  Once this situation has been resolved, run 'nook $NOOK_REPO_NAME pull' to finish cloning." 17 # editorconfig-checker-disable-line
+	@GIT@ -c merge.ff=true merge origin/"$NOOK_BRANCH"
 	hook post-merge
 	hook post-clone
 	retire
@@ -237,22 +238,22 @@ clone() {
 commit() {
 	hook_global pre-commit
 	shift  # remove the "commit" command.
-	for STACHE_REPO_NAME in $(list); do
-		export STACHE_REPO_NAME
-		echo "$STACHE_REPO_NAME: "
-		GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
+	for NOOK_REPO_NAME in $(list); do
+		export NOOK_REPO_NAME
+		echo "$NOOK_REPO_NAME: "
+		GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
 		use
 		hook_repo pre-commit
 		@GIT@ commit --untracked-files=no --quiet "$@"
 		hook_repo post-commit
-		STACHE_COMMAND_RETURN_CODE=$?
+		NOOK_COMMAND_RETURN_CODE=$?
 		echo
 	done
 	hook_global post-commit
 }
 
 delete() {
-	cd "$STACHE_BASE" || fatal "could not enter '$STACHE_BASE'" 11
+	cd "$NOOK_BASE" || fatal "could not enter '$NOOK_BASE'" 11
 	use
 	info "This operation WILL DESTROY DATA!"
 	files=$(@GIT@ ls-files)
@@ -269,7 +270,7 @@ To continue, type 'Yes, do as I say'"
 	# C-quote) are handled verbatim; `--` guards against leading dashes.
 	@GIT@ ls-files -z | xargs -0 rm -f -- ||
 		info "could not delete some files, continuing with repository deletion"
-	# Remove the whole <name>.stache/ container (git dir, per-repo config,
+	# Remove the whole <name>.nook/ container (git dir, per-repo config,
 	# per-repo gitignore/gitattributes).
 	rm -rf "${GIT_DIR%/*}" || error "could not delete '${GIT_DIR%/*}'"
 }
@@ -291,20 +292,20 @@ foreach() {
 	while getopts gp flag; do
 		case "$flag" in
 			g) unset command_prefix ;;
-			p) STACHE_PRINT_REPO_PREFIX=1 ;;
+			p) NOOK_PRINT_REPO_PREFIX=1 ;;
 		esac
 	done
 	shift $((OPTIND-1))
-	export STACHE_PRINT_REPO_PREFIX
-	for STACHE_REPO_NAME in $(list); do
-		export STACHE_REPO_NAME
-		GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
+	export NOOK_PRINT_REPO_PREFIX
+	for NOOK_REPO_NAME in $(list); do
+		export NOOK_REPO_NAME
+		GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
 		use
 		hook_repo pre-foreach
-		if [ -n "${STACHE_PRINT_REPO_PREFIX+x}" ]; then
-			$command_prefix "$@" | @SED@ "s/^/$STACHE_REPO_NAME: /"
+		if [ -n "${NOOK_PRINT_REPO_PREFIX+x}" ]; then
+			$command_prefix "$@" | @SED@ "s/^/$NOOK_REPO_NAME: /"
 		else
-			echo "$STACHE_REPO_NAME:"
+			echo "$NOOK_REPO_NAME:"
 			$command_prefix "$@"
 		fi
 		hook_repo post-foreach
@@ -313,11 +314,11 @@ foreach() {
 }
 
 git_dir_exists() {
-	[ -d "$GIT_DIR" ] || fatal "no repository found for '$STACHE_REPO_NAME'" 12
+	[ -d "$GIT_DIR" ] || fatal "no repository found for '$NOOK_REPO_NAME'" 12
 }
 
 hook_global() {
-	for hook in "$STACHE_HOOK_D/$1"*; do
+	for hook in "$NOOK_HOOK_D/$1"*; do
 		[ -x "$hook" ] || continue
 		verbose "executing '$hook'"
 		"$hook"
@@ -325,7 +326,7 @@ hook_global() {
 }
 
 hook_repo() {
-	for hook in "$STACHE_HOOK_D/$STACHE_REPO_NAME.$1"*; do
+	for hook in "$NOOK_HOOK_D/$NOOK_REPO_NAME.$1"*; do
 		[ -x "$hook" ] || continue
 		verbose "executing '$hook'"
 		"$hook" || fatal "hook [$hook] failed" 1
@@ -340,73 +341,74 @@ hook() {
 init() {
 	hook pre-init
 	[ ! -e "$GIT_DIR" ] || fatal "'$GIT_DIR' exists" 10
-	mkdir -p "$STACHE_BASE" || fatal "could not create '$STACHE_BASE'" 50
+	mkdir -p "$NOOK_BASE" || fatal "could not create '$NOOK_BASE'" 50
 	mkdir -p "${GIT_DIR%/*}" || fatal "could not create '${GIT_DIR%/*}'" 50
-	cd "$STACHE_BASE" || fatal "could not enter '$STACHE_BASE'" 11
+	cd "$NOOK_BASE" || fatal "could not enter '$NOOK_BASE'" 11
 	@GIT@ init --shared=false
 	upgrade
 	hook post-init
 }
 
 list() {
-	for repo in "$STACHE_REPO_D"/*.stache; do
+	for repo in "$NOOK_REPO_D"/*.nook; do
 		[ -d "$repo" ] || continue
-		name=$(basename "$repo" .stache)
+		name=$(basename "$repo" .nook)
 		[ -d "$repo/$name.git" ] && [ -r "$repo/$name.git" ] && echo "$name"
 	done
 }
 
 list_has_remote() {
-	for STACHE_REPO_NAME in $(list); do
-		GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
+	for NOOK_REPO_NAME in $(list); do
+		GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
 		# This command returns the tracking branch of the currently-checked-out local
 		# branch, if any. See https://stackoverflow.com/a/9753364
-		[ -n  "$(@GIT@ for-each-ref "$(@GIT@ symbolic-ref -q HEAD)")" ] && echo "$STACHE_REPO_NAME"
+		[ -n  "$(@GIT@ for-each-ref "$(@GIT@ symbolic-ref -q HEAD)")" ] && echo "$NOOK_REPO_NAME"
 	done
 }
 
 config() {
-	# Read/write $STACHE_GITCONFIG, a git config file that every stache repo
+	# Read/write $NOOK_GITCONFIG, a git config file that every nook repo
 	# includes (wired up by upgrade()). Args are passed straight to
-	# `git config`, e.g.  stache config credential.helper '!gh auth git-credential'
+	# `git config`, e.g.  nook config credential.helper '!gh auth git-credential'
 	# With no args, list the current contents.
 	shift
-	[ -e "$STACHE_GITCONFIG" ] || : > "$STACHE_GITCONFIG" ||
-		fatal "could not create '$STACHE_GITCONFIG'" 50
+	[ -e "$NOOK_GITCONFIG" ] || : > "$NOOK_GITCONFIG" ||
+		fatal "could not create '$NOOK_GITCONFIG'" 50
 	[ "$#" -eq 0 ] && set -- --list
 	# Run from / so a stray/broken .git in the cwd's ancestry (e.g. a
 	# leftover gitlink in $HOME) cannot make repo discovery fail here.
-	@GIT@ -C / config --file "$STACHE_GITCONFIG" "$@"
-	STACHE_COMMAND_RETURN_CODE=$?
+	@GIT@ -C / config --file "$NOOK_GITCONFIG" "$@"
+	NOOK_COMMAND_RETURN_CODE=$?
 }
 
 repos_has() {
-	# True if $STACHE_REPOS has a non-comment line for repo name $1.
+	# True if $NOOK_REPOS has a non-comment line for repo name $1.
 	local _n _rest
-	[ -r "$STACHE_REPOS" ] || return 1
+	[ -r "$NOOK_REPOS" ] || return 1
 	while read -r _n _rest; do
 		case "$_n" in ''|\#*) continue;; esac
 		[ "x$_n" = "x$1" ] && return 0
-	done < "$STACHE_REPOS"
+	done < "$NOOK_REPOS"
 	return 1
 }
 
 repos_line() {
-	# Print "<name> <url> <branch>" for repo $1; return 1 if it has no origin URL.
+	# Print "<name> <url> <branch> [tags]" for repo $1 ($2 = optional tag list).
+	# Return 1 if the repo has no origin URL.
 	local url branch
-	GIT_DIR=$STACHE_REPO_D/$1.stache/$1.git; export GIT_DIR
+	GIT_DIR=$NOOK_REPO_D/$1.nook/$1.git; export GIT_DIR
 	url=$(@GIT@ config --get remote.origin.url 2> /dev/null) || return 1
 	[ -n "$url" ] || return 1
 	branch=$(@GIT@ symbolic-ref --quiet --short HEAD 2> /dev/null) || branch=
-	printf '%s %s %s\n' "$1" "$url" "$branch"
+	printf '%s %s %s%s\n' "$1" "$url" "$branch" "${2:+ $2}"
 }
 
 repos_append() {
-	# Append "$1" (a repos_line string) to $STACHE_REPOS, creating it with a
+	# Append "$1" (a repos_line string) to $NOOK_REPOS, creating it with a
 	# header if needed.
-	[ -e "$STACHE_REPOS" ] || echo "# stache repos -- fields: <name> <url> <branch>" > "$STACHE_REPOS" ||
-		fatal "add: could not create '$STACHE_REPOS'" 50
-	printf '%s\n' "$1" >> "$STACHE_REPOS" || fatal "add: could not write '$STACHE_REPOS'" 50
+	[ -e "$NOOK_REPOS" ] || echo "# nook repos -- fields: <name> <url> <branch> [tags]" > "$NOOK_REPOS" ||
+		fatal "add: could not create '$NOOK_REPOS'" 50
+	printf '%s\n' "$1" >> "$NOOK_REPOS" || fatal "add: could not write '$NOOK_REPOS'" 50
 }
 
 add() {
@@ -415,28 +417,28 @@ add() {
 		--all|-a)
 			local n line
 			n=0
-			for STACHE_REPO_NAME in $(list); do
-				repos_has "$STACHE_REPO_NAME" && continue
-				line=$(repos_line "$STACHE_REPO_NAME") || continue
+			for NOOK_REPO_NAME in $(list); do
+				repos_has "$NOOK_REPO_NAME" && continue
+				line=$(repos_line "$NOOK_REPO_NAME") || continue
 				repos_append "$line"
-				info "added '$STACHE_REPO_NAME'"
+				info "added '$NOOK_REPO_NAME'"
 				n=$((n + 1))
 			done
-			info "$n repo(s) appended to '$STACHE_REPOS'"
+			info "$n repo(s) appended to '$NOOK_REPOS'"
 			;;
 		'')
 			fatal "add: specify a repository name, or --all / -a" 1
 			;;
 		*)
 			local line
-			[ -d "$STACHE_REPO_D/$1.stache/$1.git" ] || fatal "add: no such repository: '$1'" 12
+			[ -d "$NOOK_REPO_D/$1.nook/$1.git" ] || fatal "add: no such repository: '$1'" 12
 			if repos_has "$1"; then
-				info "'$1' is already in '$STACHE_REPOS'"
+				info "'$1' is already in '$NOOK_REPOS'"
 				return 0
 			fi
-			line=$(repos_line "$1") || fatal "add: '$1' has no 'origin' remote" 1
+			line=$(repos_line "$1" "${2:-}") || fatal "add: '$1' has no 'origin' remote" 1
 			repos_append "$line"
-			info "added '$1' to '$STACHE_REPOS'"
+			info "added '$1' to '$NOOK_REPOS'${2:+ (tags: $2)}"
 			;;
 	esac
 }
@@ -464,13 +466,13 @@ tag_match() {
 }
 
 bootstrap() {
-	# Clone every repo listed in $STACHE_REPOS that is not already present.
-	# Reached as `stache bootstrap [opts] [<file>]` or
-	# `stache clone --all|-a [opts] [<file>]`.
+	# Clone every repo listed in $NOOK_REPOS that is not already present.
+	# Reached as `nook bootstrap [opts] [<file>]` or
+	# `nook clone --all|-a [opts] [<file>]`.
 	# opts: --include=tag,tag  --exclude=tag,tag
 	shift  # drop the command word
 	local inc exc source_file a
-	inc= exc= source_file=$STACHE_REPOS
+	inc= exc= source_file=$NOOK_REPOS
 	for a in "$@"; do
 		case $a in
 			--include=*) inc=${a#--include=} ;;
@@ -480,7 +482,7 @@ bootstrap() {
 			*) source_file=$a ;;
 		esac
 	done
-	[ -r "$source_file" ] || fatal "$STACHE_COMMAND: repos file not readable: '$source_file'" 1
+	[ -r "$source_file" ] || fatal "$NOOK_COMMAND: repos file not readable: '$source_file'" 1
 	# Fields are whitespace-separated; none of name/url/branch can contain a space.
 	while read -r name url branch tags; do
 		case "$name" in ''|\#*) continue;; esac
@@ -492,7 +494,7 @@ bootstrap() {
 			verbose "skipping '$name': tags '${tags:-none}' do not match filter"
 			continue
 		fi
-		if [ -e "$STACHE_REPO_D/$name.stache/$name.git" ]; then
+		if [ -e "$NOOK_REPO_D/$name.nook/$name.git" ]; then
 			info "skipping '$name': already present"
 			continue
 		fi
@@ -506,23 +508,23 @@ bootstrap() {
 }
 
 get_files() {
-	GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
+	GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
 	@GIT@ ls-files --full-name
 }
 
 list_tracked() {
-	STACHE_REPO_NAME=$2; export STACHE_REPO_NAME
-	if [ -n "$STACHE_REPO_NAME" ]; then
+	NOOK_REPO_NAME=$2; export NOOK_REPO_NAME
+	if [ -n "$NOOK_REPO_NAME" ]; then
 		get_files | list_tracked_helper
 	else
-		for STACHE_REPO_NAME in $(list); do
+		for NOOK_REPO_NAME in $(list); do
 			get_files
 		done | list_tracked_helper
 	fi
 }
 
 list_tracked_helper() {
-	@SED@ "s,^,$(printf '%s\n' "$STACHE_BASE/" | @SED@ 's/[,\&]/\\&/g')," | sort -u
+	@SED@ "s,^,$(printf '%s\n' "$NOOK_BASE/" | @SED@ 's/[,\&]/\\&/g')," | sort -u
 }
 
 list_tracked_by() {
@@ -534,7 +536,7 @@ list_untracked() {
 	temp_file_untracked=$(mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX") || fatal 'Could not create temp file'
 	temp_file_untracked_copy=$(mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX") || fatal 'Could not create temp file'
 
-	# Hack in support for `stache list-untracked -r`...
+	# Hack in support for `nook list-untracked -r`...
 	exclude_standard_opt='--exclude-standard'
 	directory_opt='--directory'
 	shift
@@ -546,13 +548,13 @@ list_untracked() {
 	done
 	shift $((OPTIND-1))
 	# ...and parse for a potential parameter afterwards. As we shifted things out of $* in during getops, we need to look at $1
-	STACHE_REPO_NAME=$1; export STACHE_REPO_NAME
+	NOOK_REPO_NAME=$1; export NOOK_REPO_NAME
 
-	if [ -n "$STACHE_REPO_NAME" ]; then
-		list_untracked_helper "$STACHE_REPO_NAME"
+	if [ -n "$NOOK_REPO_NAME" ]; then
+		list_untracked_helper "$NOOK_REPO_NAME"
 	else
-		for STACHE_REPO_NAME in $(list); do
-			list_untracked_helper "$STACHE_REPO_NAME"
+		for NOOK_REPO_NAME in $(list); do
+			list_untracked_helper "$NOOK_REPO_NAME"
 		done
 	fi
 	cat "$temp_file_untracked"
@@ -562,7 +564,7 @@ list_untracked() {
 }
 
 list_untracked_helper() {
-	export GIT_DIR="$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git"
+	export GIT_DIR="$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git"
 	@GIT@ ls-files --others $exclude_standard_opt $directory_opt | (
 		while read -r line; do
 			echo "$line"
@@ -580,15 +582,15 @@ list_untracked_helper() {
 
 pull() {
 	hook_global pre-pull
-	for STACHE_REPO_NAME in $(list_has_remote); do
-		export STACHE_REPO_NAME
-		printf '%s: ' "$STACHE_REPO_NAME"
-		GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
+	for NOOK_REPO_NAME in $(list_has_remote); do
+		export NOOK_REPO_NAME
+		printf '%s: ' "$NOOK_REPO_NAME"
+		GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
 		use
 		hook_repo pre-pull
 		@GIT@ pull
 		hook_repo post-pull
-		STACHE_COMMAND_RETURN_CODE=$?
+		NOOK_COMMAND_RETURN_CODE=$?
 		echo
 	done
 	hook_global post-pull
@@ -596,39 +598,39 @@ pull() {
 
 push() {
 	hook_global pre-push
-	for STACHE_REPO_NAME in $(list_has_remote); do
-		export STACHE_REPO_NAME
-		printf '%s: ' "$STACHE_REPO_NAME"
-		GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
+	for NOOK_REPO_NAME in $(list_has_remote); do
+		export NOOK_REPO_NAME
+		printf '%s: ' "$NOOK_REPO_NAME"
+		GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
 		use
 		hook_repo pre-push
 		@GIT@ push
 		hook_repo post-push
-		STACHE_COMMAND_RETURN_CODE=$?
+		NOOK_COMMAND_RETURN_CODE=$?
 		echo
 	done
 	hook_global post-push
 }
 
 retire() {
-	unset STACHE_DIRECTORY
+	unset NOOK_DIRECTORY
 }
 
 rename() {
 	git_dir_exists
-	stache_dir_old=${GIT_DIR%/*}
-	stache_dir_new=${GIT_DIR_NEW%/*}
-	[ -e "$stache_dir_new" ] && fatal "'$stache_dir_new' exists" 54
-	# Move the whole <name>.stache/ container, then rename the git dir inside it.
-	mv -f "$stache_dir_old" "$stache_dir_new" ||
-		fatal "Could not mv '$stache_dir_old' '$stache_dir_new'" 52
-	mv -f "$stache_dir_new/$STACHE_REPO_NAME.git" "$GIT_DIR_NEW" ||
+	nook_dir_old=${GIT_DIR%/*}
+	nook_dir_new=${GIT_DIR_NEW%/*}
+	[ -e "$nook_dir_new" ] && fatal "'$nook_dir_new' exists" 54
+	# Move the whole <name>.nook/ container, then rename the git dir inside it.
+	mv -f "$nook_dir_old" "$nook_dir_new" ||
+		fatal "Could not mv '$nook_dir_old' '$nook_dir_new'" 52
+	mv -f "$nook_dir_new/$NOOK_REPO_NAME.git" "$GIT_DIR_NEW" ||
 		fatal "Could not rename git dir to '$GIT_DIR_NEW'" 52
 
 	# Now that the repository has been renamed, we need to fix up its configuration
 	# Overwrite old name..
 	GIT_DIR=$GIT_DIR_NEW
-	STACHE_REPO_NAME=$STACHE_REPO_NAME_NEW
+	NOOK_REPO_NAME=$NOOK_REPO_NAME_NEW
 	# ..and clobber all old configuration
 	upgrade
 }
@@ -637,7 +639,7 @@ run() {
 	hook pre-run
 	use
 	"$@"
-	STACHE_COMMAND_RETURN_CODE=$?
+	NOOK_COMMAND_RETURN_CODE=$?
 	hook post-run
 }
 
@@ -645,14 +647,14 @@ status() {
 	if [ -t 1 ]; then
 		COLORING="-c color.status=always"
 	fi
-	if [ -n "$STACHE_REPO_NAME" ]; then
-		status_helper "$STACHE_REPO_NAME"
+	if [ -n "$NOOK_REPO_NAME" ]; then
+		status_helper "$NOOK_REPO_NAME"
 	else
-		for STACHE_REPO_NAME in $(list); do
-			STATUS="$(status_helper "$STACHE_REPO_NAME" "$COLORING")"
-			[ -n "$STATUS" ] || [ -z "$STACHE_STATUS_TERSE" ] && echo "$STACHE_REPO_NAME:"
+		for NOOK_REPO_NAME in $(list); do
+			STATUS="$(status_helper "$NOOK_REPO_NAME" "$COLORING")"
+			[ -n "$STATUS" ] || [ -z "$NOOK_STATUS_TERSE" ] && echo "$NOOK_REPO_NAME:"
 			[ -n "$STATUS" ]            && echo "$STATUS"
-			[ -z "$STACHE_STATUS_TERSE" ] && echo
+			[ -z "$NOOK_STATUS_TERSE" ] && echo
 		done
 	fi
 }
@@ -661,8 +663,8 @@ status() {
 #          wc -l  output and a deliberate lack of quoting for git args.
 # shellcheck disable=SC2086
 status_helper() {
-	GIT_DIR=$STACHE_REPO_D/$1.stache/$1.git; export GIT_DIR
-	STACHE_GIT_OPTIONS="-c status.relativePaths=false $2"
+	GIT_DIR=$NOOK_REPO_D/$1.nook/$1.git; export GIT_DIR
+	NOOK_GIT_OPTIONS="-c status.relativePaths=false $2"
 	use
 	# Shellcheck isn't understanding a complex block.
 	# shellcheck disable=SC1083
@@ -672,8 +674,8 @@ status_helper() {
 		[ ${commits_behind} -ne 0 ] && echo "Behind $remote_tracking_branch by $commits_behind commits"
 		[ ${commits_ahead} -ne 0 ] && echo "Ahead of $remote_tracking_branch by $commits_ahead commits"
 	}
-	@GIT@ ${STACHE_GIT_OPTIONS} status --short --untracked-files='no' | @SED@ -E 's@([^ ] +)@\1~/@'
-	STACHE_COMMAND_RETURN_CODE=$?
+	@GIT@ ${NOOK_GIT_OPTIONS} status --short --untracked-files='no' | @SED@ -E 's@([^ ] +)@\1~/@'
+	NOOK_COMMAND_RETURN_CODE=$?
 }
 
 upgrade() {
@@ -684,68 +686,68 @@ upgrade() {
 	@GIT@ config core.bare false
 	# core.worktree may be absolute or relative to $GIT_DIR, depending on
 	# user preference
-	if [ ! "x$STACHE_WORKTREE" = 'xabsolute' ]; then
-		@GIT@ config core.worktree "$(cd "$GIT_DIR" && GIT_WORK_TREE=$STACHE_BASE @GIT@ rev-parse --show-cdup)"
-	elif [ ! "x$STACHE_WORKTREE" = 'xrelative' ]; then
-		@GIT@ config core.worktree "$STACHE_BASE"
+	if [ ! "x$NOOK_WORKTREE" = 'xabsolute' ]; then
+		@GIT@ config core.worktree "$(cd "$GIT_DIR" && GIT_WORK_TREE=$NOOK_BASE @GIT@ rev-parse --show-cdup)"
+	elif [ ! "x$NOOK_WORKTREE" = 'xrelative' ]; then
+		@GIT@ config core.worktree "$NOOK_BASE"
 	fi
-	# Per-repo exclude/attributes file lives in <name>.stache/ next to the
-	# git dir; if absent, fall back to the shared file in $XDG_CONFIG_HOME/stache.
-	if [ ! "x$STACHE_GITIGNORE" = 'xnone' ]; then
+	# Per-repo exclude/attributes file lives in <name>.nook/ next to the
+	# git dir; if absent, fall back to the shared file in $XDG_CONFIG_HOME/nook.
+	if [ ! "x$NOOK_GITIGNORE" = 'xnone' ]; then
 		if [ -e "${GIT_DIR%/*}/.gitignore" ]; then
 			@GIT@ config core.excludesfile "${GIT_DIR%/*}/.gitignore"
 		else
-			@GIT@ config core.excludesfile "$STACHE_GITIGNORE_FILE"
+			@GIT@ config core.excludesfile "$NOOK_GITIGNORE_FILE"
 		fi
 	fi
-	if [ ! "x$STACHE_GITATTRIBUTES" = 'xnone' ]; then
+	if [ ! "x$NOOK_GITATTRIBUTES" = 'xnone' ]; then
 		if [ -e "${GIT_DIR%/*}/.gitattributes" ]; then
 			@GIT@ config core.attributesfile "${GIT_DIR%/*}/.gitattributes"
 		else
-			@GIT@ config core.attributesfile "$STACHE_GITATTRIBUTES_FILE"
+			@GIT@ config core.attributesfile "$NOOK_GITATTRIBUTES_FILE"
 		fi
 	fi
-	@GIT@ config stache.stache 'true'
+	@GIT@ config nook.nook 'true'
 	# Hide the rest of $HOME from `git status` in this repo. Override with
-	# STACHE_SHOW_UNTRACKED=normal (or per repo: stache <repo> config
+	# NOOK_SHOW_UNTRACKED=normal (or per repo: nook <repo> config
 	# status.showUntrackedFiles normal).
-	@GIT@ config status.showUntrackedFiles "$STACHE_SHOW_UNTRACKED"
+	@GIT@ config status.showUntrackedFiles "$NOOK_SHOW_UNTRACKED"
 	# Pull in shared settings (credential.helper, user.*, ...) that apply to
-	# every stache repo. Edit that file with `stache config ...`.
-	@GIT@ config --replace-all include.path "$STACHE_GITCONFIG"
+	# every nook repo. Edit that file with `nook config ...`.
+	@GIT@ config --replace-all include.path "$NOOK_GITCONFIG"
 	use
 	hook post-upgrade
 }
 
 use() {
 	git_dir_exists
-	STACHE_DIRECTORY=$STACHE_REPO_NAME; export STACHE_DIRECTORY
+	NOOK_DIRECTORY=$NOOK_REPO_NAME; export NOOK_DIRECTORY
 }
 
 which() {
-	# It's ok to modify STACHE_REPO_NAME in a subshell.
+	# It's ok to modify NOOK_REPO_NAME in a subshell.
 	# shellcheck disable=SC2030
-	output=$(for STACHE_REPO_NAME in $(list); do
-		get_files | @GREP@ -- "$STACHE_COMMAND_PARAMETER" | @SED@ "s/^/$STACHE_REPO_NAME: /"
+	output=$(for NOOK_REPO_NAME in $(list); do
+		get_files | @GREP@ -- "$NOOK_COMMAND_PARAMETER" | @SED@ "s/^/$NOOK_REPO_NAME: /"
 	done | sort -u)
 	if [ -z "$output" ]; then
-		fatal "'$STACHE_COMMAND_PARAMETER' does not exist" 1
+		fatal "'$NOOK_COMMAND_PARAMETER' does not exist" 1
 	else
 		echo "$output"
 	fi
 }
 
-# Ignore warnings about STACHE_REPO_NAME being changed in a subshell.
+# Ignore warnings about NOOK_REPO_NAME being changed in a subshell.
 # shellcheck disable=SC2031
 write_gitignore() {
 	# Don't do anything if the user does not want to write gitignore
-	if [ "x$STACHE_GITIGNORE" = 'xnone' ]; then
-		info "Not writing gitignore as '\$STACHE_GITIGNORE' is set to 'none'"
+	if [ "x$NOOK_GITIGNORE" = 'xnone' ]; then
+		info "Not writing gitignore as '\$NOOK_GITIGNORE' is set to 'none'"
 		exit
 	fi
 
 	use
-	cd "$STACHE_BASE" || fatal "could not enter '$STACHE_BASE'" 11
+	cd "$NOOK_BASE" || fatal "could not enter '$NOOK_BASE'" 11
 	# Works in all shells we care about.
 	# shellcheck disable=SC2039,SC3043
 	local GIT_VERSION GIT_VERSION_MAJOR GIT_VERSION_MINOR
@@ -773,7 +775,7 @@ write_gitignore() {
 	for gitignore in $gitignores; do
 		echo "$gitignore" | @SED@ 's@^@!/@' >> "$tempfile" ||
 			fatal "could not write to '$tempfile'" 57
-		if [ "x$STACHE_GITIGNORE" = 'xrecursive' ] && [ -d "$gitignore" ]; then
+		if [ "x$NOOK_GITIGNORE" = 'xrecursive' ] && [ -d "$gitignore" ]; then
 			{ echo "$gitignore/*" | @SED@ 's@^@!/@' >> "$tempfile" ||
 				fatal "could not write to '$tempfile'" 57; }
 		fi
@@ -797,122 +799,122 @@ write_gitignore() {
 
 debug "$(@GIT@ version)"
 
-if [ ! "x$STACHE_GITIGNORE" = 'xexact' ] && [ ! "x$STACHE_GITIGNORE" = 'xnone' ] && [ ! "x$STACHE_GITIGNORE" = 'xrecursive' ]; then
-	fatal "'\$STACHE_GITIGNORE' must equal 'exact', 'none', or 'recursive'" 1
+if [ ! "x$NOOK_GITIGNORE" = 'xexact' ] && [ ! "x$NOOK_GITIGNORE" = 'xnone' ] && [ ! "x$NOOK_GITIGNORE" = 'xrecursive' ]; then
+	fatal "'\$NOOK_GITIGNORE' must equal 'exact', 'none', or 'recursive'" 1
 fi
 
-STACHE_COMMAND=$1; export STACHE_COMMAND
+NOOK_COMMAND=$1; export NOOK_COMMAND
 
-case $STACHE_COMMAND in
-	clon|clo|cl) STACHE_COMMAND=clone;;
-	commi|comm|com|co|ci) STACHE_COMMAND=commit;;
-	confi|conf|con) STACHE_COMMAND=config;;
-	delet|dele|del|de) STACHE_COMMAND=delete;;
-	ente|ent|en) STACHE_COMMAND=enter;;
-	hel|he) STACHE_COMMAND=help;;
-	ini|in) STACHE_COMMAND=init;;
-	pul) STACHE_COMMAND=pull;;
-	pus) STACHE_COMMAND=push;;
-	renam|rena|ren|re) STACHE_COMMAND=rename;;
-	ru) STACHE_COMMAND=run;;
-	statu|stat|sta|st) STACHE_COMMAND=status;;
-	upgrad|upgra|upgr|up) STACHE_COMMAND=upgrade;;
-	versio|versi|vers|ver|ve) STACHE_COMMAND=version;;
-	which|whi|wh) STACHE_COMMAND=which;;
-	write|writ|wri|wr) STACHE_COMMAND=write-gitignore;;
-	bootstra|bootstr|bootst|boots|boot) STACHE_COMMAND=bootstrap;;
+case $NOOK_COMMAND in
+	clon|clo|cl) NOOK_COMMAND=clone;;
+	commi|comm|com|co|ci) NOOK_COMMAND=commit;;
+	confi|conf|con) NOOK_COMMAND=config;;
+	delet|dele|del|de) NOOK_COMMAND=delete;;
+	ente|ent|en) NOOK_COMMAND=enter;;
+	hel|he) NOOK_COMMAND=help;;
+	ini|in) NOOK_COMMAND=init;;
+	pul) NOOK_COMMAND=pull;;
+	pus) NOOK_COMMAND=push;;
+	renam|rena|ren|re) NOOK_COMMAND=rename;;
+	ru) NOOK_COMMAND=run;;
+	statu|stat|sta|st) NOOK_COMMAND=status;;
+	upgrad|upgra|upgr|up) NOOK_COMMAND=upgrade;;
+	versio|versi|vers|ver|ve) NOOK_COMMAND=version;;
+	which|whi|wh) NOOK_COMMAND=which;;
+	write|writ|wri|wr) NOOK_COMMAND=write-gitignore;;
+	bootstra|bootstr|bootst|boots|boot) NOOK_COMMAND=bootstrap;;
 esac
 
-# `stache clone --all|-a [<file>]` is an alias for `stache bootstrap [<file>]`.
-if [ x"$STACHE_COMMAND" = x'clone' ] && { [ x"$2" = 'x--all' ] || [ x"$2" = 'x-a' ]; }; then
-	STACHE_COMMAND=bootstrap
+# `nook clone --all|-a [<file>]` is an alias for `nook bootstrap [<file>]`.
+if [ x"$NOOK_COMMAND" = x'clone' ] && { [ x"$2" = 'x--all' ] || [ x"$2" = 'x-a' ]; }; then
+	NOOK_COMMAND=bootstrap
 	shift 2                 # drop "clone" and "--all"/"-a"
 	set -- bootstrap "$@"   # leaves $2 as the optional <file>
 fi
 
-if [ x"$STACHE_COMMAND" = x'clone' ]; then
-	STACHE_BRANCH=
+if [ x"$NOOK_COMMAND" = x'clone' ]; then
+	NOOK_BRANCH=
 	if [ "$2" = -b ]; then
-		STACHE_BRANCH=$3
+		NOOK_BRANCH=$3
 		shift
 		shift
 	fi
-	[ -z "$2" ] && fatal "$STACHE_COMMAND: please specify a remote" 1
+	[ -z "$2" ] && fatal "$NOOK_COMMAND: please specify a remote" 1
 	GIT_REMOTE="$2"
-	[ -n "$STACHE_BRANCH" ] || if [ "$3" = -b ]; then
-		STACHE_BRANCH=$4
+	[ -n "$NOOK_BRANCH" ] || if [ "$3" = -b ]; then
+		NOOK_BRANCH=$4
 		shift
 		shift
 	fi
 	if [ -n "$3" ]; then
-		STACHE_REPO_NAME=$3
-		[ -z "$STACHE_BRANCH" ] && [ "$4" = -b ] && STACHE_BRANCH=$5
+		NOOK_REPO_NAME=$3
+		[ -z "$NOOK_BRANCH" ] && [ "$4" = -b ] && NOOK_BRANCH=$5
 	else
-		STACHE_REPO_NAME=$(basename "${GIT_REMOTE#*:}" .git)
+		NOOK_REPO_NAME=$(basename "${GIT_REMOTE#*:}" .git)
 	fi
-	[ -z "$STACHE_REPO_NAME" ] && fatal "$STACHE_COMMAND: could not determine repository name" 1
-	export STACHE_REPO_NAME
-	[ -n "$STACHE_BRANCH" ] || STACHE_BRANCH=main
-	GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
-elif [ "$STACHE_COMMAND" = 'help' ]; then
+	[ -z "$NOOK_REPO_NAME" ] && fatal "$NOOK_COMMAND: could not determine repository name" 1
+	export NOOK_REPO_NAME
+	[ -n "$NOOK_BRANCH" ] || NOOK_BRANCH=main
+	GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
+elif [ "$NOOK_COMMAND" = 'help' ]; then
 	help && exit
-elif [ "$STACHE_COMMAND" = 'version' ]; then
-	echo "$STACHE_SELF $STACHE_VERSION"
+elif [ "$NOOK_COMMAND" = 'version' ]; then
+	echo "$NOOK_SELF $NOOK_VERSION"
 	@GIT@ version
 	exit
-elif [ x"$STACHE_COMMAND" = x'which' ]; then
-	[ -z "$2" ] && fatal "$STACHE_COMMAND: please specify a filename" 1
-	[ -n "$3" ] && fatal "$STACHE_COMMAND: too many parameters" 1
-	STACHE_COMMAND_PARAMETER=$2; export STACHE_COMMAND_PARAMETER
-elif [ x"$STACHE_COMMAND" = x'delete' ]           ||
-	[ x"$STACHE_COMMAND" = x'enter' ]            ||
-	[ x"$STACHE_COMMAND" = x'init' ]             ||
-	[ x"$STACHE_COMMAND" = x'list-tracked-by' ]  ||
-	[ x"$STACHE_COMMAND" = x'rename' ]           ||
-	[ x"$STACHE_COMMAND" = x'run' ]              ||
-	[ x"$STACHE_COMMAND" = x'upgrade' ]          ||
-	[ x"$STACHE_COMMAND" = x'write-gitignore' ]; then
+elif [ x"$NOOK_COMMAND" = x'which' ]; then
+	[ -z "$2" ] && fatal "$NOOK_COMMAND: please specify a filename" 1
+	[ -n "$3" ] && fatal "$NOOK_COMMAND: too many parameters" 1
+	NOOK_COMMAND_PARAMETER=$2; export NOOK_COMMAND_PARAMETER
+elif [ x"$NOOK_COMMAND" = x'delete' ]           ||
+	[ x"$NOOK_COMMAND" = x'enter' ]            ||
+	[ x"$NOOK_COMMAND" = x'init' ]             ||
+	[ x"$NOOK_COMMAND" = x'list-tracked-by' ]  ||
+	[ x"$NOOK_COMMAND" = x'rename' ]           ||
+	[ x"$NOOK_COMMAND" = x'run' ]              ||
+	[ x"$NOOK_COMMAND" = x'upgrade' ]          ||
+	[ x"$NOOK_COMMAND" = x'write-gitignore' ]; then
 	if [ -z "$2" ]; then
-		[ -z "$STACHE_REPO_NAME" ] && fatal "$STACHE_COMMAND: please specify repository to work on" 1
+		[ -z "$NOOK_REPO_NAME" ] && fatal "$NOOK_COMMAND: please specify repository to work on" 1
 	else
-		STACHE_REPO_NAME=$2; export STACHE_REPO_NAME
+		NOOK_REPO_NAME=$2; export NOOK_REPO_NAME
 	fi
-	GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
-	[ x"$STACHE_COMMAND" = x'rename' ] && [ -z "$3" ] && fatal "$STACHE_COMMAND: please specify a target name" 1
-	[ x"$STACHE_COMMAND" = x'run'    ] && [ -z "$3" ] && fatal "$STACHE_COMMAND: please specify a command" 1
-	[ x"$STACHE_COMMAND" = x'rename' ] && { STACHE_REPO_NAME_NEW=$3; export STACHE_REPO_NAME_NEW;
-	GIT_DIR_NEW=$STACHE_REPO_D/$STACHE_REPO_NAME_NEW.stache/$STACHE_REPO_NAME_NEW.git; export GIT_DIR_NEW; }
-	[ x"$STACHE_COMMAND" = x'run' ]    && shift 2
-elif [ x"$STACHE_COMMAND" = x'foreach' ]; then
-	[ -z "$2" ] && fatal "$STACHE_COMMAND: please specify a command" 1
+	GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
+	[ x"$NOOK_COMMAND" = x'rename' ] && [ -z "$3" ] && fatal "$NOOK_COMMAND: please specify a target name" 1
+	[ x"$NOOK_COMMAND" = x'run'    ] && [ -z "$3" ] && fatal "$NOOK_COMMAND: please specify a command" 1
+	[ x"$NOOK_COMMAND" = x'rename' ] && { NOOK_REPO_NAME_NEW=$3; export NOOK_REPO_NAME_NEW;
+	GIT_DIR_NEW=$NOOK_REPO_D/$NOOK_REPO_NAME_NEW.nook/$NOOK_REPO_NAME_NEW.git; export GIT_DIR_NEW; }
+	[ x"$NOOK_COMMAND" = x'run' ]    && shift 2
+elif [ x"$NOOK_COMMAND" = x'foreach' ]; then
+	[ -z "$2" ] && fatal "$NOOK_COMMAND: please specify a command" 1
 	shift 1
-elif [ x"$STACHE_COMMAND" = x'add' ] ||
-	[ x"$STACHE_COMMAND" = x'commit' ] ||
-	[ x"$STACHE_COMMAND" = x'config' ] ||
-	[ x"$STACHE_COMMAND" = x'list'   ] ||
-	[ x"$STACHE_COMMAND" = x'list-tracked' ] ||
-	[ x"$STACHE_COMMAND" = x'list-untracked' ] ||
-	[ x"$STACHE_COMMAND" = x'bootstrap' ] ||
-	[ x"$STACHE_COMMAND" = x'pull'   ] ||
-	[ x"$STACHE_COMMAND" = x'push'   ]; then
+elif [ x"$NOOK_COMMAND" = x'add' ] ||
+	[ x"$NOOK_COMMAND" = x'commit' ] ||
+	[ x"$NOOK_COMMAND" = x'config' ] ||
+	[ x"$NOOK_COMMAND" = x'list'   ] ||
+	[ x"$NOOK_COMMAND" = x'list-tracked' ] ||
+	[ x"$NOOK_COMMAND" = x'list-untracked' ] ||
+	[ x"$NOOK_COMMAND" = x'bootstrap' ] ||
+	[ x"$NOOK_COMMAND" = x'pull'   ] ||
+	[ x"$NOOK_COMMAND" = x'push'   ]; then
 	:
-elif [ x"$STACHE_COMMAND" = x'status' ]; then
+elif [ x"$NOOK_COMMAND" = x'status' ]; then
 	if [ x"$2" = x'--terse' ]; then
-		STACHE_STATUS_TERSE=1; export STACHE_STATUS_TERSE
+		NOOK_STATUS_TERSE=1; export NOOK_STATUS_TERSE
 		shift
 	fi
-	STACHE_REPO_NAME=$2; export STACHE_REPO_NAME
+	NOOK_REPO_NAME=$2; export NOOK_REPO_NAME
 elif [ -n "$2" ]; then
-	STACHE_COMMAND='run'; export STACHE_COMMAND
-	STACHE_REPO_NAME=$1; export STACHE_REPO_NAME
-	GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
+	NOOK_COMMAND='run'; export NOOK_COMMAND
+	NOOK_REPO_NAME=$1; export NOOK_REPO_NAME
+	GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
 	[ -d "$GIT_DIR" ] || { help; exit 1; }
 	shift 1
 	set -- "@GIT@" "$@"
-elif [ -n "$STACHE_COMMAND" ]; then
-	STACHE_COMMAND='enter'; export STACHE_COMMAND
-	STACHE_REPO_NAME=$1; export STACHE_REPO_NAME
-	GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR
+elif [ -n "$NOOK_COMMAND" ]; then
+	NOOK_COMMAND='enter'; export NOOK_COMMAND
+	NOOK_REPO_NAME=$1; export NOOK_REPO_NAME
+	GIT_DIR=$NOOK_REPO_D/$NOOK_REPO_NAME.nook/$NOOK_REPO_NAME.git; export GIT_DIR
 	[ -d "$GIT_DIR" ] || { help; exit 1; }
 else
 	# $1 is empty
@@ -921,9 +923,9 @@ fi
 
 # Did we receive a directory instead of a name?
 # Mangle the input to fit normal operation.
-if echo "$STACHE_REPO_NAME" | @GREP@ -q '/'; then
-	GIT_DIR=$STACHE_REPO_NAME; export GIT_DIR
-	STACHE_REPO_NAME=$(basename "$STACHE_REPO_NAME" .git); export STACHE_REPO_NAME
+if echo "$NOOK_REPO_NAME" | @GREP@ -q '/'; then
+	GIT_DIR=$NOOK_REPO_NAME; export GIT_DIR
+	NOOK_REPO_NAME=$(basename "$NOOK_REPO_NAME" .git); export NOOK_REPO_NAME
 fi
 
 check_dir() {
@@ -938,27 +940,27 @@ check_dir() {
 	fi
 }
 
-check_dir "$STACHE_REPO_D"
+check_dir "$NOOK_REPO_D"
 
-# Seed the shared fallback ignore file so `git add .` in a stache repo is safe
+# Seed the shared fallback ignore file so `git add .` in a nook repo is safe
 # out of the box (its working tree is all of $HOME). Ignore everything; use
-# `stache <repo> add -f <path>` to track a new file, or `stache write-gitignore
+# `nook <repo> add -f <path>` to track a new file, or `nook write-gitignore
 # <repo>` for a curated per-repo list.
-if [ ! "x$STACHE_GITIGNORE" = 'xnone' ] && [ ! -e "$STACHE_GITIGNORE_FILE" ]; then
-	printf '# stache: ignore everything by default; `stache <repo> add -f <path>` to track a file\n*\n' \
-		> "$STACHE_GITIGNORE_FILE" 2> /dev/null || true
+if [ ! "x$NOOK_GITIGNORE" = 'xnone' ] && [ ! -e "$NOOK_GITIGNORE_FILE" ]; then
+	printf '# nook: ignore everything by default; `nook <repo> add -f <path>` to track a file\n*\n' \
+		> "$NOOK_GITIGNORE_FILE" 2> /dev/null || true
 fi
 
-verbose "$STACHE_COMMAND begin"
-STACHE_COMMAND=$(echo "$STACHE_COMMAND" | @SED@ 's/-/_/g'); export STACHE_COMMAND
+verbose "$NOOK_COMMAND begin"
+NOOK_COMMAND=$(echo "$NOOK_COMMAND" | @SED@ 's/-/_/g'); export NOOK_COMMAND
 
-# Source repo-specific rc file, if present: <repo>.stache/.stacherc
+# Source repo-specific rc file, if present: <repo>.nook/.nookrc
 # shellcheck source=/dev/null
-[ -r "$STACHE_REPO_D/$STACHE_REPO_NAME.stache/.stacherc" ] \
-	&& . "$STACHE_REPO_D/$STACHE_REPO_NAME.stache/.stacherc"
+[ -r "$NOOK_REPO_D/$NOOK_REPO_NAME.nook/.nookrc" ] \
+	&& . "$NOOK_REPO_D/$NOOK_REPO_NAME.nook/.nookrc"
 
 # source overlay functions
-for overlay in "$STACHE_OVERLAY_D/$STACHE_COMMAND"* "$STACHE_OVERLAY_D/$STACHE_REPO_NAME.$STACHE_COMMAND"*; do
+for overlay in "$NOOK_OVERLAY_D/$NOOK_COMMAND"* "$NOOK_OVERLAY_D/$NOOK_REPO_NAME.$NOOK_COMMAND"*; do
 	[ -r "$overlay" ] || continue
 	info "sourcing '$overlay'"
 	# shellcheck source=/dev/null
@@ -966,11 +968,11 @@ for overlay in "$STACHE_OVERLAY_D/$STACHE_COMMAND"* "$STACHE_OVERLAY_D/$STACHE_R
 done
 
 hook pre-command
-$STACHE_COMMAND "$@"
+$NOOK_COMMAND "$@"
 hook post-command
 
-verbose "$STACHE_COMMAND end, exiting"
-exit $STACHE_COMMAND_RETURN_CODE
+verbose "$NOOK_COMMAND end, exiting"
+exit $NOOK_COMMAND_RETURN_CODE
 
 # Local Variables:
 # mode:shell-script

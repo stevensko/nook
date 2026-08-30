@@ -1,48 +1,48 @@
 2026-08-29  stevensko <skovraneksteven@gmail.com>
 
-	* Fork of vcsh, rebranded as "Stache Dotfiles Manager"
-	* Command renamed vcsh -> stache
-	* Environment variables renamed VCSH_* -> STACHE_*
+	* Fork of vcsh, rebranded as "Nook Dotfiles Manager"
+	* Command renamed vcsh -> nook
+	* Environment variables renamed VCSH_* -> NOOK_*
 	* Nothing is created under $HOME any more. Everything lives in
-	  $XDG_CONFIG_HOME/stache/:
-	    - one <repo>.stache/ directory per repo, containing:
+	  $XDG_CONFIG_HOME/nook/:
+	    - one <repo>.nook/ directory per repo, containing:
 	        <repo>.git/     the git directory
-	        .stacherc       per-repo shell rc (sourced), was config.d/<repo>
+	        .nookrc       per-repo shell rc (sourced), was config.d/<repo>
 	        .gitignore      per-repo ignore file  (was ~/.gitignore.d/<repo>)
 	        .gitattributes  per-repo attributes   (was ~/.gitattributes.d/<repo>)
-	    - shared: .stacherc (shell rc), .gitignore / .gitattributes /
-	      .gitconfig, the stache.repos list, and the hooks/ overlays/ dirs
+	    - shared: .nookrc (shell rc), .gitignore / .gitattributes /
+	      .gitconfig, the nook.repos list, and the hooks/ overlays/ dirs
 	  upgrade() points core.excludesfile / core.attributesfile at the
 	  per-repo file if present, else the shared one. These files are no
 	  longer tracked by the repo (they are outside $HOME).
 	* The shared .gitignore is seeded with `*` on first run, so `git add .`
-	  in a stache repo is safe by default; `stache <repo> add -f <path>`
-	  tracks a new file. Trade-off: `stache list-untracked` returns nothing
-	  unless you make a curated per-repo .gitignore (stache write-gitignore).
+	  in a nook repo is safe by default; `nook <repo> add -f <path>`
+	  tracks a new file. Trade-off: `nook list-untracked` returns nothing
+	  unless you make a curated per-repo .gitignore (nook write-gitignore).
 	* Hook/overlay dirs lost the -enabled suffix: hooks/ and overlays/.
-	* Shell rc file renamed: ~/.config/stache/config -> ~/.config/stache/.stacherc
-	  (and per-repo <repo>.stache/config -> <repo>.stache/.stacherc); system
-	  file /etc/vcsh/config -> /etc/stache/stacherc
-	* Source script renamed vcsh.in -> stache.in; man page vcsh.1 -> stache.1
-	* $XDG_CONFIG_HOME/stache/stache.repos ("<name> <url> <branch>" per repo)
-	  is populated manually with `stache add <repo>` / `stache add --all`;
-	  stache never writes it on its own (delete/rename leave stale lines).
-	  There is no `manifest` command. `stache bootstrap` -- equivalently
-	  `stache clone --all` / `-a` -- clones everything listed there that is
+	* Shell rc file renamed: ~/.config/nook/config -> ~/.config/nook/.nookrc
+	  (and per-repo <repo>.nook/config -> <repo>.nook/.nookrc); system
+	  file /etc/vcsh/config -> /etc/nook/nookrc
+	* Source script renamed vcsh.in -> nook.in; man page vcsh.1 -> nook.1
+	* $XDG_CONFIG_HOME/nook/nook.repos ("<name> <url> <branch>" per repo)
+	  is populated manually with `nook add <repo>` / `nook add --all`;
+	  nook never writes it on its own (delete/rename leave stale lines).
+	  There is no `manifest` command. `nook bootstrap` -- equivalently
+	  `nook clone --all` / `-a` -- clones everything listed there that is
 	  not already present. Built-in, no myrepos/gita.
-	* stache.repos rows take an optional 4th column: a comma-separated tag
-	  list. `stache bootstrap --include=a,b` / `--exclude=x,y` filter on it
-	  (untagged rows always match; --exclude wins). `stache add <repo> a,b`
+	* nook.repos rows take an optional 4th column: a comma-separated tag
+	  list. `nook bootstrap --include=a,b` / `--exclude=x,y` filter on it
+	  (untagged rows always match; --exclude wins). `nook add <repo> a,b`
 	  writes tags.
-	* New: `stache config <git config args>` edits a shared git config file
-	  ($STACHE_GITCONFIG) that every repo includes via include.path;
+	* New: `nook config <git config args>` edits a shared git config file
+	  ($NOOK_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos
 	* upgrade now sets status.showUntrackedFiles (default no, override with
-	  $STACHE_SHOW_UNTRACKED) so `git status` in a repo ignores $HOME
+	  $NOOK_SHOW_UNTRACKED) so `git status` in a repo ignores $HOME
 	* delete: use `git ls-files -z | xargs -0` so paths with whitespace,
 	  glob characters, or non-ASCII bytes are removed correctly
 	* Drop the myrepos (post-init-setup-mr) sample hook; bootstrapping is
-	  now built in (see the stache.repos / bootstrap notes above)
+	  now built in (see the nook.repos / bootstrap notes above)
 	* Add install-local.sh for a no-autotools user-space install
 
 2024-04-08  Caleb Maclennan <caleb@alerque.com>
@@ -108,12 +108,12 @@
 	* Post source builds as part of automated release process
 	* Switch to versioning scheme to semver
 	* Replace Travis test runner with GitHub Actions
-	* Make STACHE_* variables available to hooks
+	* Make NOOK_* variables available to hooks
 	* More carefully handle shell quoting
 	* Improve handling of non-default remote names and branches
 	* Fix per-repo pre/post hook handling
-	* Output path relative to $HOME in ‘stache status’
-	* Add flag to prefix output of ‘stache foreach -p’ with repo name
+	* Output path relative to $HOME in ‘nook status’
+	* Add flag to prefix output of ‘nook foreach -p’ with repo name
 	* Fix debugging on Windows 10 / Cygwin
 	* Improve option flag handling to allow multiple flags, squash bugs
 	* Don't require Ruby or Perl tooling to build and install
@@ -129,7 +129,7 @@
 2021-04-05  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20190621
-	* Make version reflected in `stache version` correct...
+	* Make version reflected in `nook version` correct...
 
 2021-03-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -146,16 +146,16 @@
 
 2015-12-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Fix tests to always use C locale, this makes stache reproducible
-	* Implement `stache foreach`
-	* Implement `stache list-untracked -a`
+	* Fix tests to always use C locale, this makes nook reproducible
+	* Implement `nook foreach`
+	* Implement `nook list-untracked -a`
 	* Handle Git older than 2.x gracefully
 	* Fix broken list-tracked-by
-	* Fix regression in `stache which`
+	* Fix regression in `nook which`
 	* Skip ignored files in the output of list-untracked
 	* Improve cloning
 	* Clean up docs
-	* Implement `stache status --terse`
+	* Implement `nook status --terse`
 	* Improve tests
 
 2015-05-02  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -163,8 +163,8 @@
 	* Release 1.20150502
 	* Add tests
 	* Integrate tests with Travis CI
-	* Make `stache --list_untracked` GNU-independent
-	* Improve stache's code quality
+	* Make `nook --list_untracked` GNU-independent
+	* Improve nook's code quality
 	* Improve Makefile, documentation, etc
 
 2014-10-26  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -176,11 +176,11 @@
 2014-10-25  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20141025
-	* `stache which dontexist` exits 1
-	* `stache status` shows commits ahead/behind remote tracking branch
+	* `nook which dontexist` exits 1
+	* `nook status` shows commits ahead/behind remote tracking branch
 	* Support overlay functions
-	* Support `stache list-untracked`, optionally recursively
-	* Support `stache list-untracked $repo`
+	* Support `nook list-untracked`, optionally recursively
+	* Support `nook list-untracked $repo`
 	* Improve error handling of clone()
 	* Rename `list-tracked-by` to `list-tracked <repo>`
 	* Support repo-specific config files
@@ -242,8 +242,8 @@
 2013-08-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130829
-	* Add support for `stache commit`
-	* Add support for `stache status <repo>`
+	* Add support for `nook commit`
+	* Add support for `nook status <repo>`
 	* Add pre-/post-init hooks
 	* Documentation improvements
 	* Minor cleanups
@@ -251,23 +251,23 @@
 2013-07-24  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130724
-	* Add support for `stache status`
-	* Improve output of `stache pull`
-	* Improve output of `stache push`
+	* Add support for `nook status`
+	* Improve output of `nook pull`
+	* Improve output of `nook push`
 	* Minor documentation improvements
 
 2013-07-23  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130723
-	* Support $STACHE_GITIGNORE == none
+	* Support $NOOK_GITIGNORE == none
 	* Documentation improvements,
 	* Improved zsh completion
-	* Add support for `stache pull`
-	* Add support for `stache push`
-	* Add retire() to tear down stache ENV
-	* Add clone hooks, including one witout stache ENV to
+	* Add support for `nook pull`
+	* Add support for `nook push`
+	* Add retire() to tear down nook ENV
+	* Add clone hooks, including one witout nook ENV to
 	  allow subsequent cloning of other repos
-	* Fix `stache rename`
+	* Fix `nook rename`
 	* Improve general code robustness
 
 2013-06-14  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -282,13 +282,13 @@
 	* Ancher ignore file to root of Git repo
 	* Implemented basename() to save one process spawn
 	* Improve packaged Zsh completion
-	* Renamed `stache setup` to `stache upgrade`
+	* Renamed `nook setup` to `nook upgrade`
 	* Various documentation and spelling improvements
 
 2013-04-21  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.2
-	* Introduce `stache version`
+	* Introduce `nook version`
 
 2013-03-31  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -306,7 +306,7 @@
 2012-06-30  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.0
-	* Make `stache list` more resilient
+	* Make `nook list` more resilient
 	* Lots of doc improvements
 
 2012-02-27  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -316,7 +316,7 @@
 
 2012-02-15  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Introduce `stache which`
+	* Introduce `nook which`
 	* hooks will tell you when they are being executed
 	* Formatting & resilience improvements
 	* We have a changelog, now! (yay)
@@ -337,11 +337,11 @@
 
 2011-12-26  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Introduce and use .config/stache/config
+	* Introduce and use .config/nook/config
 	* More verbose error handling
-	* Introduce `stache {list-tracked,list-tracked-by}`
-	* Introduce repo shortcuts (`stache zsh commit`)
-	* Rename `stache seed-gitignore` to `stache write-gitignore`
+	* Introduce `nook {list-tracked,list-tracked-by}`
+	* Introduce repo shortcuts (`nook zsh commit`)
+	* Rename `nook seed-gitignore` to `nook write-gitignore`
 	* Add license information
 
 2011-11-29  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -349,8 +349,8 @@
 	* Bugfixes
 	* Refactor error handling
 	* Make code more resilient
-	* Make stache play nice with mr
-	* Introduce stache mv and setup
+	* Make nook play nice with mr
+	* Introduce nook mv and setup
 
 2011-11-23  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -376,7 +376,7 @@
 
 	* Yet more documentation improvements
 	* Makefile
-	* Heed already-defined ENV variables within stache
+	* Heed already-defined ENV variables within nook
 	* Handle .gitignore.d/$repo automagically
 
 2011-11-11  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -392,7 +392,7 @@
 
 2011-10-18  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Fixed bug in stache clone & init
+	* Fixed bug in nook clone & init
 
 2011-10-17  Richard Hartmann <richih.mailinglist@gmail.com>
 

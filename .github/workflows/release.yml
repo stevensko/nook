@@ -45,9 +45,9 @@ jobs:
           prerelease: ${{ env.PRERELEASE }}
           body_path: changelog-HEAD
           files: |
-            stache-${{ env.VERSION }}.tar.zst
-            stache-${{ env.VERSION }}.zip
-            stache-${{ env.VERSION }}.sha256.txt
+            nook-${{ env.VERSION }}.tar.zst
+            nook-${{ env.VERSION }}.zip
+            nook-${{ env.VERSION }}.sha256.txt
 
   deploy-standalone:
     runs-on: ubuntu-latest
@@ -60,11 +60,11 @@ jobs:
           ./bootstrap.sh
           ./configure --with-standalone --bindir=/
           make DESTDIR=. install-exec
-          sha256sum stache-standalone.sh | tee stache-standalone.sha256.txt
+          sha256sum nook-standalone.sh | tee nook-standalone.sha256.txt
       - name: Add standalone deployment to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ github.token }}
           tag: ${{ github.ref }}
           file_glob: true
-          file: stache-standalone.{sh,sha256.txt}
+          file: nook-standalone.{sh,sha256.txt}

@@ -2,86 +2,86 @@
 
 Many distributions have packages ready to go.
 If yours doesn’t, you can install [from source](#installing-from-source).
-Stache can also be deployed as a [standalone script](#standalone-script).
-If you package Stache for a distro please let us know.
+Nook can also be deployed as a [standalone script](#standalone-script).
+If you package Nook for a distro please let us know.
 
 ## Arch Linux
 
 ```
-$ pacman -S stache
+$ pacman -S nook
 ```
 
 ## CentOS / Fedora / RedHat
 
 ```console
-$ yum install stache
+$ yum install nook
 ```
 
 ## Debian / Deepin / Kali Linux / Parrot / PureOS / Raspbian / Trisquel / Ubuntu
 
 ```console
-$ apt install stache
+$ apt install nook
 ```
 
 ## Gentoo / Funtoo / LiGurOS
 
 ```console
-$ emerge --ask dev-vcs/stache
+$ emerge --ask dev-vcs/nook
 ```
 
 ## GNU Guix
 
 ```console
-$ guix install stache
+$ guix install nook
 ```
 
 ## Homebrew (macOS) / Linuxbrew
 
 ```console
-$ brew install stache
+$ brew install nook
 ```
 
 ## KISS Linux
 
 ```console
-$ kiss install stache
+$ kiss install nook
 ```
 
 ## MacPorts (macOS)
 
 ```console
-$ port install stache
+$ port install nook
 ```
 
 ## NIX
 
 ```console
-$ nix-env -i stache
+$ nix-env -i nook
 ```
 
 ## openSUSE
 
 ```console
-$ zypper install stache
+$ zypper install nook
 ```
 
 ## Pardus
 
 ```console
-$ pisi install stache
+$ pisi install nook
 ```
 
 ## Termux
 
 ```console
-$ pkg install stache
+$ pkg install nook
 ```
 
 # Installing from Source
 
 First you’ll want a copy of the source code.
-The easiest to use place to get this is the [latest release](https://github.com/stevensko/stache/releases/latest) posted on GitHub.
-The souree distribution will have a name such as `stache-2.0.0.tar.zst`.
+The easiest to use place to get this is the [latest release](https://github.com/stevensko/nook/releases/latest) posted on GitHub.
+The souree distribution will have a name such as `nook-2.0.0.tar.zst`.
 Note under each release GitHub also show two “Source code” links that will download a snapshot of the repository; this is **not** the file you want (unless you want to jump through extra hoops).
 The official source release packages with the release version in the file names are the ones you want.
 
@@ -121,29 +121,29 @@ $ ./configure --prefix=/
 $ make DESTDIR="$HOME" install-exec
 ```
 
-This will install to `~/bin/stache`; add `~/bin` to your path to use.
+This will install to `~/bin/nook`; add `~/bin` to your path to use.
 
 # Standalone Script
 
-A special variant of Stache can be deployed as a single POSIX shell script with no configure/build step.
-Deploying it this way leaves you without any man page or shell completion functions (or possibly with mismatched resources installed by your package manager for a different stache version).
+A special variant of Nook can be deployed as a single POSIX shell script with no configure/build step.
+Deploying it this way leaves you without any man page or shell completion functions (or possibly with mismatched resources installed by your package manager for a different nook version).
 This variant is also dependent or your `$PATH` to have proper versions of dependencies such as `git`.
 If your user space has different tools by default than your system beware!
 
-The standalone variant can be downloaded from any recent entry in [releases](https://github.com/stevensko/stache/releases).
+The standalone variant can be downloaded from any recent entry in [releases](https://github.com/stevensko/nook/releases).
 
 This method is suited for installation to a user space where you don’t have control over the system packages, e.g.:
 
 ```console
 $ mkdir -p ~/bin
-$ curl -fsLS https://github.com/stevensko/stache/releases/latest/download/stache-standalone.sh -o ~/bin/stache
-$ chmod u+x ~/bin/stache
+$ curl -fsLS https://github.com/stevensko/nook/releases/latest/download/nook-standalone.sh -o ~/bin/nook
+$ chmod u+x ~/bin/nook
 ```
 
 It could also be used to directly bootstrap a dotfiles repository with something like this:
 
 ```console
-$ sh <(curl -fsLS https://github.com/stevensko/stache/releases/latest/download/stache-standalone.sh) clone <path_to_your_dotfiles_repo> dotfiles
+$ sh <(curl -fsLS https://github.com/stevensko/nook/releases/latest/download/nook-standalone.sh) clone <path_to_your_dotfiles_repo> dotfiles
 ```
 
 While we are enabling cURL-based workflows on purpose, we still encourage you to avoid them where reasonably possible. If you do use it, please consider using a tagged version that you’ve tested to work for you instead of the “latest” keyword. Note: the URL for tagged releases is in a different order than when using the “latest” keyword, substitute a tag name by changing `latest/download` to `download/v2.0.0`.

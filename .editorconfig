@@ -17,5 +17,5 @@ indent_size = 8
 [*.md]
 trim_trailing_whitespace = false
 
-[{stache.in,completions/stache.*}]
+[{nook.in,completions/nook.*}]
 indent_style = tab

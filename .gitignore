@@ -1,5 +1,5 @@
-stache.1
-doc/stache.1.ronn
+nook.1
+doc/nook.1.ronn
 *.patch
 *.swp
 .swp
@@ -12,11 +12,11 @@ aclocal.m4
 autom4te.cache/
 build-aux/install-sh
 build-aux/missing
-completions/_stache
-completions/stache
+completions/_nook
+completions/nook
 config.log
 config.status
 configure
 aminclude.am
-/stache
-stache-*
+/nook
+nook-*

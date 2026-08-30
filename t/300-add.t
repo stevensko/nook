@@ -21,16 +21,16 @@ eval {
 
 die $@ if $@;
 
-system (".././stache test1 add 'a'");
+system (".././nook test1 add 'a'");
 
-my $output = `.././stache status`;
+my $output = `.././nook status`;
 
 ok $output eq "test1:
 A  ~/a
 
 ", 'Adding a file works';
 
-$output = `.././stache status --terse`;
+$output = `.././nook status --terse`;
 
 ok $output eq "test1:
 A  ~/a

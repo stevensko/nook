@@ -1,6 +1,6 @@
 # run git command
 #   based on bash_completion:_command_offset()
-_stache_git_command () {
+_nook_git_command () {
 	local word_offset=$1
 	for (( i=0; i < word_offset; i++ )); do
 		for (( j=0; j <= ${#COMP_LINE}; j++ )); do
@@ -56,13 +56,13 @@ _stache_git_command () {
 	fi
 }
 
-_stache () {
+_nook () {
 	local cur prev words OPTS
 	_init_completion -n = || return
 
 	local r reponames
 	local -A repos
-	mapfile -t reponames < <(command stache list)
+	mapfile -t reponames < <(command nook list)
 	for r in "${reponames[@]}"; do repos["$r"]="$r"; done
 	unset r reponames
 	local cmds
@@ -128,7 +128,7 @@ _stache () {
 		foreach)
 			[[ $cur == -* ]] \
 				&& mapfile -t COMPREPLY < <(compgen -W "-g" -- "$cur") && return
-			_stache_git_command $subcword
+			_nook_git_command $subcword
 			return
 			;;
 
@@ -136,10 +136,10 @@ _stache () {
 
 	# git command on repository
 	if [[ -n "${repos[$cmd]}" ]]; then
-		: "${STACHE_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/stache}"
-		GIT_DIR="${STACHE_REPO_D}/${cmd}.stache/${cmd}.git" _stache_git_command "$subcword"
+		: "${NOOK_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/nook}"
+		GIT_DIR="${NOOK_REPO_D}/${cmd}.nook/${cmd}.git" _nook_git_command "$subcword"
 	fi
 	return 0
 }
 
-complete -F _stache stache
+complete -F _nook nook
