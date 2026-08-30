@@ -1,4 +1,4 @@
-# Nook Dotfiles Manager
+# Nook Home Manager
 
 Multiplex Git Repos in $Home for Dotfiles Management
 

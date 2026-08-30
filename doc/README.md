@@ -1,4 +1,4 @@
-Nook Dotfiles Manager - multiple Git repositories in $HOME
+Nook Home Manager - multiple Git repositories in $HOME
 
 A fork of vcsh (https://github.com/RichiH/vcsh). The command is `nook`. Everything
 lives under `~/.config/nook/` -- one `<name>.nook/` directory per repo; nothing
