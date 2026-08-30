@@ -136,6 +136,7 @@ Everything `room` uses lives directly in `$XDG_CONFIG_HOME/homerooms/`
 
     ~/.config/homerooms/
         config                 # optional: shell config sourced for every repo
+        gitconfig              # git config included by every repo (edit: room config ...)
         homerooms.list         # the manifest (room manifest / room restore)
         <name>.git/            # one git directory per repo
         <name>.room            # optional: shell config sourced for this repo only

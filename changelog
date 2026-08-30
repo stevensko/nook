@@ -14,6 +14,11 @@
 	  with an origin remote (default $HOMEROOMS_MANIFEST, '-' for stdout)
 	* New: `room restore [<file>]` clones every repo listed in a manifest
 	  that is not already present -- built-in bootstrap, no myrepos/gita
+	* New: `room config <git config args>` edits a shared git config file
+	  ($HOMEROOMS_GITCONFIG) that every repo includes via include.path;
+	  set credential.helper, user.email, etc. once for all repos
+	* upgrade now sets status.showUntrackedFiles (default no, override with
+	  $HOMEROOMS_SHOW_UNTRACKED) so `git status` in a repo ignores $HOME
 	* delete: use `git ls-files -z | xargs -0` so paths with whitespace,
 	  glob characters, or non-ASCII bytes are removed correctly
 	* Drop the myrepos (post-init-setup-mr) sample hook; bootstrap is

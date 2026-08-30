@@ -92,6 +92,8 @@ fi
 : "${HOMEROOMS_GITIGNORE:=exact}"; export HOMEROOMS_GITIGNORE
 : "${HOMEROOMS_GITATTRIBUTES:=none}"; export HOMEROOMS_GITATTRIBUTES
 : "${HOMEROOMS_WORKTREE:=absolute}"; export HOMEROOMS_WORKTREE
+: "${HOMEROOMS_SHOW_UNTRACKED:=no}"; export HOMEROOMS_SHOW_UNTRACKED
+: "${HOMEROOMS_GITCONFIG:="$XDG_CONFIG_HOME/homerooms/gitconfig"}"; export HOMEROOMS_GITCONFIG
 
 if [ ! "x$HOMEROOMS_GITIGNORE" = 'xexact' ] && [ ! "x$HOMEROOMS_GITIGNORE" = 'xnone' ] && [ ! "x$HOMEROOMS_GITIGNORE" = 'xrecursive' ]; then
 	fatal "'\$HOMEROOMS_GITIGNORE' must equal 'exact', 'none', or 'recursive'" 1
@@ -116,6 +118,9 @@ help() {
          <remote> \\
          [<repo>]       Clone from an existing repository
    commit               Commit in all repositories
+   config \\
+     [<git config args>] Edit shared git config included by every repo
+                        (\$HOMEROOMS_GITCONFIG); no args lists it
    delete <repo>        Delete an existing repository
    enter <repo>         Enter repository; spawn new instance of \$SHELL
                         with \$GIT_DIR set.
@@ -344,6 +349,21 @@ list_has_remote() {
 		# branch, if any. See https://stackoverflow.com/a/9753364
 		[ -n  "$(@GIT@ for-each-ref "$(@GIT@ symbolic-ref -q HEAD)")" ] && echo "$HOMEROOMS_REPO_NAME"
 	done
+}
+
+config() {
+	# Read/write $HOMEROOMS_GITCONFIG, a git config file that every room repo
+	# includes (wired up by upgrade()). Args are passed straight to
+	# `git config`, e.g.  room config credential.helper '!gh auth git-credential'
+	# With no args, list the current contents.
+	shift
+	[ -e "$HOMEROOMS_GITCONFIG" ] || : > "$HOMEROOMS_GITCONFIG" ||
+		fatal "could not create '$HOMEROOMS_GITCONFIG'" 50
+	[ "$#" -eq 0 ] && set -- --list
+	# Run from / so a stray/broken .git in the cwd's ancestry (e.g. a
+	# leftover gitlink in $HOME) cannot make repo discovery fail here.
+	@GIT@ -C / config --file "$HOMEROOMS_GITCONFIG" "$@"
+	HOMEROOMS_COMMAND_RETURN_CODE=$?
 }
 
 manifest() {
@@ -578,6 +598,13 @@ upgrade() {
 	[ ! "x$HOMEROOMS_GITIGNORE" = 'xnone' ] && @GIT@ config core.excludesfile ".gitignore.d/$HOMEROOMS_REPO_NAME"
 	[ ! "x$HOMEROOMS_GITATTRIBUTES" = 'xnone' ] && @GIT@ config core.attributesfile ".gitattributes.d/$HOMEROOMS_REPO_NAME"
 	@GIT@ config room.room 'true'
+	# Hide the rest of $HOME from `git status` in this repo. Override with
+	# HOMEROOMS_SHOW_UNTRACKED=normal (or per repo: room <repo> config
+	# status.showUntrackedFiles normal).
+	@GIT@ config status.showUntrackedFiles "$HOMEROOMS_SHOW_UNTRACKED"
+	# Pull in shared settings (credential.helper, user.*, ...) that apply to
+	# every room repo. Edit that file with `room config ...`.
+	@GIT@ config --replace-all include.path "$HOMEROOMS_GITCONFIG"
 	use
 	[ -e "$HOMEROOMS_BASE/.gitignore.d/$HOMEROOMS_REPO_NAME" ] && @GIT@ add -f "$HOMEROOMS_BASE/.gitignore.d/$HOMEROOMS_REPO_NAME"
 	[ -e "$HOMEROOMS_BASE/.gitattributes.d/$HOMEROOMS_REPO_NAME" ] && @GIT@ add -f "$HOMEROOMS_BASE/.gitattributes.d/$HOMEROOMS_REPO_NAME"
@@ -673,6 +700,7 @@ HOMEROOMS_COMMAND=$1; export HOMEROOMS_COMMAND
 case $HOMEROOMS_COMMAND in
 	clon|clo|cl) HOMEROOMS_COMMAND=clone;;
 	commi|comm|com|co|ci) HOMEROOMS_COMMAND=commit;;
+	confi|conf|con) HOMEROOMS_COMMAND=config;;
 	delet|dele|del|de) HOMEROOMS_COMMAND=delete;;
 	ente|ent|en) HOMEROOMS_COMMAND=enter;;
 	hel|he) HOMEROOMS_COMMAND=help;;
@@ -745,6 +773,7 @@ elif [ x"$HOMEROOMS_COMMAND" = x'foreach' ]; then
 	[ -z "$2" ] && fatal "$HOMEROOMS_COMMAND: please specify a command" 1
 	shift 1
 elif [ x"$HOMEROOMS_COMMAND" = x'commit' ] ||
+	[ x"$HOMEROOMS_COMMAND" = x'config' ] ||
 	[ x"$HOMEROOMS_COMMAND" = x'list'   ] ||
 	[ x"$HOMEROOMS_COMMAND" = x'list-tracked' ] ||
 	[ x"$HOMEROOMS_COMMAND" = x'list-untracked' ] ||

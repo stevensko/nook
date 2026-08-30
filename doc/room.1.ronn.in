@@ -7,6 +7,8 @@ room(1) - Version Control System for $HOME - multiple Git repositories in $HOME
 
 `room` clone [-b <branch>] <url> [<repo>]
 
+`room` config [<git config arguments>]
+
 `room` delete <repo>
 
 `room` enter <repo>
@@ -95,6 +97,17 @@ an interactive user.
 
 * commit:
   Commit in all repositories
+
+* config:
+  Edit <$HOMEROOMS_GITCONFIG>, a git config file that every room repository
+  includes (wired up by `upgrade`). Arguments are passed straight to
+  `git config`; with none, the file is listed. Use it for settings that
+  should apply to every repo, e.g.
+
+      room config credential.helper '!gh auth git-credential'
+      room config user.email you@example.com
+
+  Per-repo settings still go through `room <repo> config ...`.
 
 * delete:
   Delete an existing repository.
@@ -220,7 +233,25 @@ The per-repo file <$XDG_CONFIG_HOME/homerooms/<repo>.room> is read only
 while operating on that repository, and is moved/removed alongside the
 repository by `rename` and `delete`.
 
+Separately from those shell files, `upgrade` points every repository's
+`include.path` at <$HOMEROOMS_GITCONFIG>
+(<$XDG_CONFIG_HOME/homerooms/gitconfig>). Put git settings that should apply
+to all repositories there -- `credential.helper`, `user.name`, `user.email`,
+and so on -- via the `config` command. `upgrade` also sets
+`status.showUntrackedFiles` in each repo (see <$HOMEROOMS_SHOW_UNTRACKED>).
+
 Interesting knobs you can turn:
+
+* <$HOMEROOMS_GITCONFIG>:
+  Path of the shared git config file included by every repository.
+
+  Defaults to <$XDG_CONFIG_HOME/homerooms/gitconfig>.
+
+* <$HOMEROOMS_SHOW_UNTRACKED>:
+  Value written to `status.showUntrackedFiles` in each repo by `upgrade`.
+
+  Defaults to <no>, so `git status` in a room repo ignores the rest of
+  `$HOME`. Set to <normal> (or override per repo) to see untracked files.
 
 * <$HOMEROOMS_GITATTRIBUTES>:
   Can be <none>, or any other value.
