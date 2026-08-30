@@ -456,10 +456,13 @@ tag_match() {
 	#   - a tagged row is opt-in: it matches only if one of its tags was
 	#     passed via --include; a bare `bootstrap` (no --include) skips it
 	#   - --exclude always wins
+	# All three inputs are normalised the same way: lower-cased, split on
+	# ',', and a leading '@' on any tag is dropped -- so `--include=@laptop`
+	# and `--include=laptop` behave identically.
 	local lt inc exc t x i
-	lt=$(printf '%s' "$1" | tr 'A-Z,' 'a-z ')
-	inc=$(printf '%s' "$2" | tr 'A-Z,' 'a-z ')
-	exc=$(printf '%s' "$3" | tr 'A-Z,' 'a-z ')
+	lt=$(printf '%s' "$1" | tr 'A-Z,@' 'a-z  ')
+	inc=$(printf '%s' "$2" | tr 'A-Z,@' 'a-z  ')
+	exc=$(printf '%s' "$3" | tr 'A-Z,@' 'a-z  ')
 	# exclude wins
 	for x in $exc; do
 		for t in $lt; do [ "$t" = "$x" ] && return 1; done

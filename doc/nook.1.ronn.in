@@ -198,7 +198,8 @@ an interactive user.
   of these tags.
 
   `--exclude=<tags>`: comma-separated. Skip any row that has one of these tags.
-  Exclude wins over include. Matching is case-insensitive.
+  Exclude wins over include. Matching is case-insensitive, and a leading `@`
+  on any tag you pass is optional (`--include=@laptop` == `--include=laptop`).
 
   `<file>`: read from this path instead of <$NOOK_REPOS>.
 

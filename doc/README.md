@@ -120,7 +120,9 @@ Tags are an optional comma-separated list written after the branch, always
 stored with a leading `@` and a trailing `,` (`nook add nvim laptop,work` ->
 `nvim <url> main @laptop,work,`). A tagged row is **opt-in**: it clones only
 when one of its tags is passed via `nook bootstrap --include=laptop`. A bare
-`nook bootstrap` clones the untagged rows only. `--exclude` always wins.
+`nook bootstrap` clones the untagged rows only. `--exclude` always wins. The
+`@` is optional wherever you type a tag -- on `add` and on
+`--include`/`--exclude` -- it's just the column delimiter in the file.
 
 Track the file in one of your repos. On a new machine, clone that repo and run
 `nook bootstrap` (or `nook clone --all` / `-a` -- with `clone`, `--all`/`-a`
