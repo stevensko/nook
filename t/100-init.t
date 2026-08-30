@@ -10,22 +10,22 @@ use Test::Most;
 
 chdir 't/etc/' or die $!;
 
-$ENV{'HOME'} = abs_path ('.vcsh_home');
+$ENV{'HOME'} = abs_path ('.houseroom_home');
 $ENV{'XDG_CONFIG_HOME'} = $ENV{'HOME'}.'/.config';
 
-my $output = `./vcsh status`;
+my $output = `./room status`;
 
 ok $output eq "", 'No repos set up yet.';
 
-$output = `./vcsh init test1`;
+$output = `./room init test1`;
 
-ok $output eq "Initialized empty Git repository in " . $ENV{'HOME'} . "/.config/vcsh/repo.d/test1.git/\n";
+ok $output eq "Initialized empty Git repository in " . $ENV{'HOME'} . "/.config/house/rooms/test1.git/\n";
 
-$output = `./vcsh status`;
+$output = `./room status`;
 
 ok $output eq "test1:\n\n", 'Our new repo is there';
 
-chdir $ENV{"HOME"} . '/.config/vcsh/repo.d/test1.git/' or die $!;
+chdir $ENV{"HOME"} . '/.config/house/rooms/test1.git/' or die $!;
 
 ok -f 'HEAD';
 ok -f 'config';

@@ -4,17 +4,29 @@ use strict;
 use warnings;
 
 use Cwd 'abs_path';
+use Shell::Command;
 use Test::Most;
 
 chdir 't/etc/' or die $!;
 
-$ENV{'HOME'} = abs_path ('.vcsh_home');
+$ENV{'HOME'} = abs_path ('.houseroom_home');
 $ENV{'XDG_CONFIG_HOME'} = $ENV{'HOME'}.'/.config';
 
-system ("echo 'Yes, do as I say' | ./vcsh delete test1");
+system ("echo 'Yes, do as I say' | ./room delete test1");
 
-my $output = `./vcsh status`;
+my $output = `./room status`;
 
 ok $output eq "", 'No repos set up anymore.';
+
+# Regression test: `delete` must remove tracked paths whose names contain
+# whitespace (or globbing characters). A naive `for file in $(git ls-files)`
+# word-splits such names and silently leaves the files on disk.
+my $tricky = $ENV{'HOME'} . '/delete me';
+touch $tricky;
+system ("./room init deletews");
+system ("./room deletews add '$tricky'");
+ok -e $tricky, 'file with space in name staged for deletion';
+system ("echo 'Yes, do as I say' | ./room delete deletews");
+ok ! -e $tricky, 'delete removes tracked file whose name contains a space';
 
 done_testing;

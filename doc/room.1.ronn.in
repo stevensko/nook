@@ -1,68 +1,68 @@
-vcsh(1) - Version Control System for $HOME - multiple Git repositories in $HOME
+room(1) - Version Control System for $HOME - multiple Git repositories in $HOME
 ===============================================================================
 
 ## SYNOPSIS
 
-`@TRANSFORMED_PACKAGE_NAME@` [<options>] <command>
+`room` [<options>] <command>
 
-`@TRANSFORMED_PACKAGE_NAME@` clone [-b <branch>] <url> [<repo>]
+`room` clone [-b <branch>] <url> [<repo>]
 
-`@TRANSFORMED_PACKAGE_NAME@` delete <repo>
+`room` delete <repo>
 
-`@TRANSFORMED_PACKAGE_NAME@` enter <repo>
+`room` enter <repo>
 
-`@TRANSFORMED_PACKAGE_NAME@` foreach [-g] <git command>
+`room` foreach [-g] <git command>
 
-`@TRANSFORMED_PACKAGE_NAME@` help
+`room` help
 
-`@TRANSFORMED_PACKAGE_NAME@` init <repo>
+`room` init <repo>
 
-`@TRANSFORMED_PACKAGE_NAME@` list
+`room` list
 
-`@TRANSFORMED_PACKAGE_NAME@` list-tracked [<repo>]
+`room` list-tracked [<repo>]
 
-`@TRANSFORMED_PACKAGE_NAME@` list-untracked [<-a>] [<-r>] [<repo>]
+`room` list-untracked [<-a>] [<-r>] [<repo>]
 
-`@TRANSFORMED_PACKAGE_NAME@` pull
+`room` pull
 
-`@TRANSFORMED_PACKAGE_NAME@` push
+`room` push
 
-`@TRANSFORMED_PACKAGE_NAME@` rename <repo> <newname>
+`room` rename <repo> <newname>
 
-`@TRANSFORMED_PACKAGE_NAME@` run <repo> <shell command>
+`room` run <repo> <shell command>
 
-`@TRANSFORMED_PACKAGE_NAME@` status [<repo>]
+`room` status [<repo>]
 
-`@TRANSFORMED_PACKAGE_NAME@` upgrade <repo>
+`room` upgrade <repo>
 
-`@TRANSFORMED_PACKAGE_NAME@` version
+`room` version
 
-`@TRANSFORMED_PACKAGE_NAME@` which <substring>
+`room` which <substring>
 
-`@TRANSFORMED_PACKAGE_NAME@` write-gitignore [<repo>]
+`room` write-gitignore [<repo>]
 
-`@TRANSFORMED_PACKAGE_NAME@` <repo> <gitcommand>
+`room` <repo> <gitcommand>
 
-`@TRANSFORMED_PACKAGE_NAME@` <repo>
+`room` <repo>
 
 
 ## DESCRIPTION
 
-`@TRANSFORMED_PACKAGE_NAME@` allows you to have several `git`(1) repositories, all maintaining their
+`room` allows you to have several `git`(1) repositories, all maintaining their
 working trees in $HOME without clobbering each other. That, in turn, means you
 can have one repository per config set (zsh, vim, ssh, etc), picking and
 choosing which configs you want to use on which machine.
 
-`@TRANSFORMED_PACKAGE_NAME@` is using a technique called fake bare Git repositories, keeping <$GIT_DIR>
+`room` is using a technique called fake bare Git repositories, keeping <$GIT_DIR>
 in a different directory from <$GIT_WORK_TREE> which is pointed to <$HOME>.
 
 The use of symlinks is not needed in this setup, making for a cleaner setup.
 
-`@TRANSFORMED_PACKAGE_NAME@` was designed with `mr`(1) in mind so you might want to install it alongside
-vcsh. That being said, you can easily use `@TRANSFORMED_PACKAGE_NAME@` without `mr` if you prefer.
+`room` was designed with `mr`(1) in mind so you might want to install it alongside
+room. That being said, you can easily use `room` without `mr` if you prefer.
 
-A sample configuration for `@TRANSFORMED_PACKAGE_NAME@` and `mr` can be found at
-*https://github.com/RichiH/vcsh_mr_template* and used with `@TRANSFORMED_PACKAGE_NAME@ clone
+A sample configuration for `room` and `mr` can be found at
+*https://github.com/RichiH/vcsh_mr_template* and used with `room clone
 https://github.com/RichiH/vcsh_mr_template mr`.
 
 Please note that you can always use a path instead of a name for <repo>.
@@ -101,7 +101,7 @@ an interactive user.
   Enter repository; spawn new <$SHELL> with <$GIT_DIR> set.
 
 * foreach:
-  Execute git command for every vcsh repository.
+  Execute git command for every room repository.
 
   `-g`: Execute in general context.
 
@@ -112,10 +112,10 @@ an interactive user.
   Initialize an empty repository.
 
 * list:
-  List all local vcsh repositories.
+  List all local room repositories.
 
 * list-tracked:
-  List all files tracked by vcsh.
+  List all files tracked by room.
 
   If you want to list files tracked by a specific repository, simply
   append the repository's name last.
@@ -126,7 +126,7 @@ an interactive user.
   This is a legacy command; you should use `list-tracked <repo>` instead.
 
 * list-untracked:
-  List all files NOT tracked by vcsh.
+  List all files NOT tracked by room.
 
   `-a`: Show all files.
   By default, the `git ls-files --exclude-standard` is called.
@@ -138,10 +138,10 @@ an interactive user.
   `$repo`: List files not tracked by this specific repository.
 
 * pull:
-  Pull from all vcsh remotes.
+  Pull from all room remotes.
 
 * push:
-  Push to all vcsh remotes.
+  Push to all room remotes.
 
 * rename:
   Rename a repository.
@@ -152,13 +152,13 @@ an interactive user.
 
   Please note that there is a somewhat magic feature for run. Instead of <repo>
   it accepts <path>, as well. Anything that has a slash in it will be assumed to
-  be a path. `@TRANSFORMED_PACKAGE_NAME@ run` will then operate on this directory instead of the one
+  be a path. `room run` will then operate on this directory instead of the one
   normally generated from the repository's name.
   This is needed to support mr and other scripts properly and of no concern to
   an interactive user.
 
 * status:
-  Show statuses of all/one vcsh repositories.
+  Show statuses of all/one room repositories.
 
 * upgrade:
   Upgrade repository to currently recommended settings.
@@ -171,35 +171,35 @@ an interactive user.
 
 * write-gitignore:
   Write .gitignore.d/<repo> via `git ls-files`. If <repo> is not specified but
-  we're withing a vcsh repository, use that.
+  we're withing a room repository, use that.
 
 * <repo> <gitcommand>:
   Shortcut to run `git` commands on a repo. Will prepend `git` to <gitcommand>.
 
 * <repo>:
-  Shortcut to run `@TRANSFORMED_PACKAGE_NAME@ enter <repo>`.
+  Shortcut to run `room enter <repo>`.
 
 ## ENVIRONMENT
 
-As noted earlier, `@TRANSFORMED_PACKAGE_NAME@` will set <$GIT_DIR> and <$GIT_WORK_TREE> to the
+As noted earlier, `room` will set <$GIT_DIR> and <$GIT_WORK_TREE> to the
 appropriate values for fake bare Git repositories.
 
 ## CONFIG
 
-There are several ways to turn the various knobs on `@TRANSFORMED_PACKAGE_NAME@`. In order of
+There are several ways to turn the various knobs on `room`. In order of
 ascending precedence, they are:
 
-* `VARIABLE=foo @TRANSFORMED_PACKAGE_NAME@`
-* </etc/vcsh/config>
-* <$XDG_CONFIG_HOME/vcsh/config>
-* `@TRANSFORMED_PACKAGE_NAME@ -c <file>`
+* `VARIABLE=foo room`
+* </etc/house/config>
+* <$XDG_CONFIG_HOME/house/config>
+* `room -c <file>`
 
 Please note that those files are sourced. Any and all commands will be
 executed in the context of your shell.
 
 Interesting knobs you can turn:
 
-* <$VCSH_GITATTRIBUTES>:
+* <$HOUSEROOM_GITATTRIBUTES>:
   Can be <none>, or any other value.
 
   <none> will not maintain Git attributes in a special location.
@@ -208,7 +208,7 @@ Interesting knobs you can turn:
 
   Defaults to <none>.
 
-* <$VCSH_GITIGNORE>:
+* <$HOUSEROOM_GITIGNORE>:
   Can be <exact>, <none>, or <recursive>.
 
   <exact> will seed the repo-specific ignore file with all file and directory
@@ -221,7 +221,7 @@ Interesting knobs you can turn:
 
   Defaults to <exact>.
 
-* <$VCSH_WORKTREE>:
+* <$HOUSEROOM_WORKTREE>:
   Can be <absolute>, or <relative>.
 
   <absolute> will set an absolute path; defaulting to <$HOME>.
@@ -232,7 +232,7 @@ Interesting knobs you can turn:
 
 Less interesting knobs you could turn:
 
-* <$VCSH_DEBUG>:
+* <$HOUSEROOM_DEBUG>:
   Enter debug mode.
 
 * <$XDG_CONFIG_HOME>:
@@ -241,17 +241,17 @@ Less interesting knobs you could turn:
 
   Defaults to <$HOME/.config>.
 
-* <$VCSH_REPO_D>:
+* <$HOUSEROOM_REPO_D>:
   The directory where repositories are read from and stored.
 
-  Defaults to <$XDG_CONFIG_HOME/vcsh/repo.d>.
+  Defaults to <$XDG_CONFIG_HOME/house/rooms>.
 
-* <$VCSH_HOOK_D>:
+* <$HOUSEROOM_HOOK_D>:
   The directory where hooks are read from.
 
-  Defaults to <$XDG_CONFIG_HOME/vcsh/hooks-enabled>.
+  Defaults to <$XDG_CONFIG_HOME/house/hooks-enabled>.
 
-* <$VCSH_BASE>:
+* <$HOUSEROOM_BASE>:
   The directory where repositories are checked out to.
 
   Defaults to <$HOME>.
@@ -259,9 +259,9 @@ Less interesting knobs you could turn:
 
 ## HOOK SYSTEM
 
-`@TRANSFORMED_PACKAGE_NAME@` provides a hook system. Hook scripts must be executable and should be
-placed in <$XDG_CONFIG_HOME/vcsh/hooks-available>. From there, they can be
-soft-linked into <$XDG_CONFIG_HOME/vcsh/hooks-enabled>; `@TRANSFORMED_PACKAGE_NAME@` will only
+`room` provides a hook system. Hook scripts must be executable and should be
+placed in <$XDG_CONFIG_HOME/house/hooks-available>. From there, they can be
+soft-linked into <$XDG_CONFIG_HOME/house/hooks-enabled>; `room` will only
 execute hooks that are in this directory.
 
 Hooks follow a simple format. <pre-run> will be run before anything is run.
@@ -270,7 +270,7 @@ any kind of string to order them. A system of <pre-run>, <pre-run\.10>,
 <pre-run\.20> etc is suggested; other options would be <pre-run-10> or
 <pre-run\.sh>. A dot after the hook name is optional.
 
-If you want to create hooks for a specific <vcsh> repository, simply prepend
+If you want to create hooks for a specific <room> repository, simply prepend
 the repository's name, followed by a dot, i.e. <zsh\.pre-run>. Otherwise, the
 same rules as above apply. The dot between the repository's name and the hook
 is mandatory, though.
@@ -279,22 +279,22 @@ Available hooks are <pre-clone>, <post-clone>, <post-clone-retired>,
 <pre-command>, <post-command>, <pre-enter>, <post-enter>, <pre-init>,
 <post-init>, <pre-pull>, <post-pull>, <pre-push>, <post-push>, <pre-run>,
 <post-run>, <pre-upgrade>, and <post-upgrade>.
-If you need more, vcsh is trivial to patch, but please let upstream know so
+If you need more, room is trivial to patch, but please let upstream know so
 we can ship them by default.
 
 ## OVERLAY SYSTEM
 
-`@TRANSFORMED_PACKAGE_NAME@` also provides an overlay system. Similar to hooks, the recommended
-locations are <$XDG_CONFIG_HOME/vcsh/overlays-available> and
-<$XDG_CONFIG_HOME/vcsh/overlays-enabled>.
+`room` also provides an overlay system. Similar to hooks, the recommended
+locations are <$XDG_CONFIG_HOME/house/overlays-available> and
+<$XDG_CONFIG_HOME/house/overlays-enabled>.
 
 Overlays follow the same rules as hooks and you are free to overwrite any
 and all functions. Same as hooks, you can use global or repository-specific
-overlays by using either <$VCSH_OVERLAY_D/$VCSH_COMMAND> or
-<$VCSH_OVERLAY_D/$VCSH_REPO_NAME.$VCSH_COMMAND>.
+overlays by using either <$HOUSEROOM_OVERLAY_D/$HOUSEROOM_COMMAND> or
+<$HOUSEROOM_OVERLAY_D/$HOUSEROOM_REPO_NAME.$HOUSEROOM_COMMAND>.
 
 Please note that nothing stops you from, e.g. overwriting `status()` in
-<$VCSH_OVERLAY_D/commit>. As the overlays will be sourced and you are
+<$HOUSEROOM_OVERLAY_D/commit>. As the overlays will be sourced and you are
 replacing arbitrary functions, any and all features may stop working, or you
 may even lose data.
 
@@ -307,17 +307,17 @@ While the author tried to avoid this in this case, manpages can not cover
 detailed howtos.
 
 This software also comes with a file called <README\.md>. It contains various
-approaches to setting up and using vcsh. You can view the file it as
+approaches to setting up and using room. You can view the file it as
 plain text or render it into various other formats via Markdown.
 
-On Debian-based systems, this file can be found in </usr/share/doc/vcsh>.
+On Debian-based systems, this file can be found in </usr/share/doc/room>.
 
 ## SECURITY CONSIDERATIONS
 
-`@TRANSFORMED_PACKAGE_NAME@` allows you to execute arbitrary commands via `@TRANSFORMED_PACKAGE_NAME@ run`. For example,
-adding a `sudo`(8) rule for `@TRANSFORMED_PACKAGE_NAME@` would be pretty stupid.
+`room` allows you to execute arbitrary commands via `room run`. For example,
+adding a `sudo`(8) rule for `room` would be pretty stupid.
 
-Additionally, vcsh will source, i.e. execute, all files listed in <CONFIG>.
+Additionally, room will source, i.e. execute, all files listed in <CONFIG>.
 You can put any and all commands into these config files and they will be
 executed.
 
@@ -339,13 +339,13 @@ config files, all of which were soft-linked into <$HOME>.
 Martin F. Krafft aka madduck came up with the concept of fake bare Git
 repositories.
 
-vcsh was initially written by madduck. This version is a re-implementation from
+room was initially written by madduck. This version is a re-implementation from
 scratch with a lot more features. madduck graciously agreed to let the author
 take over the name.
 
 ## AUTHOR
 
-This manpage and `@TRANSFORMED_PACKAGE_NAME@` itself were written by Richard "RichiH" Hartmann.
+This manpage and `room` itself were written by Richard "RichiH" Hartmann.
 
 ## COPYRIGHT
 

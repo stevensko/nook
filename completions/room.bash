@@ -1,6 +1,6 @@
 # run git command
 #   based on bash_completion:_command_offset()
-_vcsh_git_command () {
+_room_git_command () {
 	local word_offset=$1
 	for (( i=0; i < word_offset; i++ )); do
 		for (( j=0; j <= ${#COMP_LINE}; j++ )); do
@@ -56,13 +56,13 @@ _vcsh_git_command () {
 	fi
 }
 
-_vcsh () {
+_room () {
 	local cur prev words OPTS
 	_init_completion -n = || return
 
 	local r reponames
 	local -A repos
-	mapfile -t reponames < <(command vcsh list)
+	mapfile -t reponames < <(command room list)
 	for r in "${reponames[@]}"; do repos["$r"]="$r"; done
 	unset r reponames
 	local cmds
@@ -128,7 +128,7 @@ _vcsh () {
 		foreach)
 			[[ $cur == -* ]] \
 				&& mapfile -t COMPREPLY < <(compgen -W "-g" -- "$cur") && return
-			_vcsh_git_command $subcword
+			_room_git_command $subcword
 			return
 			;;
 
@@ -136,10 +136,10 @@ _vcsh () {
 
 	# git command on repository
 	if [[ -n "${repos[$cmd]}" ]]; then
-		: "${VCSH_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/vcsh/repo.d}"
-		GIT_DIR="${VCSH_REPO_D}/${cmd}.git" _vcsh_git_command "$subcword"
+		: "${HOUSEROOM_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/house/rooms}"
+		GIT_DIR="${HOUSEROOM_REPO_D}/${cmd}.git" _room_git_command "$subcword"
 	fi
 	return 0
 }
 
-complete -F _vcsh vcsh
+complete -F _room room

@@ -9,15 +9,15 @@ use Test::Most;
 system ("mkdir -p t/etc");
 ok !$?;
 
-system ("mkdir -p t/etc/.vcsh_home");
+system ("mkdir -p t/etc/.houseroom_home");
 ok !$?;
 
 chdir 't/etc/' or die $!;
 
-system ("ln -s '../../vcsh'");
+system ("ln -s '../../room'");
 ok !$?;
 
-$ENV{'HOME'} = abs_path ('.vcsh_home');
+$ENV{'HOME'} = abs_path ('.houseroom_home');
 $ENV{'XDG_CONFIG_HOME'} = $ENV{'HOME'}.'/.config';
 
 system ("git config --global init.defaultBranch test");

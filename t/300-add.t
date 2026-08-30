@@ -10,10 +10,10 @@ use Test::Most;
 
 chdir 't/etc/' or die $!;
 
-$ENV{'HOME'} = abs_path ('.vcsh_home');
+$ENV{'HOME'} = abs_path ('.houseroom_home');
 $ENV{'XDG_CONFIG_HOME'} = $ENV{'HOME'}.'/.config';
 
-chdir '.vcsh_home' or die $!;
+chdir '.houseroom_home' or die $!;
 
 eval {
 	touch 'a';
@@ -21,16 +21,16 @@ eval {
 
 die $@ if $@;
 
-system (".././vcsh test1 add 'a'");
+system (".././room test1 add 'a'");
 
-my $output = `.././vcsh status`;
+my $output = `.././room status`;
 
 ok $output eq "test1:
 A  ~/a
 
 ", 'Adding a file works';
 
-$output = `.././vcsh status --terse`;
+$output = `.././room status --terse`;
 
 ok $output eq "test1:
 A  ~/a

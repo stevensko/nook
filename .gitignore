@@ -1,5 +1,5 @@
-vcsh.1
-doc/vcsh.1.ronn
+room.1
+doc/room.1.ronn
 *.patch
 *.swp
 .swp
@@ -12,11 +12,11 @@ aclocal.m4
 autom4te.cache/
 build-aux/install-sh
 build-aux/missing
-completions/_vcsh
-completions/vcsh
+completions/_room
+completions/room
 config.log
 config.status
 configure
 aminclude.am
-/vcsh
-vcsh-*
+/room
+room-*

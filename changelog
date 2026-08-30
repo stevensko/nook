@@ -1,3 +1,16 @@
+2026-08-29  stevensko <skovraneksteven@gmail.com>
+
+	* Fork of vcsh, rebranded as "Houseroom Dotfiles Manager"
+	* Command renamed vcsh -> room
+	* Environment variables renamed VCSH_* -> HOUSEROOM_*
+	* Config directory moved $XDG_CONFIG_HOME/vcsh -> $XDG_CONFIG_HOME/house
+	* Repository directory renamed repo.d -> rooms
+	* Source script renamed vcsh.in -> houseroom.in; man page vcsh.1 -> room.1
+	* delete: use `git ls-files -z | xargs -0` so paths with whitespace,
+	  glob characters, or non-ASCII bytes are removed correctly
+	* Add doc/sample_hooks/post-init-setup-gita (gita integration)
+	* Add install-local.sh for a no-autotools user-space install
+
 2024-04-08  Caleb Maclennan <caleb@alerque.com>
 
 	* Release 2.0.10
@@ -61,12 +74,12 @@
 	* Post source builds as part of automated release process
 	* Switch to versioning scheme to semver
 	* Replace Travis test runner with GitHub Actions
-	* Make VCSH_* variables available to hooks
+	* Make HOUSEROOM_* variables available to hooks
 	* More carefully handle shell quoting
 	* Improve handling of non-default remote names and branches
 	* Fix per-repo pre/post hook handling
-	* Output path relative to $HOME in ‘vcsh status’
-	* Add flag to prefix output of ‘vcsh foreach -p’ with repo name
+	* Output path relative to $HOME in ‘room status’
+	* Add flag to prefix output of ‘room foreach -p’ with repo name
 	* Fix debugging on Windows 10 / Cygwin
 	* Improve option flag handling to allow multiple flags, squash bugs
 	* Don't require Ruby or Perl tooling to build and install
@@ -82,7 +95,7 @@
 2021-04-05  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20190621
-	* Make version reflected in `vcsh version` correct...
+	* Make version reflected in `room version` correct...
 
 2021-03-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -99,16 +112,16 @@
 
 2015-12-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Fix tests to always use C locale, this makes vcsh reproducible
-	* Implement `vcsh foreach`
-	* Implement `vcsh list-untracked -a`
+	* Fix tests to always use C locale, this makes room reproducible
+	* Implement `room foreach`
+	* Implement `room list-untracked -a`
 	* Handle Git older than 2.x gracefully
 	* Fix broken list-tracked-by
-	* Fix regression in `vcsh which`
+	* Fix regression in `room which`
 	* Skip ignored files in the output of list-untracked
 	* Improve cloning
 	* Clean up docs
-	* Implement `vcsh status --terse`
+	* Implement `room status --terse`
 	* Improve tests
 
 2015-05-02  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -116,8 +129,8 @@
 	* Release 1.20150502
 	* Add tests
 	* Integrate tests with Travis CI
-	* Make `vcsh --list_untracked` GNU-independent
-	* Improve vcsh's code quality
+	* Make `room --list_untracked` GNU-independent
+	* Improve room's code quality
 	* Improve Makefile, documentation, etc
 
 2014-10-26  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -129,11 +142,11 @@
 2014-10-25  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20141025
-	* `vcsh which dontexist` exits 1
-	* `vcsh status` shows commits ahead/behind remote tracking branch
+	* `room which dontexist` exits 1
+	* `room status` shows commits ahead/behind remote tracking branch
 	* Support overlay functions
-	* Support `vcsh list-untracked`, optionally recursively
-	* Support `vcsh list-untracked $repo`
+	* Support `room list-untracked`, optionally recursively
+	* Support `room list-untracked $repo`
 	* Improve error handling of clone()
 	* Rename `list-tracked-by` to `list-tracked <repo>`
 	* Support repo-specific config files
@@ -195,8 +208,8 @@
 2013-08-29  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130829
-	* Add support for `vcsh commit`
-	* Add support for `vcsh status <repo>`
+	* Add support for `room commit`
+	* Add support for `room status <repo>`
 	* Add pre-/post-init hooks
 	* Documentation improvements
 	* Minor cleanups
@@ -204,23 +217,23 @@
 2013-07-24  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130724
-	* Add support for `vcsh status`
-	* Improve output of `vcsh pull`
-	* Improve output of `vcsh push`
+	* Add support for `room status`
+	* Improve output of `room pull`
+	* Improve output of `room push`
 	* Minor documentation improvements
 
 2013-07-23  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.20130723
-	* Support $VCSH_GITIGNORE == none
+	* Support $HOUSEROOM_GITIGNORE == none
 	* Documentation improvements,
 	* Improved zsh completion
-	* Add support for `vcsh pull`
-	* Add support for `vcsh push`
-	* Add retire() to tear down vcsh ENV
-	* Add clone hooks, including one witout vcsh ENV to
+	* Add support for `room pull`
+	* Add support for `room push`
+	* Add retire() to tear down room ENV
+	* Add clone hooks, including one witout room ENV to
 	  allow subsequent cloning of other repos
-	* Fix `vcsh rename`
+	* Fix `room rename`
 	* Improve general code robustness
 
 2013-06-14  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -235,13 +248,13 @@
 	* Ancher ignore file to root of Git repo
 	* Implemented basename() to save one process spawn
 	* Improve packaged Zsh completion
-	* Renamed `vcsh setup` to `vcsh upgrade`
+	* Renamed `room setup` to `room upgrade`
 	* Various documentation and spelling improvements
 
 2013-04-21  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.2
-	* Introduce `vcsh version`
+	* Introduce `room version`
 
 2013-03-31  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -259,7 +272,7 @@
 2012-06-30  Richard Hartmann <richih.mailinglist@gmail.com>
 
 	* Release 1.0
-	* Make `vcsh list` more resilient
+	* Make `room list` more resilient
 	* Lots of doc improvements
 
 2012-02-27  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -269,7 +282,7 @@
 
 2012-02-15  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Introduce `vcsh which`
+	* Introduce `room which`
 	* hooks will tell you when they are being executed
 	* Formatting & resilience improvements
 	* We have a changelog, now! (yay)
@@ -290,11 +303,11 @@
 
 2011-12-26  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Introduce and use .config/vcsh/config
+	* Introduce and use .config/house/config
 	* More verbose error handling
-	* Introduce `vcsh {list-tracked,list-tracked-by}`
-	* Introduce repo shortcuts (`vcsh zsh commit`)
-	* Rename `vcsh seed-gitignore` to `vcsh write-gitignore`
+	* Introduce `room {list-tracked,list-tracked-by}`
+	* Introduce repo shortcuts (`room zsh commit`)
+	* Rename `room seed-gitignore` to `room write-gitignore`
 	* Add license information
 
 2011-11-29  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -302,8 +315,8 @@
 	* Bugfixes
 	* Refactor error handling
 	* Make code more resilient
-	* Make vcsh play nice with mr
-	* Introduce vcsh mv and setup
+	* Make room play nice with mr
+	* Introduce room mv and setup
 
 2011-11-23  Richard Hartmann <richih.mailinglist@gmail.com>
 
@@ -329,7 +342,7 @@
 
 	* Yet more documentation improvements
 	* Makefile
-	* Heed already-defined ENV variables within vcsh
+	* Heed already-defined ENV variables within room
 	* Handle .gitignore.d/$repo automagically
 
 2011-11-11  Richard Hartmann <richih.mailinglist@gmail.com>
@@ -345,7 +358,7 @@
 
 2011-10-18  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Fixed bug in vcsh clone & init
+	* Fixed bug in room clone & init
 
 2011-10-17  Richard Hartmann <richih.mailinglist@gmail.com>
 
