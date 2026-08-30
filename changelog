@@ -8,23 +8,25 @@
 	    - one <repo>.stache/ directory per repo, containing:
 	        <repo>.git/     the git directory
 	        config          per-repo shell config (sourced), was config.d/<repo>
-	        gitignore       per-repo ignore file  (was ~/.gitignore.d/<repo>)
-	        gitattributes   per-repo attributes   (was ~/.gitattributes.d/<repo>)
-	    - shared fallbacks gitignore / gitattributes / gitconfig / stache.list
-	      and hooks-enabled/ overlays-enabled/ config sit alongside them
+	        .gitignore      per-repo ignore file  (was ~/.gitignore.d/<repo>)
+	        .gitattributes  per-repo attributes   (was ~/.gitattributes.d/<repo>)
+	    - shared fallbacks .gitignore / .gitattributes / .gitconfig, the
+	      stache.repos list, and the hooks/ overlays/ config dirs/files
 	  upgrade() points core.excludesfile / core.attributesfile at the
 	  per-repo file if present, else the shared one. These files are no
 	  longer tracked by the repo (they are outside $HOME).
-	* The shared gitignore is seeded with `*` on first run, so `git add .`
+	* The shared .gitignore is seeded with `*` on first run, so `git add .`
 	  in a stache repo is safe by default; `stache <repo> add -f <path>`
 	  tracks a new file. Trade-off: `stache list-untracked` returns nothing
-	  unless you make a curated per-repo gitignore (stache write-gitignore).
+	  unless you make a curated per-repo .gitignore (stache write-gitignore).
+	* Hook/overlay dirs lost the -enabled suffix: hooks/ and overlays/.
 	* System config: /etc/vcsh/config -> /etc/stache/config
 	* Source script renamed vcsh.in -> stache.in; man page vcsh.1 -> stache.1
-	* New: `stache manifest [<file>]` writes name/url/branch for every repo
-	  with an origin remote (default $STACHE_MANIFEST, '-' for stdout)
-	* New: `stache restore [<file>]` clones every repo listed in a manifest
-	  that is not already present -- built-in bootstrap, no myrepos/gita
+	* $XDG_CONFIG_HOME/stache/stache.repos ("<name> <url> <branch>" per repo
+	  with an origin remote) is created and kept current AUTOMATICALLY after
+	  init/clone/delete/rename/upgrade/restore. There is no `manifest`
+	  command; `stache restore` clones everything listed there that is not
+	  already present -- built-in bootstrap, no myrepos/gita.
 	* New: `stache config <git config args>` edits a shared git config file
 	  ($STACHE_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos

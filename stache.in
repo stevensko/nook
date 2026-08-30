@@ -85,17 +85,17 @@ fi
 
 # Read defaults
 : "${STACHE_REPO_D:="$XDG_CONFIG_HOME/stache"}"; export STACHE_REPO_D
-: "${STACHE_HOOK_D:="$XDG_CONFIG_HOME/stache/hooks-enabled"}"; export STACHE_HOOK_D
-: "${STACHE_OVERLAY_D:="$XDG_CONFIG_HOME/stache/overlays-enabled"}"; export STACHE_OVERLAY_D
-: "${STACHE_MANIFEST:="$XDG_CONFIG_HOME/stache/stache.list"}"; export STACHE_MANIFEST
+: "${STACHE_HOOK_D:="$XDG_CONFIG_HOME/stache/hooks"}"; export STACHE_HOOK_D
+: "${STACHE_OVERLAY_D:="$XDG_CONFIG_HOME/stache/overlays"}"; export STACHE_OVERLAY_D
+: "${STACHE_REPOS:="$XDG_CONFIG_HOME/stache/stache.repos"}"; export STACHE_REPOS
 : "${STACHE_BASE:="$HOME"}"; export STACHE_BASE
 : "${STACHE_GITIGNORE:=exact}"; export STACHE_GITIGNORE
 : "${STACHE_GITATTRIBUTES:=none}"; export STACHE_GITATTRIBUTES
 : "${STACHE_WORKTREE:=absolute}"; export STACHE_WORKTREE
 : "${STACHE_SHOW_UNTRACKED:=no}"; export STACHE_SHOW_UNTRACKED
-: "${STACHE_GITCONFIG:="$XDG_CONFIG_HOME/stache/gitconfig"}"; export STACHE_GITCONFIG
-: "${STACHE_GITIGNORE_FILE:="$XDG_CONFIG_HOME/stache/gitignore"}"; export STACHE_GITIGNORE_FILE
-: "${STACHE_GITATTRIBUTES_FILE:="$XDG_CONFIG_HOME/stache/gitattributes"}"; export STACHE_GITATTRIBUTES_FILE
+: "${STACHE_GITCONFIG:="$XDG_CONFIG_HOME/stache/.gitconfig"}"; export STACHE_GITCONFIG
+: "${STACHE_GITIGNORE_FILE:="$XDG_CONFIG_HOME/stache/.gitignore"}"; export STACHE_GITIGNORE_FILE
+: "${STACHE_GITATTRIBUTES_FILE:="$XDG_CONFIG_HOME/stache/.gitattributes"}"; export STACHE_GITATTRIBUTES_FILE
 
 if [ ! "x$STACHE_GITIGNORE" = 'xexact' ] && [ ! "x$STACHE_GITIGNORE" = 'xnone' ] && [ ! "x$STACHE_GITIGNORE" = 'xrecursive' ]; then
 	fatal "'\$STACHE_GITIGNORE' must equal 'exact', 'none', or 'recursive'" 1
@@ -137,11 +137,11 @@ help() {
    list-untracked \\
         [<-a>] [<-r>]
         [<repo>]        List all files not tracked by all or one repositories
-   manifest [<file>]    Write repo list (name/url/branch) to <file> or
-                        \$STACHE_MANIFEST; use '-' for stdout
    pull                 Pull from all stache remotes
    push                 Push to stache remotes
-   restore [<file>]     Clone every repo listed in a manifest file
+   restore [<file>]     Clone every repo listed in \$STACHE_REPOS
+                        (\$XDG_CONFIG_HOME/stache/stache.repos), which stache
+                        maintains automatically
    rename <repo> \\
           <newname>     Rename repository
    run <repo> \\
@@ -152,7 +152,7 @@ help() {
    version              Print version information
    which <substring>    Find substring in name of any tracked file
    write-gitignore \\
-   [<repo>]             Write <repo>.stache/gitignore via git ls-files
+   [<repo>]             Write <repo>.stache/.gitignore via git ls-files
 
    <repo> <git command> Shortcut to run git commands directly
    <repo>               Shortcut to enter repository" >&2
@@ -372,41 +372,36 @@ config() {
 	STACHE_COMMAND_RETURN_CODE=$?
 }
 
-manifest() {
-	# Write "<name> <remote-url> <branch>" (space-separated) for every repo
-	# that has an 'origin' remote. Target: $2, else $STACHE_MANIFEST;
-	# '-' means stdout.
-	target=${2:-$STACHE_MANIFEST}
-	if [ "x$target" != 'x-' ]; then
-		{
-			echo "# $STACHE_SELF manifest -- fields: <name> <remote-url> <branch>"
-			echo "# regenerate with: $STACHE_SELF manifest"
-		} > "$target" || fatal "could not write '$target'" 50
-	fi
+write_repos_file() {
+	# Regenerate $STACHE_REPOS ("<name> <url> <branch>" per repo with an
+	# 'origin' remote). Called automatically after init/clone/delete/rename/
+	# upgrade/restore. Only rewrites the file if its content changed.
+	local tmp
+	tmp=$(mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX") || return 0
+	echo "# stache repos -- managed automatically; fields: <name> <url> <branch>" > "$tmp"
 	for STACHE_REPO_NAME in $(list); do
 		GIT_DIR=$STACHE_REPO_D/$STACHE_REPO_NAME.stache/$STACHE_REPO_NAME.git; export GIT_DIR STACHE_REPO_NAME
-		url=$(@GIT@ config --get remote.origin.url) || continue
+		url=$(@GIT@ config --get remote.origin.url 2> /dev/null) || continue
 		[ -n "$url" ] || continue
 		branch=$(@GIT@ symbolic-ref --quiet --short HEAD 2> /dev/null) || branch=
-		if [ "x$target" = 'x-' ]; then
-			printf '%s %s %s\n' "$STACHE_REPO_NAME" "$url" "$branch"
-		else
-			printf '%s %s %s\n' "$STACHE_REPO_NAME" "$url" "$branch" >> "$target"
-		fi
+		printf '%s %s %s\n' "$STACHE_REPO_NAME" "$url" "$branch" >> "$tmp"
 	done
-	[ "x$target" = 'x-' ] || info "wrote manifest to '$target'"
+	if diff -N "$tmp" "$STACHE_REPOS" > /dev/null 2>&1; then
+		rm -f "$tmp"
+	else
+		mv -f "$tmp" "$STACHE_REPOS" 2> /dev/null || rm -f "$tmp"
+	fi
 }
 
 restore() {
-	# Clone every repo listed in a manifest file that is not already present.
-	source_file=${2:-$STACHE_MANIFEST}
-	[ -r "$source_file" ] || fatal "$STACHE_COMMAND: manifest not readable: '$source_file'" 1
-	# Fields are whitespace-separated; none of name/url/branch can contain
-	# a space, so the default IFS split is safe (and tolerates old tab files).
+	# Clone every repo listed in $STACHE_REPOS that is not already present.
+	source_file=${2:-$STACHE_REPOS}
+	[ -r "$source_file" ] || fatal "$STACHE_COMMAND: repos file not readable: '$source_file'" 1
+	# Fields are whitespace-separated; none of name/url/branch can contain a space.
 	while read -r name url branch; do
 		case "$name" in ''|\#*) continue;; esac
 		if [ -z "$url" ]; then
-			info "skipping '$name': no URL in manifest"
+			info "skipping '$name': no URL in repos file"
 			continue
 		fi
 		if [ -e "$STACHE_REPO_D/$name.stache/$name.git" ]; then
@@ -609,15 +604,15 @@ upgrade() {
 	# Per-repo exclude/attributes file lives in <name>.stache/ next to the
 	# git dir; if absent, fall back to the shared file in $XDG_CONFIG_HOME/stache.
 	if [ ! "x$STACHE_GITIGNORE" = 'xnone' ]; then
-		if [ -e "${GIT_DIR%/*}/gitignore" ]; then
-			@GIT@ config core.excludesfile "${GIT_DIR%/*}/gitignore"
+		if [ -e "${GIT_DIR%/*}/.gitignore" ]; then
+			@GIT@ config core.excludesfile "${GIT_DIR%/*}/.gitignore"
 		else
 			@GIT@ config core.excludesfile "$STACHE_GITIGNORE_FILE"
 		fi
 	fi
 	if [ ! "x$STACHE_GITATTRIBUTES" = 'xnone' ]; then
-		if [ -e "${GIT_DIR%/*}/gitattributes" ]; then
-			@GIT@ config core.attributesfile "${GIT_DIR%/*}/gitattributes"
+		if [ -e "${GIT_DIR%/*}/.gitattributes" ]; then
+			@GIT@ config core.attributesfile "${GIT_DIR%/*}/.gitattributes"
 		else
 			@GIT@ config core.attributesfile "$STACHE_GITATTRIBUTES_FILE"
 		fi
@@ -697,7 +692,7 @@ write_gitignore() {
 	done
 	IFS=$OLDIFS
 	local GIT_IGNORE_PATH
-	GIT_IGNORE_PATH="${GIT_DIR%/*}/gitignore"
+	GIT_IGNORE_PATH="${GIT_DIR%/*}/.gitignore"
 	if diff -N "$tempfile" "$GIT_IGNORE_PATH" > /dev/null; then
 		info "'$GIT_IGNORE_PATH' already up to date"
 		rm -f "$tempfile" || fatal "could not delete '$tempfile'" 59
@@ -800,7 +795,6 @@ elif [ x"$STACHE_COMMAND" = x'commit' ] ||
 	[ x"$STACHE_COMMAND" = x'list'   ] ||
 	[ x"$STACHE_COMMAND" = x'list-tracked' ] ||
 	[ x"$STACHE_COMMAND" = x'list-untracked' ] ||
-	[ x"$STACHE_COMMAND" = x'manifest' ] ||
 	[ x"$STACHE_COMMAND" = x'restore' ] ||
 	[ x"$STACHE_COMMAND" = x'pull'   ] ||
 	[ x"$STACHE_COMMAND" = x'push'   ]; then
@@ -877,6 +871,13 @@ done
 hook pre-command
 $STACHE_COMMAND "$@"
 hook post-command
+
+# Keep $STACHE_REPOS current after any command that can change the repo set
+# or a repo's remote. Regenerated in place; only rewritten if it changed.
+case $STACHE_COMMAND in
+	init|clone|delete|rename|upgrade|restore) write_repos_file ;;
+esac
+
 verbose "$STACHE_COMMAND end, exiting"
 exit $STACHE_COMMAND_RETURN_CODE
 

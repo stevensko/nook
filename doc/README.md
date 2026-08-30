@@ -110,19 +110,18 @@ symbolic links in `$HOME`; it puts the actual files right into `$HOME`.
 As `stache` allows you to put an arbitrary number of distinct repositories into
 your `$HOME`, you will end up with a lot of repositories very quickly.
 
-`stache` has a built-in bootstrap so setting up a new machine is quick:
-`stache manifest` writes `~/.config/stache/stache.list` -- one line per
-repository, `<name> <url> <branch>` -- for every repo that has an
-`origin` remote. Track that file in one of your repos. On a new machine,
-clone that one repo, then run `stache restore` and every other repo listed in
-the manifest is cloned for you.
+`stache` has a built-in bootstrap. It keeps
+`~/.config/stache/stache.repos` -- one line per repo, `<name> <url> <branch>`,
+for every repo with an `origin` remote -- current **automatically** (after
+init/clone/delete/rename/upgrade). Track that file in one of your repos; on a
+new machine, clone that repo and run `stache restore`, and every other repo in
+the list is cloned for you.
 
-    stache manifest                     # on your current machine
-    stache dotfiles add -f ~/.config/stache/stache.list
-    stache dotfiles commit -m 'track manifest' && stache dotfiles push
+    stache dotfiles add -f ~/.config/stache/stache.repos
+    stache dotfiles commit -m 'track repo list' && stache dotfiles push
 
     # on a new machine, after installing stache:
-    stache clone <url-of-the-repo-holding-the-manifest> dotfiles
+    stache clone <url-of-the-repo-holding-stache.repos> dotfiles
     stache restore
 
 `stache pull` / `stache push` / `stache status` then operate on the whole set.
@@ -137,24 +136,24 @@ tracked files themselves.
 
     ~/.config/stache/
         config                  # optional: shell config sourced for every repo
-        gitconfig               # git config included by every repo (edit: stache config ...)
-        gitignore               # shared fallback ignore file
-        gitattributes           # shared fallback attributes file
-        stache.list             # the manifest (stache manifest / stache restore)
-        hooks-enabled/          # optional: hook scripts
-        overlays-enabled/       # optional: function overrides
+        .gitconfig              # git config included by every repo (edit: stache config ...)
+        .gitignore              # shared fallback ignore file (seeded with '*')
+        .gitattributes          # shared fallback attributes file
+        stache.repos            # the repo list, maintained automatically
+        hooks/                  # optional: hook scripts
+        overlays/               # optional: function overrides
         <name>.stache/          # one directory per repo, containing:
             <name>.git/         #   the git directory
             config              #   optional: shell config sourced for this repo only
-            gitignore           #   optional: per-repo ignore file
-            gitattributes       #   optional: per-repo attributes file
+            .gitignore          #   optional: per-repo ignore file
+            .gitattributes      #   optional: per-repo attributes file
 
 Each `<name>.git` is an ordinary git directory with `core.worktree` set to
 `$HOME` and `core.bare` false, so the working files land straight in `$HOME`;
 `stache` never creates symlinks. `upgrade` sets `core.excludesfile` /
 `core.attributesfile` to the per-repo file in `<name>.stache/` if it exists,
-otherwise to the shared `~/.config/stache/gitignore` /
-`~/.config/stache/gitattributes` (see `$STACHE_GITIGNORE`). Unlike vcsh, these
+otherwise to the shared `~/.config/stache/.gitignore` /
+`~/.config/stache/.gitattributes` (see `$STACHE_GITIGNORE`). Unlike vcsh, these
 files are **not** tracked by the repo and do not clone to other machines --
 regenerate with `stache write-gitignore <repo>` if you want a per-repo one.
 
@@ -183,10 +182,10 @@ Day to day:
 ## New machine
 
     # install stache, then:
-    stache clone <url-of-repo-holding-your-manifest> dotfiles
-    stache restore    # clones every repo listed in ~/.config/stache/stache.list
+    stache clone <url-of-repo-holding-stache.repos> dotfiles
+    stache restore    # clones every repo listed in ~/.config/stache/stache.repos
 
-Keep the manifest current with `stache manifest` (drop it into your push alias).
+`stache.repos` is kept current automatically -- no command to run.
 
 
 # Contact

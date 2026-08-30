@@ -1,25 +1,25 @@
 #compdef stache
 
-function __room_repositories () {
+function __stache_repositories () {
 	local -a repos
 	repos=( ${(f)"$(_call_program repositories stache list)"} )
 	_describe -t repositories 'repository' repos
 }
 
-function __room_not_implemented_yet () {
+function __stache_not_implemented_yet () {
 	_message "Subcommand completion '${1#*-}': not implemented yet"
 }
 
 function _stache-clone () {
-	__room_not_implemented_yet "$0" #TODO
+	__stache_not_implemented_yet "$0" #TODO
 }
 
 function _stache-delete () {
-	(( CURRENT == 2 )) && __room_repositories
+	(( CURRENT == 2 )) && __stache_repositories
 }
 
 function _stache-enter () {
-	(( CURRENT == 2 )) && __room_repositories
+	(( CURRENT == 2 )) && __stache_repositories
 }
 
 function _stache-foreach () {
@@ -39,7 +39,7 @@ function _stache-list () {
 }
 
 function _stache-list-tracked () {
-	(( CURRENT == 2 )) && __room_repositories
+	(( CURRENT == 2 )) && __stache_repositories
 }
 
 function _stache-list-untracked () {
@@ -56,14 +56,14 @@ function _stache-push () {
 
 function _stache-rename () {
 	case $CURRENT in
-		2) __room_repositories ;;
+		2) __stache_repositories ;;
 		3) _message "new repository name" ;;
 		*) _nothing ;;
 	esac
 }
 
 function _stache-run () {
-	(( CURRENT == 2 )) && __room_repositories
+	(( CURRENT == 2 )) && __stache_repositories
 	(( CURRENT == 3 )) && _command_names -e
 	if (( CURRENT >= 4 )); then
 		# see _precommand in zsh
@@ -74,11 +74,11 @@ function _stache-run () {
 }
 
 function _stache-status () {
-	(( CURRENT == 2 )) && __room_repositories
+	(( CURRENT == 2 )) && __stache_repositories
 }
 
 function _stache-upgrade () {
-	(( CURRENT == 2 )) && __room_repositories
+	(( CURRENT == 2 )) && __stache_repositories
 }
 
 function _stache-version () {
@@ -90,7 +90,7 @@ function _stache-which () {
 }
 
 function _stache-write-gitignore () {
-	(( CURRENT == 2 )) && __room_repositories
+	(( CURRENT == 2 )) && __stache_repositories
 }
 
 function _stache () {
@@ -120,7 +120,9 @@ function _stache () {
 		"upgrade:upgrade repository to currently recommended settings"
 		"version:print version information"
 		"which:find <substring> in name of any tracked file"
-		"write-gitignore:write .gitignore.d/<repo> via git ls-files"
+		"config:edit shared git config included by every repo"
+		"restore:clone every repo listed in stache.repos"
+		"write-gitignore:write <repo>.stache/.gitignore via git ls-files"
 	)
 
 	args=(
@@ -135,14 +137,14 @@ function _stache () {
 	if [[ ${state} == "subcommand_or_options_or_repo" ]]; then
 		if (( CURRENT == 1 )); then
 			_describe -t subcommands 'stache sub-commands' subcommands && ret=0
-			__room_repositories && ret=0
+			__stache_repositories && ret=0
 		else
 			stachecommand="${words[1]}"
 			if ! (( ${+functions[_stache-$stachecommand]} )); then
 				# There is no handler function, so this is probably the name
 				# of a repository. Act accordingly.
 				# FIXME: this may want to use '_dispatch stache git'
-				GIT_DIR=$STACHE_REPO_D/$words[1].git _dispatch git git && ret=0
+				GIT_DIR=$STACHE_REPO_D/$words[1].stache/$words[1].git _dispatch git git && ret=0
 			else
 				curcontext="${curcontext%:*:*}:stache-${stachecommand}:"
 				_call_function ret _stache-${stachecommand} && (( ret ))

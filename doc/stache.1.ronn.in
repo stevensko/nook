@@ -25,8 +25,6 @@ stache(1) - Version Control System for $HOME - multiple Git repositories in $HOM
 
 `stache` list-untracked [<-a>] [<-r>] [<repo>]
 
-`stache` manifest [<file>]
-
 `stache` pull
 
 `stache` push
@@ -64,10 +62,10 @@ in a different directory from <$GIT_WORK_TREE> which is pointed to <$HOME>.
 
 The use of symlinks is not needed in this setup, making for a cleaner setup.
 
-To set up a new machine, `stache` has a built-in bootstrap: `stache manifest`
-records every repository (name, remote URL, branch) to a file you can track in
-one of your repos, and `stache restore` clones them all on the other end. See the
-`manifest` and `restore` commands below.
+To set up a new machine, `stache` has a built-in bootstrap: it maintains
+<$STACHE_REPOS> (name, remote URL, branch for every repo with an <origin>
+remote) automatically, and `stache restore` clones everything listed there
+that is not already present. Track that file in one of your repos.
 
 Please note that you can always use a path instead of a name for <repo>.
 This is needed to support external scripts properly and of no concern to
@@ -152,16 +150,6 @@ an interactive user.
 
   `$repo`: List files not tracked by this specific repository.
 
-* manifest:
-  Write one line per repository -- `<name> <remote-url> <branch>` --
-  for every repo that has an <origin> remote.
-
-  `$file`: Write to this path. Defaults to <$STACHE_MANIFEST>
-  (<$XDG_CONFIG_HOME/stache/stache.list>). A single `-` writes to stdout.
-
-  Track the manifest inside one of your repos, then use `restore` on another
-  machine to recreate the whole set.
-
 * pull:
   Pull from all stache remotes.
 
@@ -169,10 +157,10 @@ an interactive user.
   Push to all stache remotes.
 
 * restore:
-  Read a manifest file and run `stache clone` for every listed repository that
+  Read <$STACHE_REPOS> and run `stache clone` for every listed repository that
   is not already present locally. Existing repos are left untouched.
 
-  `$file`: Read from this path. Defaults to <$STACHE_MANIFEST>.
+  `$file`: Read from this path instead of <$STACHE_REPOS>.
 
 * rename:
   Rename a repository.
@@ -201,7 +189,7 @@ an interactive user.
   Find <substring> in name of any tracked file.
 
 * write-gitignore:
-  Write <repo>.stache/gitignore via `git ls-files`. If <repo> is not specified
+  Write <repo>.stache/.gitignore via `git ls-files`. If <repo> is not specified
   but we're within a stache repository, use that.
 
 * <repo> <gitcommand>:
@@ -236,7 +224,7 @@ a whole.
 
 Separately from those shell files, `upgrade` points every repository's
 `include.path` at <$STACHE_GITCONFIG>
-(<$XDG_CONFIG_HOME/stache/gitconfig>). Put git settings that should apply
+(<$XDG_CONFIG_HOME/stache/.gitconfig>). Put git settings that should apply
 to all repositories there -- `credential.helper`, `user.name`, `user.email`,
 and so on -- via the `config` command. `upgrade` also sets
 `status.showUntrackedFiles` in each repo (see <$STACHE_SHOW_UNTRACKED>) and
@@ -247,14 +235,14 @@ Interesting knobs you can turn:
 * <$STACHE_GITCONFIG>:
   Path of the shared git config file included by every repository.
 
-  Defaults to <$XDG_CONFIG_HOME/stache/gitconfig>.
+  Defaults to <$XDG_CONFIG_HOME/stache/.gitconfig>.
 
 * <$STACHE_GITIGNORE_FILE>, <$STACHE_GITATTRIBUTES_FILE>:
   Shared fallback ignore / attributes files, used by a repo when it has no
-  <repo>.stache/gitignore (resp. gitattributes) of its own.
+  <repo>.stache/.gitignore (resp. gitattributes) of its own.
 
-  Default to <$XDG_CONFIG_HOME/stache/gitignore> and
-  <$XDG_CONFIG_HOME/stache/gitattributes>.
+  Default to <$XDG_CONFIG_HOME/stache/.gitignore> and
+  <$XDG_CONFIG_HOME/stache/.gitattributes>.
 
 * <$STACHE_SHOW_UNTRACKED>:
   Value written to `status.showUntrackedFiles` in each repo by `upgrade`.
@@ -309,15 +297,16 @@ Less interesting knobs you could turn:
 
   Defaults to <$XDG_CONFIG_HOME/stache>.
 
-* <$STACHE_MANIFEST>:
-  Default file for the `manifest` and `restore` commands.
+* <$STACHE_REPOS>:
+  The repo list `stache` maintains automatically and `restore` reads
+  ("<name> <url> <branch>" per repo with an origin remote).
 
-  Defaults to <$XDG_CONFIG_HOME/stache/stache.list>.
+  Defaults to <$XDG_CONFIG_HOME/stache/stache.repos>.
 
 * <$STACHE_HOOK_D>:
   The directory where hooks are read from.
 
-  Defaults to <$XDG_CONFIG_HOME/stache/hooks-enabled>.
+  Defaults to <$XDG_CONFIG_HOME/stache/hooks>.
 
 * <$STACHE_BASE>:
   The directory where repositories are checked out to.
@@ -327,10 +316,9 @@ Less interesting knobs you could turn:
 
 ## HOOK SYSTEM
 
-`stache` provides a hook system. Hook scripts must be executable and should be
-placed in <$XDG_CONFIG_HOME/stache/hooks-available>. From there, they can be
-soft-linked into <$XDG_CONFIG_HOME/stache/hooks-enabled>; `stache` will only
-execute hooks that are in this directory.
+`stache` provides a hook system. Hook scripts must be executable and placed in
+<$XDG_CONFIG_HOME/stache/hooks> (or wherever <$STACHE_HOOK_D> points); `stache`
+runs every executable hook it finds there.
 
 Hooks follow a simple format. <pre-run> will be run before anything is run.
 If you want to have more than one script for a certain hook, just append
@@ -352,9 +340,8 @@ we can ship them by default.
 
 ## OVERLAY SYSTEM
 
-`stache` also provides an overlay system. Similar to hooks, the recommended
-locations are <$XDG_CONFIG_HOME/stache/overlays-available> and
-<$XDG_CONFIG_HOME/stache/overlays-enabled>.
+`stache` also provides an overlay system. Similar to hooks, overlay scripts go
+in <$XDG_CONFIG_HOME/stache/overlays> (or wherever <$STACHE_OVERLAY_D> points).
 
 Overlays follow the same rules as hooks and you are free to overwrite any
 and all functions. Same as hooks, you can use global or repository-specific

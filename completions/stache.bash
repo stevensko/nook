@@ -1,6 +1,6 @@
 # run git command
 #   based on bash_completion:_command_offset()
-_room_git_command () {
+_stache_git_command () {
 	local word_offset=$1
 	for (( i=0; i < word_offset; i++ )); do
 		for (( j=0; j <= ${#COMP_LINE}; j++ )); do
@@ -66,7 +66,7 @@ _stache () {
 	for r in "${reponames[@]}"; do repos["$r"]="$r"; done
 	unset r reponames
 	local cmds
-	cmds="clone delete enter foreach help init commit list list-tracked list-untracked pull push rename run status upgrade version which write-gitignore"
+	cmds="clone config delete enter foreach help init commit list list-tracked list-untracked pull push rename restore run status upgrade version which write-gitignore"
 
 	local subcword cmd subcmd
 	for (( subcword=1; subcword < ${#words[@]}-1; subcword++ )); do
@@ -128,7 +128,7 @@ _stache () {
 		foreach)
 			[[ $cur == -* ]] \
 				&& mapfile -t COMPREPLY < <(compgen -W "-g" -- "$cur") && return
-			_room_git_command $subcword
+			_stache_git_command $subcword
 			return
 			;;
 
@@ -137,7 +137,7 @@ _stache () {
 	# git command on repository
 	if [[ -n "${repos[$cmd]}" ]]; then
 		: "${STACHE_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/stache}"
-		GIT_DIR="${STACHE_REPO_D}/${cmd}.git" _room_git_command "$subcword"
+		GIT_DIR="${STACHE_REPO_D}/${cmd}.stache/${cmd}.git" _stache_git_command "$subcword"
 	fi
 	return 0
 }
