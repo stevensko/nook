@@ -136,7 +136,7 @@ Everything `stache` uses lives under `$XDG_CONFIG_HOME/stache/`
 tracked files themselves.
 
     ~/.config/stache/
-        config                  # optional: shell config sourced for every repo
+        .stacherc               # optional: shell rc sourced on every run (STACHE_* vars)
         .gitconfig              # git config included by every repo (edit: stache config ...)
         .gitignore              # shared fallback ignore file (seeded with '*')
         .gitattributes          # shared fallback attributes file
@@ -145,7 +145,7 @@ tracked files themselves.
         overlays/               # optional: function overrides
         <name>.stache/          # one directory per repo, containing:
             <name>.git/         #   the git directory
-            config              #   optional: shell config sourced for this repo only
+            .stacherc           #   optional: shell rc sourced when acting on this repo
             .gitignore          #   optional: per-repo ignore file
             .gitattributes      #   optional: per-repo attributes file
 

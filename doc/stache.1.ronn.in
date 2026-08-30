@@ -218,15 +218,15 @@ There are several ways to turn the various knobs on `stache`. In order of
 ascending precedence, they are:
 
 * `VARIABLE=foo stache`
-* </etc/stache/config>
-* <$XDG_CONFIG_HOME/stache/config>
-* <$STACHE_REPO_D/<repo>.stache/config> (only when acting on <repo>)
+* </etc/stache/stacherc>
+* <$XDG_CONFIG_HOME/stache/.stacherc>
+* <$STACHE_REPO_D/<repo>.stache/.stacherc> (only when acting on <repo>)
 * `stache -c <file>`
 
 Please note that those files are sourced. Any and all commands will be
 executed in the context of your shell.
 
-The per-repo file <$XDG_CONFIG_HOME/stache/<repo>.stache/config> is read only
+The per-repo file <$XDG_CONFIG_HOME/stache/<repo>.stache/.stacherc> is read only
 while operating on that repository. It lives inside the <repo>.stache/
 directory (next to <repo>.git/), which `rename` moves and `delete` removes as
 a whole.

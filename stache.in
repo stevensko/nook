@@ -70,9 +70,9 @@ source_all() {
 
 # Read configuration files if there are any
 # shellcheck source=/dev/null
-[ -r "/etc/stache/config" ]             && . "/etc/stache/config"
+[ -r "/etc/stache/stacherc" ]            && . "/etc/stache/stacherc"
 # shellcheck source=/dev/null
-[ -r "$XDG_CONFIG_HOME/stache/config" ] && . "$XDG_CONFIG_HOME/stache/config"
+[ -r "$XDG_CONFIG_HOME/stache/.stacherc" ] && . "$XDG_CONFIG_HOME/stache/.stacherc"
 if [ -n "$STACHE_OPTION_CONFIG" ]; then
 	# Source $STACHE_OPTION_CONFIG if it can be read and is in $PWD of $PATH
 	if [ -r "$STACHE_OPTION_CONFIG" ]; then
@@ -865,10 +865,10 @@ fi
 verbose "$STACHE_COMMAND begin"
 STACHE_COMMAND=$(echo "$STACHE_COMMAND" | @SED@ 's/-/_/g'); export STACHE_COMMAND
 
-# Source repo-specific configuration file, if present: <repo>.stache/config
+# Source repo-specific rc file, if present: <repo>.stache/.stacherc
 # shellcheck source=/dev/null
-[ -r "$STACHE_REPO_D/$STACHE_REPO_NAME.stache/config" ] \
-	&& . "$STACHE_REPO_D/$STACHE_REPO_NAME.stache/config"
+[ -r "$STACHE_REPO_D/$STACHE_REPO_NAME.stache/.stacherc" ] \
+	&& . "$STACHE_REPO_D/$STACHE_REPO_NAME.stache/.stacherc"
 
 # source overlay functions
 for overlay in "$STACHE_OVERLAY_D/$STACHE_COMMAND"* "$STACHE_OVERLAY_D/$STACHE_REPO_NAME.$STACHE_COMMAND"*; do
