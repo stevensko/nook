@@ -140,7 +140,7 @@ an interactive user.
   `$repo`: List files not tracked by this specific repository.
 
 * manifest:
-  Write one line per repository -- `<name><TAB><remote-url><TAB><branch>` --
+  Write one line per repository -- `<name> <remote-url> <branch>` --
   for every repo that has an <origin> remote.
 
   `$file`: Write to this path. Defaults to <$HOMEROOMS_MANIFEST>

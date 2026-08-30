@@ -347,12 +347,13 @@ list_has_remote() {
 }
 
 manifest() {
-	# Write "<name>\t<remote-url>\t<branch>" for every repo that has an
-	# 'origin' remote. Target: $2, else $HOMEROOMS_MANIFEST; '-' means stdout.
+	# Write "<name> <remote-url> <branch>" (space-separated) for every repo
+	# that has an 'origin' remote. Target: $2, else $HOMEROOMS_MANIFEST;
+	# '-' means stdout.
 	target=${2:-$HOMEROOMS_MANIFEST}
 	if [ "x$target" != 'x-' ]; then
 		{
-			echo "# $HOMEROOMS_SELF manifest -- fields: <name> <tab> <remote-url> <tab> <branch>"
+			echo "# $HOMEROOMS_SELF manifest -- fields: <name> <remote-url> <branch>"
 			echo "# regenerate with: $HOMEROOMS_SELF manifest"
 		} > "$target" || fatal "could not write '$target'" 50
 	fi
@@ -362,9 +363,9 @@ manifest() {
 		[ -n "$url" ] || continue
 		branch=$(@GIT@ symbolic-ref --quiet --short HEAD 2> /dev/null) || branch=
 		if [ "x$target" = 'x-' ]; then
-			printf '%s\t%s\t%s\n' "$HOMEROOMS_REPO_NAME" "$url" "$branch"
+			printf '%s %s %s\n' "$HOMEROOMS_REPO_NAME" "$url" "$branch"
 		else
-			printf '%s\t%s\t%s\n' "$HOMEROOMS_REPO_NAME" "$url" "$branch" >> "$target"
+			printf '%s %s %s\n' "$HOMEROOMS_REPO_NAME" "$url" "$branch" >> "$target"
 		fi
 	done
 	[ "x$target" = 'x-' ] || info "wrote manifest to '$target'"
@@ -374,8 +375,9 @@ restore() {
 	# Clone every repo listed in a manifest file that is not already present.
 	source_file=${2:-$HOMEROOMS_MANIFEST}
 	[ -r "$source_file" ] || fatal "$HOMEROOMS_COMMAND: manifest not readable: '$source_file'" 1
-	tab=$(printf '\t')
-	while IFS="$tab" read -r name url branch; do
+	# Fields are whitespace-separated; none of name/url/branch can contain
+	# a space, so the default IFS split is safe (and tolerates old tab files).
+	while read -r name url branch; do
 		case "$name" in ''|\#*) continue;; esac
 		if [ -z "$url" ]; then
 			info "skipping '$name': no URL in manifest"

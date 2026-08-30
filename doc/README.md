@@ -111,7 +111,7 @@ your `$HOME`, you will end up with a lot of repositories very quickly.
 
 `room` has a built-in bootstrap so setting up a new machine is quick:
 `room manifest` writes `~/.config/homerooms/homerooms.list` -- one line per
-repository, `<name><TAB><url><TAB><branch>` -- for every repo that has an
+repository, `<name> <url> <branch>` -- for every repo that has an
 `origin` remote. Track that file in one of your repos. On a new machine,
 clone that one repo, then run `room restore` and every other repo listed in
 the manifest is cloned for you.
