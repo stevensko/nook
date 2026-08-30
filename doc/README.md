@@ -1,7 +1,7 @@
 Homerooms Dotfiles Manager - multiple Git repositories in $HOME
 
 A fork of vcsh (https://github.com/RichiH/vcsh). The command is `room`; data lives
-under `~/.config/house/` (repositories in `~/.config/house/rooms/`).
+directly in `~/.config/homerooms/` -- one `<name>.git` per repo, no wrapper directory.
 
 
 # Index
@@ -158,13 +158,12 @@ To illustrate, this is what a possible directory structure looks like.
         |   |       |-- gitconfigs.room -> ../available.d/gitconfigs.room
         |   |       |-- tmux.room       -> ../available.d/tmux.room
         |   |       `-- vim.room        -> ../available.d/vim.room
-        |   `-- room
+        |   `-- homerooms
         |       |-- config
-        |       `-- rooms
-        |           |-- zsh.git  -----------+
-        |           |-- gitconfigs.git      |
-        |           |-- tmux.git            |
-        |           `-- vim.git             |
+        |       |-- zsh.git  ---------------+
+        |       |-- gitconfigs.git          |
+        |       |-- tmux.git                |
+        |       `-- vim.git                 |
         |-- [...]                           |
         |-- .zshrc   <----------------------+
         |-- .gitignore.d
@@ -183,7 +182,7 @@ this specific example, push can not work as you will be using the author's
 repository. This is for demonstration, only. Of course, you are more than
 welcome to clone from this repository and fork your own.
 
-    [$XDG_CONFIG_HOME/house/rooms/zsh.git]
+    [$XDG_CONFIG_HOME/homerooms/zsh.git]
     checkout = room clone 'git://github.com/RichiH/zshrc.git' 'zsh'
     update   = room zsh pull
     push     = room zsh push
@@ -210,9 +209,9 @@ this:
     [DEFAULT]
     include = cat ${XDG_CONFIG_HOME:-$HOME/.config}/mr/config.d/*
 
-### rooms
+### homerooms
 
-$XDG\_CONFIG\_HOME/house/rooms is the directory where all git repositories which
+$XDG\_CONFIG\_HOME/homerooms is the directory where all git repositories which
 are under room's control are located. Since their working trees are configured
 to be in $HOME, the files contained in those repositories will be put in $HOME
 directly.
@@ -266,7 +265,7 @@ Make sure none of the following files and directories exist for your test
 * `$XDG\_CONFIG\_HOME/mr/available.d/mr.room`
 * `$XDG\_CONFIG\_HOME/mr/available.d/zsh.room`
 * `$XDG\_CONFIG\_HOME/mr/config.d/mr.room`
-* `$XDG\_CONFIG\_HOME/house/rooms/mr.git/`
+* `$XDG\_CONFIG\_HOME/homerooms/mr.git/`
 
 All of the files are part of the template repository, the directory is where
 the template will be stored.
@@ -294,7 +293,7 @@ Note the portage package for myrepos still has the old project name:
 
 #### Arch Linux
 
-room is available via this [AUR](https://aur.archlinux.org/packages/house/)
+room is available via this [AUR](https://aur.archlinux.org/packages/homerooms/)
 package. Likewise myrepos is available [here](https://aur.archlinux.org/packages/myrepos/).
 You may install both using your favorite AUR helper. e.g. with yaourt:
 
@@ -389,7 +388,7 @@ copy mine verbatim, either is fine.
 
     # Clone room and make it available
     git clone git://github.com/RichiH/vcsh.git room
-    sudo ln -s ~/work/git/house/room /usr/bin/local
+    sudo ln -s ~/work/git/homerooms/room /usr/bin/local
     hash -r
 
 Grab my myrepos config. see below for details on how I set this up

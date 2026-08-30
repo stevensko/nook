@@ -70,9 +70,9 @@ source_all() {
 
 # Read configuration files if there are any
 # shellcheck source=/dev/null
-[ -r "/etc/house/config" ]             && . "/etc/house/config"
+[ -r "/etc/homerooms/config" ]             && . "/etc/homerooms/config"
 # shellcheck source=/dev/null
-[ -r "$XDG_CONFIG_HOME/house/config" ] && . "$XDG_CONFIG_HOME/house/config"
+[ -r "$XDG_CONFIG_HOME/homerooms/config" ] && . "$XDG_CONFIG_HOME/homerooms/config"
 if [ -n "$HOMEROOMS_OPTION_CONFIG" ]; then
 	# Source $HOMEROOMS_OPTION_CONFIG if it can be read and is in $PWD of $PATH
 	if [ -r "$HOMEROOMS_OPTION_CONFIG" ]; then
@@ -84,10 +84,10 @@ fi
 [ -n "$HOMEROOMS_DEBUG" ]                  && set -vx
 
 # Read defaults
-: "${HOMEROOMS_REPO_D:="$XDG_CONFIG_HOME/house/rooms"}"; export HOMEROOMS_REPO_D
-: "${HOMEROOMS_HOOK_D:="$XDG_CONFIG_HOME/house/hooks-enabled"}"; export HOMEROOMS_HOOK_D
-: "${HOMEROOMS_OVERLAY_D:="$XDG_CONFIG_HOME/house/overlays-enabled"}"; export HOMEROOMS_OVERLAY_D
-: "${HOMEROOMS_MANIFEST:="$XDG_CONFIG_HOME/house/rooms.list"}"; export HOMEROOMS_MANIFEST
+: "${HOMEROOMS_REPO_D:="$XDG_CONFIG_HOME/homerooms"}"; export HOMEROOMS_REPO_D
+: "${HOMEROOMS_HOOK_D:="$XDG_CONFIG_HOME/homerooms/hooks-enabled"}"; export HOMEROOMS_HOOK_D
+: "${HOMEROOMS_OVERLAY_D:="$XDG_CONFIG_HOME/homerooms/overlays-enabled"}"; export HOMEROOMS_OVERLAY_D
+: "${HOMEROOMS_MANIFEST:="$XDG_CONFIG_HOME/homerooms/homerooms.list"}"; export HOMEROOMS_MANIFEST
 : "${HOMEROOMS_BASE:="$HOME"}"; export HOMEROOMS_BASE
 : "${HOMEROOMS_GITIGNORE:=exact}"; export HOMEROOMS_GITIGNORE
 : "${HOMEROOMS_GITATTRIBUTES:=none}"; export HOMEROOMS_GITATTRIBUTES

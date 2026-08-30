@@ -146,7 +146,7 @@ an interactive user.
   for every repo that has an <origin> remote.
 
   `$file`: Write to this path. Defaults to <$HOMEROOMS_MANIFEST>
-  (<$XDG_CONFIG_HOME/house/rooms.list>). A single `-` writes to stdout.
+  (<$XDG_CONFIG_HOME/homerooms/homerooms.list>). A single `-` writes to stdout.
 
   Track the manifest inside one of your repos, then use `restore` on another
   machine to recreate the whole set.
@@ -210,15 +210,15 @@ There are several ways to turn the various knobs on `room`. In order of
 ascending precedence, they are:
 
 * `VARIABLE=foo room`
-* </etc/house/config>
-* <$XDG_CONFIG_HOME/house/config>
+* </etc/homerooms/config>
+* <$XDG_CONFIG_HOME/homerooms/config>
 * <$HOMEROOMS_REPO_D/<repo>.room> (only when acting on <repo>)
 * `room -c <file>`
 
 Please note that those files are sourced. Any and all commands will be
 executed in the context of your shell.
 
-The per-repo file <$XDG_CONFIG_HOME/house/rooms/<repo>.room> is read only
+The per-repo file <$XDG_CONFIG_HOME/homerooms/<repo>.room> is read only
 while operating on that repository, and is moved/removed alongside the
 repository by `rename` and `delete`.
 
@@ -269,17 +269,17 @@ Less interesting knobs you could turn:
 * <$HOMEROOMS_REPO_D>:
   The directory where repositories are read from and stored.
 
-  Defaults to <$XDG_CONFIG_HOME/house/rooms>.
+  Defaults to <$XDG_CONFIG_HOME/homerooms>.
 
 * <$HOMEROOMS_MANIFEST>:
   Default file for the `manifest` and `restore` commands.
 
-  Defaults to <$XDG_CONFIG_HOME/house/rooms.list>.
+  Defaults to <$XDG_CONFIG_HOME/homerooms/homerooms.list>.
 
 * <$HOMEROOMS_HOOK_D>:
   The directory where hooks are read from.
 
-  Defaults to <$XDG_CONFIG_HOME/house/hooks-enabled>.
+  Defaults to <$XDG_CONFIG_HOME/homerooms/hooks-enabled>.
 
 * <$HOMEROOMS_BASE>:
   The directory where repositories are checked out to.
@@ -290,8 +290,8 @@ Less interesting knobs you could turn:
 ## HOOK SYSTEM
 
 `room` provides a hook system. Hook scripts must be executable and should be
-placed in <$XDG_CONFIG_HOME/house/hooks-available>. From there, they can be
-soft-linked into <$XDG_CONFIG_HOME/house/hooks-enabled>; `room` will only
+placed in <$XDG_CONFIG_HOME/homerooms/hooks-available>. From there, they can be
+soft-linked into <$XDG_CONFIG_HOME/homerooms/hooks-enabled>; `room` will only
 execute hooks that are in this directory.
 
 Hooks follow a simple format. <pre-run> will be run before anything is run.
@@ -315,8 +315,8 @@ we can ship them by default.
 ## OVERLAY SYSTEM
 
 `room` also provides an overlay system. Similar to hooks, the recommended
-locations are <$XDG_CONFIG_HOME/house/overlays-available> and
-<$XDG_CONFIG_HOME/house/overlays-enabled>.
+locations are <$XDG_CONFIG_HOME/homerooms/overlays-available> and
+<$XDG_CONFIG_HOME/homerooms/overlays-enabled>.
 
 Overlays follow the same rules as hooks and you are free to overwrite any
 and all functions. Same as hooks, you can use global or repository-specific

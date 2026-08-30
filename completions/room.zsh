@@ -99,7 +99,7 @@ function _room () {
 	local -a args subcommands
 
 	local HOMEROOMS_REPO_D
-	: ${HOMEROOMS_REPO_D:="${XDG_CONFIG_HOME:-"$HOME/.config"}/house/rooms"}
+	: ${HOMEROOMS_REPO_D:="${XDG_CONFIG_HOME:-"$HOME/.config"}/homerooms"}
 
 	subcommands=(
 		"clone:clone an existing repository"

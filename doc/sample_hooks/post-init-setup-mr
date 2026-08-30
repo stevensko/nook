@@ -3,7 +3,7 @@
 # This sets up your new repos with mr.
 
 cat > $HOME/.config/mr/available.d/$HOMEROOMS_DIRECTORY.room << EOF
-[\$HOME/.config/house/rooms/$HOMEROOMS_DIRECTORY.git]
+[\$HOME/.config/homerooms/$HOMEROOMS_DIRECTORY.git]
 checkout = room clone $GITURL/dotfiles/$HOMEROOMS_DIRECTORY.git
 EOF
 

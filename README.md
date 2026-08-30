@@ -2,7 +2,7 @@ Homerooms Dotfiles Manager - multiple Git repositories in $HOME
 
 [![Build Status](https://github.com/stevensko/homerooms/actions/workflows/build.yml/badge.svg)](https://github.com/stevensko/homerooms/actions/workflows/build.yml)
 
-> A fork of [vcsh](https://github.com/RichiH/vcsh). The command is `room`; data lives under `~/.config/house/` (repositories in `~/.config/house/rooms/`).
+> A fork of [vcsh](https://github.com/RichiH/vcsh). The command is `room`; data lives directly in `~/.config/homerooms/` -- one `<name>.git` per repo, no wrapper directory.
 
 # Index
 

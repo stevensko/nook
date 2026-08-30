@@ -32,7 +32,7 @@ target=$bindir/room
 if [ "$uninstall" = 1 ]; then
 	rm -f "$target"
 	echo "removed: $target"
-	echo "(your repos and config in ~/.config/house/ are untouched)"
+	echo "(your repos and config in ~/.config/homerooms/ are untouched)"
 	command -v room >/dev/null 2>&1 && echo "room now resolves to: $(command -v room)"
 	exit 0
 fi

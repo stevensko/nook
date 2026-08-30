@@ -8,7 +8,7 @@
 # Why the indirection below is needed:
 #
 # gita will not track a room "fake-bare" repository if you point it straight
-# at $XDG_CONFIG_HOME/house/rooms/<name>.git. To decide whether a path is a
+# at $XDG_CONFIG_HOME/homerooms/<name>.git. To decide whether a path is a
 # repo, gita runs `git rev-parse --is-bare-repository`; room sets
 # `core.bare false` (and `core.worktree`), so that check answers "false" and
 # `gita add` just prints "No new repos found!".
@@ -21,18 +21,18 @@
 #
 # This file is a sample. To use it:
 #
-#   mkdir -p $XDG_CONFIG_HOME/house/hooks-available
-#   mkdir -p $XDG_CONFIG_HOME/house/hooks-enabled
-#   cp post-init-setup-gita $XDG_CONFIG_HOME/house/hooks-available/
-#   chmod +x $XDG_CONFIG_HOME/house/hooks-available/post-init-setup-gita
+#   mkdir -p $XDG_CONFIG_HOME/homerooms/hooks-available
+#   mkdir -p $XDG_CONFIG_HOME/homerooms/hooks-enabled
+#   cp post-init-setup-gita $XDG_CONFIG_HOME/homerooms/hooks-available/
+#   chmod +x $XDG_CONFIG_HOME/homerooms/hooks-available/post-init-setup-gita
 #   ln -s ../hooks-available/post-init-setup-gita \
-#         $XDG_CONFIG_HOME/house/hooks-enabled/post-init-setup-gita
+#         $XDG_CONFIG_HOME/homerooms/hooks-enabled/post-init-setup-gita
 #
 # If you also want repositories brought in with `room clone` to be registered,
 # enable the same script for the post-clone hook as well:
 #
 #   ln -s ../hooks-available/post-init-setup-gita \
-#         $XDG_CONFIG_HOME/house/hooks-enabled/post-clone-setup-gita
+#         $XDG_CONFIG_HOME/homerooms/hooks-enabled/post-clone-setup-gita
 #
 # Set GITA_GROUP to collect all room repos under one gita group (default
 # "room", so `gita ll room` shows just these); set it empty to not group.
@@ -53,12 +53,12 @@ command -v gita >/dev/null 2>&1 || {
 }
 
 : "${XDG_CONFIG_HOME:=$HOME/.config}"
-: "${HOMEROOMS_REPO_D:=$XDG_CONFIG_HOME/house/rooms}"
+: "${HOMEROOMS_REPO_D:=$XDG_CONFIG_HOME/homerooms}"
 : "${GITA_GROUP=room}"
 : "${GITA_HIDE_UNTRACKED=yes}"
 
 git_dir=${GIT_DIR:-$HOMEROOMS_REPO_D/$HOMEROOMS_REPO_NAME.git}
-stub_dir=$XDG_CONFIG_HOME/house/gita.d/$HOMEROOMS_REPO_NAME
+stub_dir=$XDG_CONFIG_HOME/homerooms/gita.d/$HOMEROOMS_REPO_NAME
 
 mkdir -p "$stub_dir"
 printf 'gitdir: %s\n' "$git_dir" > "$stub_dir/.git"

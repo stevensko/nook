@@ -3,11 +3,13 @@
 	* Fork of vcsh, rebranded as "Homerooms Dotfiles Manager"
 	* Command renamed vcsh -> room
 	* Environment variables renamed VCSH_* -> HOMEROOMS_*
-	* Config directory moved $XDG_CONFIG_HOME/vcsh -> $XDG_CONFIG_HOME/house
-	* Repository directory renamed repo.d -> rooms
+	* Config flattened to $XDG_CONFIG_HOME/homerooms/ -- repositories,
+	  <repo>.room configs, hooks-enabled/, overlays-enabled/, config and
+	  the manifest all live directly in it; no repo.d/ or wrapper dir
+	* System config: /etc/vcsh/config -> /etc/homerooms/config
 	* Source script renamed vcsh.in -> homerooms.in; man page vcsh.1 -> room.1
-	* Per-repo config moved from house/config.d/<repo> to
-	  house/rooms/<repo>.room; delete/rename now keep the .room file in sync
+	* Per-repo config is $XDG_CONFIG_HOME/homerooms/<repo>.room (was
+	  config.d/<repo>); delete/rename now keep the .room file in sync
 	* New: `room manifest [<file>]` writes name/url/branch for every repo
 	  with an origin remote (default $HOMEROOMS_MANIFEST, '-' for stdout)
 	* New: `room restore [<file>]` clones every repo listed in a manifest
@@ -309,7 +311,7 @@
 
 2011-12-26  Richard Hartmann <richih.mailinglist@gmail.com>
 
-	* Introduce and use .config/house/config
+	* Introduce and use .config/homerooms/config
 	* More verbose error handling
 	* Introduce `room {list-tracked,list-tracked-by}`
 	* Introduce repo shortcuts (`room zsh commit`)

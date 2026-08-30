@@ -136,7 +136,7 @@ _room () {
 
 	# git command on repository
 	if [[ -n "${repos[$cmd]}" ]]; then
-		: "${HOMEROOMS_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/house/rooms}"
+		: "${HOMEROOMS_REPO_D:=${XDG_CONFIG_HOME:-$HOME/.config}/homerooms}"
 		GIT_DIR="${HOMEROOMS_REPO_D}/${cmd}.git" _room_git_command "$subcword"
 	fi
 	return 0

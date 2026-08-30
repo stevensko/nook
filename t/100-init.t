@@ -19,13 +19,13 @@ ok $output eq "", 'No repos set up yet.';
 
 $output = `./room init test1`;
 
-ok $output eq "Initialized empty Git repository in " . $ENV{'HOME'} . "/.config/house/rooms/test1.git/\n";
+ok $output eq "Initialized empty Git repository in " . $ENV{'HOME'} . "/.config/homerooms/test1.git/\n";
 
 $output = `./room status`;
 
 ok $output eq "test1:\n\n", 'Our new repo is there';
 
-chdir $ENV{"HOME"} . '/.config/house/rooms/test1.git/' or die $!;
+chdir $ENV{"HOME"} . '/.config/homerooms/test1.git/' or die $!;
 
 ok -f 'HEAD';
 ok -f 'config';
