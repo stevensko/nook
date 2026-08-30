@@ -1,4 +1,6 @@
-Homerooms Dotfiles Manager - multiple Git repositories in $HOME
+# Homerooms Dotfiles Manager 
+
+Multiplex Git Repos in $Home for Dotfiles Management
 
 [![Build Status](https://github.com/stevensko/homerooms/actions/workflows/build.yml/badge.svg)](https://github.com/stevensko/homerooms/actions/workflows/build.yml)
 
