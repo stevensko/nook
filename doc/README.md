@@ -148,7 +148,7 @@ tracked files themselves.
         .gitconfig              # git config included by every repo (edit: nook config ...)
         .gitignore              # shared fallback ignore file (seeded with '*')
         .gitattributes          # shared fallback attributes file
-        .repos                  # repo list for `bootstrap` (curate with `nook add`) for `bootstrap` (you curate it with `nook add`)
+        .repos                  # repo list for `bootstrap` (curate with `nook add`)
         hooks/                  # optional: hook scripts
         overlays/               # optional: function overrides
         <name>.nook/          # one directory per repo, containing:
