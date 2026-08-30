@@ -30,6 +30,10 @@
 	  There is no `manifest` command. `stache bootstrap` -- equivalently
 	  `stache clone --all` / `-a` -- clones everything listed there that is
 	  not already present. Built-in, no myrepos/gita.
+	* stache.repos rows take an optional 4th column: a comma-separated tag
+	  list. `stache bootstrap --include=a,b` / `--exclude=x,y` filter on it
+	  (untagged rows always match; --exclude wins). `stache add <repo> a,b`
+	  writes tags.
 	* New: `stache config <git config args>` edits a shared git config file
 	  ($STACHE_GITCONFIG) that every repo includes via include.path;
 	  set credential.helper, user.email, etc. once for all repos

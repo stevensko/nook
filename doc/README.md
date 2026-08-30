@@ -116,10 +116,14 @@ with **`stache add <repo>`** (or `stache add --all` to append every local repo
 that has a remote and isn't listed yet). Nothing else writes that file; `delete`
 and `rename` leave stale lines for you to edit out.
 
-Track it in one of your repos. On a new machine, clone that repo and run
+Give a repo an optional comma-separated tag list as a 4th column
+(`stache add <repo> laptop,work`) and pick a subset per machine with
+`stache bootstrap --include=laptop --exclude=work`; untagged repos are always
+cloned.
+
+Track the file in one of your repos. On a new machine, clone that repo and run
 `stache bootstrap` (or `stache clone --all` / `-a` -- with `clone`, `--all`/`-a`
-must be the first word, before any URL or `-b`), and every other repo in the
-list is cloned for you.
+must be the first word), and every other repo in the list is cloned for you.
 
     stache add --all
     stache dotfiles add -f ~/.config/stache/stache.repos
@@ -144,7 +148,7 @@ tracked files themselves.
         .gitconfig              # git config included by every repo (edit: stache config ...)
         .gitignore              # shared fallback ignore file (seeded with '*')
         .gitattributes          # shared fallback attributes file
-        stache.repos            # the repo list, maintained automatically
+        stache.repos            # the repo list for `bootstrap` (you curate it with `stache add`)
         hooks/                  # optional: hook scripts
         overlays/               # optional: function overrides
         <name>.stache/          # one directory per repo, containing:

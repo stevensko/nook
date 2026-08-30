@@ -11,9 +11,9 @@ stache(1) - Version Control System for $HOME - multiple Git repositories in $HOM
 
 `stache` clone [-b <branch>] <url> [<repo>]
 
-`stache` bootstrap [<file>]
+`stache` bootstrap [--include=<tags>] [--exclude=<tags>] [<file>]
 
-`stache` clone --all|-a [<file>]
+`stache` clone --all|-a [--include=<tags>] [--exclude=<tags>] [<file>]
 
 `stache` config [<git config arguments>]
 
@@ -69,10 +69,13 @@ in a different directory from <$GIT_WORK_TREE> which is pointed to <$HOME>.
 The use of symlinks is not needed in this setup, making for a cleaner setup.
 
 To set up a new machine, `stache` has a built-in bootstrap. You populate
-<$STACHE_REPOS> ("<name> <url> <branch>" per repo) with `stache add <repo>`
-or `stache add --all`, and track that file in one of your repos. On the new
-machine `stache bootstrap` (also `stache clone --all`) clones everything
-listed there that is not already present.
+<$STACHE_REPOS> ("<name> <url> <branch> [tags]" per repo) with `stache add
+<repo> [<tags>]` or `stache add --all`, and track that file in one of your
+repos. On the new machine `stache bootstrap` (also `stache clone --all`)
+clones everything listed there that is not already present. Give a repo an
+optional comma-separated tag list (4th column) and select per machine with
+`stache bootstrap --include=<tags>` / `--exclude=<tags>`; untagged repos are
+always cloned.
 
 Please note that you can always use a path instead of a name for <repo>.
 This is needed to support external scripts properly and of no concern to
@@ -183,7 +186,13 @@ an interactive user.
   is not already present locally. Existing repos are left untouched. The forms
   `stache bootstrap`, `stache clone --all` and `stache clone -a` are equivalent.
 
-  `$file`: Read from this path instead of <$STACHE_REPOS>.
+  `--include=<tags>`: comma-separated. Only clone rows whose 4th-column tags
+  (also comma-separated) contain one of these. Rows with no tags always match.
+
+  `--exclude=<tags>`: comma-separated. Skip any row that has one of these tags.
+  Exclude wins over include. Matching is case-insensitive.
+
+  `<file>`: read from this path instead of <$STACHE_REPOS>.
 
 * rename:
   Rename a repository.

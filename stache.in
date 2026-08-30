@@ -142,10 +142,14 @@ help() {
         [<repo>]        List all files not tracked by all or one repositories
    pull                 Pull from all stache remotes
    push                 Push to stache remotes
-   bootstrap [<file>]   Clone every repo listed in \$STACHE_REPOS (populate it
-   clone --all [<file>] with 'add') that is not already present. Equivalent
-   clone -a [<file>]    forms; with 'clone', --all/-a must come first, before
-                        any <url> or -b.
+   bootstrap \\
+     [--include=<tags>] \\
+     [--exclude=<tags>] \\
+     [<file>]           Clone every repo in \$STACHE_REPOS (populate it with
+                        'add') not already present. With --include, only rows
+                        whose 4th-column tags match (untagged rows always
+                        match); --exclude drops rows with a matching tag.
+                        Also: 'clone --all|-a [same opts]' (--all first).
    rename <repo> \\
           <newname>     Rename repository
    run <repo> \\
@@ -437,16 +441,55 @@ add() {
 	esac
 }
 
+tag_match() {
+	# $1 = a line's tags (comma list, may be empty)
+	# $2 = --include tags (comma list, may be empty)
+	# $3 = --exclude tags (comma list, may be empty)
+	# Returns 0 if the line should be cloned.
+	local lt inc exc t x i
+	lt=$(printf '%s' "$1" | tr 'A-Z,' 'a-z ')
+	inc=$(printf '%s' "$2" | tr 'A-Z,' 'a-z ')
+	exc=$(printf '%s' "$3" | tr 'A-Z,' 'a-z ')
+	# exclude wins
+	for x in $exc; do
+		for t in $lt; do [ "$t" = "$x" ] && return 1; done
+	done
+	# no include filter, or an untagged (universal) line -> keep
+	[ -z "$inc" ] && return 0
+	[ -z "$lt" ] && return 0
+	for i in $inc; do
+		for t in $lt; do [ "$t" = "$i" ] && return 0; done
+	done
+	return 1
+}
+
 bootstrap() {
 	# Clone every repo listed in $STACHE_REPOS that is not already present.
-	# Reached as `stache bootstrap [<file>]` or `stache clone --all|-a [<file>]`.
-	source_file=${2:-$STACHE_REPOS}
+	# Reached as `stache bootstrap [opts] [<file>]` or
+	# `stache clone --all|-a [opts] [<file>]`.
+	# opts: --include=tag,tag  --exclude=tag,tag
+	shift  # drop the command word
+	local inc exc source_file a
+	inc= exc= source_file=$STACHE_REPOS
+	for a in "$@"; do
+		case $a in
+			--include=*) inc=${a#--include=} ;;
+			--exclude=*) exc=${a#--exclude=} ;;
+			--include|--exclude) fatal "bootstrap: use $a=tag,tag" 1 ;;
+			-*) fatal "bootstrap: unknown option '$a'" 1 ;;
+			*) source_file=$a ;;
+		esac
+	done
 	[ -r "$source_file" ] || fatal "$STACHE_COMMAND: repos file not readable: '$source_file'" 1
 	# Fields are whitespace-separated; none of name/url/branch can contain a space.
-	while read -r name url branch; do
+	while read -r name url branch tags; do
 		case "$name" in ''|\#*) continue;; esac
 		if [ -z "$url" ]; then
 			info "skipping '$name': no URL in repos file"
+			continue
+		fi
+		if ! tag_match "$tags" "$inc" "$exc"; then
+			verbose "skipping '$name': tags '${tags:-none}' do not match filter"
 			continue
 		fi
 		if [ -e "$STACHE_REPO_D/$name.stache/$name.git" ]; then
